@@ -1,0 +1,171 @@
+@import url("https://fonts.googleapis.com/css2?family=Catamaran:wght@100;200;300;400;500;600;700;800&display=swap");
+
+html {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background-color: white;
+}
+
+body *::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+  height: 8px;
+}
+
+body *::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
+}
+
+body *::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.356); /* color of the scroll thumb */
+  border-radius: 4px; /* roundness of the scroll thumb */
+  /* border: 3px solid orange;  */
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* .app-title {
+  position: fixed;
+  left: 88px;
+  top: 80px;
+} */
+
+.app-bar {
+  height: 56px !important;
+  min-height: 56px !important;
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+}
+
+.app-title {
+  position: relative;
+  margin: 24px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.app-title-alert {
+  font-size: 28px !important;
+  margin-left: 16px;
+  animation: flashing-alert-icon 4s ease 0s infinite alternate both !important;
+}
+
+.app-title > * {
+  margin-bottom: 8px;
+}
+
+.app-logo-header {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  margin-left: 16px;
+}
+
+.app-log-beta-mark {
+  position: absolute !important;
+  top: 8px !important;
+  right: -32px !important;
+  font-size: 10px !important;
+  line-height: 10px !important;
+}
+
+.app-wrapper {
+  flex: 1;
+  height: 100vh;
+  overflow-y: overlay;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.disabled {
+  pointer-events: none;
+  filter: saturate(0) brightness(1.5);
+}
+
+.main-avatar {
+  height: 40px;
+  width: 40px;
+  position: absolute !important;
+  right: 32px !important;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+}
+
+.side-menu-logo-cont {
+  position: relative;
+  height: 56px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.side-menu-logo-cont h5 {
+  font-family: "Catamaran", sans-serif !important;
+  text-align: "center";
+  margin-left: 16px;
+}
+
+.side-menu-logo-cont svg {
+  height: 100%;
+  height: 30px;
+  margin-left: 24px;
+}
+
+.side-menu-icon {
+  height: 24px;
+  width: 24px;
+  color: white !important;
+}
+
+.beta-text {
+  text-decoration: wavy;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: #3f51b5;
+}
+
+.app-offline-screen {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  background-color: white;
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes flashing-alert-icon {
+  0% {
+    color: rgba(0, 0, 0, 0.137);
+  }
+  100% {
+    color: rgba(0, 0, 0, 0.493);
+  }
+}
+
+/************************************************************************************************/
+
+.close-btn {
+  position: absolute !important;
+  top: 5px;
+  right: 5px;
+}
