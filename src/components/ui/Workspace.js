@@ -24,6 +24,8 @@ import {
 import LoadingScreen from "./LoadingScreen";
 
 import Oscillator from "./Modules/Oscillator";
+import NoiseGenerator from "./Modules/NoiseGenerator";
+
 import MasterOut from "./Modules/MasterOut";
 import LFO from "./Modules/LFO";
 import Filter from "./Modules/Filter";
@@ -39,36 +41,17 @@ import "./Workspace.css";
 function Workspace(props) {
   const { t } = useTranslation();
 
-  /* 
-  There are 2 savingModes for the workspace:
-    -Simple: changes are saved in the db between X minutes, and changes are not detected
-    -Collaborative: all changes you make are stored in realtime, and changes in th db will be stored in real time. It's more resource expensive, meant to cowork 
- */
-
-  const [savingMode, setSavingMode] = useState("simple");
-  const [autosaver, setAutosaver] = useState(null);
-  const [areUnsavedChanges, setAreUnsavedChanges] = useState(false);
-
   const [mousePosition, setMousePosition] = useState([]);
-
-  const [DBSessionRef, setDBSessionRef] = useState(null);
 
   const [modules, setModules] = useState([]);
   const [nodes, setNodes] = useState({});
 
   const [connections, setConnections] = useState([]);
-
   const [connectionAnimator, setConnectionAnimator] = useState(null);
 
-  const [sessionData, setSessionData] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const [editMode, setEditMode] = useState(true);
-
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [recorder, setRecorder] = useState(new Tone.Recorder());
 
   const [modulePicker, setModulePicker] = useState(false);
-  const [sessionDupDialog, setSessionDupDialog] = useState(false);
 
   const [snackbarMessage, setSnackbarMessage] = useState(null);
   const [sessionHistory, setSessionHistory] = useState({
@@ -96,7 +79,7 @@ function Workspace(props) {
 
     let nodes;
     if (type === "MasterOut") {
-      let limiter = new Tone.Limiter(0).toDestination();
+      let limiter = new Tone.Limiter(0).connect(recorder).toDestination();
       nodes = [limiter];
     } else if (type === "Oscillator") {
       let osc = new Tone.Oscillator({
@@ -106,14 +89,9 @@ function Workspace(props) {
       }).start();
       let modGain = new Tone.Gain(0).connect(osc.frequency);
       nodes = [osc, modGain];
-    } else if (type === "Oscillator") {
-      let osc = new Tone.Oscillator({
-        frequency: 400,
-        type: "sine",
-        volume: -6,
-      }).start();
-      let modGain = new Tone.Gain(0).connect(osc.frequency);
-      nodes = [osc, modGain];
+    } else if (type === "NoiseGenerator") {
+      let noise = new Tone.Noise("white").start();
+      nodes = [noise];
     } else if (type === "LFO") {
       let meter = new Tone.Meter();
 
@@ -160,14 +138,14 @@ function Workspace(props) {
   };
 
   const removeModule = (id) => {
-    nodes[id].forEach((e) => e.dispose());
-    setModules((prev) => prev.filter((e) => e.id !== id));
     connections.forEach(
       (e) => (e.module === id || e.target.module === id) && e.line.remove()
     );
     setConnections((prev) =>
       prev.filter((e) => e.module !== id && e.target.module !== id)
     );
+    nodes[id].forEach((e) => e.dispose());
+    setModules((prev) => prev.filter((e) => e.id !== id));
   };
 
   const handleConnect = (connection) => {
@@ -221,6 +199,20 @@ function Workspace(props) {
   };
 
   const removeConnection = (connection) => {};
+
+  const startRecording = () => {
+    recorder.start();
+  };
+
+  const stopRecording = async () => {
+    const recording = await recorder.stop();
+    // download the recording by creating an anchor element and blob url
+    const url = URL.createObjectURL(recording);
+    const anchor = document.createElement("a");
+    anchor.download = "recording.webm";
+    anchor.href = url;
+    anchor.click();
+  };
 
   const handleUndo = (action) => {
     let currentModules = deepCopy(modules);
@@ -279,73 +271,12 @@ function Workspace(props) {
     //newObject && setSessionHistory(newObject);
   };
 
-  /*   const changeChecker = (mod, data) => {
-    setAreUnsavedChanges((prev) => {
-      prev && saveToDatabase(mod, data);
-      return prev ? false : prev;
-    });
-  }; */
-
-  const duplicateModule = (index) => {
-    let newModuleId = parseInt(Math.max(...modules.map((e) => e.id))) + 1;
-    let moduleToCopy = modules[modules.length - 1];
-
-    setModules((prev) => [
-      ...prev,
-      {
-        ...prev[index],
-        id: newModuleId,
-      },
-    ]);
-    handleUndo("RESET");
-  };
-
   const handleSnackbarClose = () => {
     setSnackbarMessage(null);
   };
 
-  const togglePlaying = (e) => {
-    e.preventDefault();
-    if (Tone.Transport.state !== "started" && isLoaded) {
-      Tone.Transport.start();
-      setIsPlaying(true);
-    } else {
-      Tone.Transport.pause();
-      setIsPlaying(false);
-    }
-  };
-
   const handleKeyDown = (e) => {
     Tone.start();
-    //console.log(e);
-    if (e.ctrlKey || e.metaKey) {
-      switch (e.keyCode) {
-        case 67:
-          break;
-        case 86:
-          break;
-        case 90:
-          !e.shiftKey ? handleUndo("UNDO") : handleUndo("REDO");
-          break;
-
-        default:
-          break;
-      }
-    }
-    switch (e.keyCode) {
-      case 32:
-        e.target.classList[0] === "workspace" && togglePlaying(e);
-        break;
-      case 8:
-        break;
-      case 37:
-      case 38:
-      case 39:
-      case 40:
-        break;
-      default:
-        break;
-    }
   };
 
   const handleMouseMove = (e) => {
@@ -388,12 +319,6 @@ function Workspace(props) {
       console.log("transport cleared");
     };
   }, []);
-
-  useEffect(() => {
-    //console.log(areUnsavedChanges);
-    //if (!props.hidden && isLoaded && !areUnsavedChanges) saveToDatabase();
-    //props.setUnsavedChanges(areUnsavedChanges);
-  }, [areUnsavedChanges]);
 
   useEffect(() => {
     clearInterval(connectionAnimator);
@@ -442,6 +367,14 @@ function Workspace(props) {
             />
           ) : module.type === "Oscillator" ? (
             <Oscillator
+              nodes={nodes[module.id]}
+              module={module}
+              setDrawingLine={setDrawingLine}
+              drawingLine={drawingLine}
+              removeModule={() => removeModule(module.id)}
+            />
+          ) : module.type === "NoiseGenerator" ? (
+            <NoiseGenerator
               nodes={nodes[module.id]}
               module={module}
               setDrawingLine={setDrawingLine}
@@ -530,6 +463,7 @@ function Workspace(props) {
             "Filter",
             "Envelope",
             "ChMixer",
+            "NoiseGenerator",
             "Oscilloscope",
             "Analyzer",
           ].map((e, i) => (
@@ -569,8 +503,17 @@ function Workspace(props) {
       <div
         id="cursor-pixel"
         style={{ left: mousePosition[0], top: mousePosition[1] }}
-        onMouseUp={() => console.log("mouseup")}
       />
+
+      <Fab
+        style={{ position: "absolute", bottom: 16, right: 16 }}
+        onClick={() =>
+          recorder.state === "started" ? stopRecording() : startRecording()
+        }
+        color={recorder.state === "started" ? "secondary" : "primary"}
+      >
+        <Icon>{recorder.state === "started" ? "stop" : "voicemail"}</Icon>
+      </Fab>
     </div>
   );
 }
