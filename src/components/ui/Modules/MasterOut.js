@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import { Card, Icon, IconButton } from "@material-ui/core";
 
 import Draggable from "react-draggable";
-
 import Jack from "./Components/Jack";
 
 function MasterOut(props) {

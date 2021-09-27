@@ -13,28 +13,40 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function Envelope(props) {
-  const [linePoints, setLinePoints] = useState([
-    [0, 0],
-    [0, 0],
-    [0, 0],
-  ]);
+  const [hasBeenTriggered, setHasBeenTriggered] = useState(false);
 
-  const updateCurve = () => {
-    let totalTime =
-      props.nodes[0].attack + props.nodes[0].decay + props.nodes[0].release + 2;
+  const updateCurve = async () => {
+    var canvas = document.getElementById(`envelope-canvas-${props.module.id}`);
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var canvasWidth = canvas.width;
+    var canvasHeight = canvas.height;
 
-    let point1 = [(props.nodes[0].attack / totalTime) * 144, 0];
-    let point2 = [
-      ((props.nodes[0].attack + props.nodes[0].decay) / totalTime) * 144,
-      96 - props.nodes[0].sustain * 96,
-    ];
+    //find first phase
 
-    let point3 = [
-      144 - (props.nodes[0].release / totalTime) * 144,
-      96 - props.nodes[0].sustain * 96,
-    ];
+    ctx.strokeStyle = "#3f51b5";
+    ctx.lineWidth = 2;
 
-    setLinePoints([point1, point2, point3]);
+    ctx.beginPath();
+    ctx.moveTo(0, canvasHeight);
+
+    let curve = await props.nodes[0].asArray(canvasWidth);
+
+    curve.map((e, i) => {
+      i === 0 && ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      ctx.lineTo(i + 1, canvasHeight - e * canvasHeight, 1, 1);
+    });
+
+    ctx.stroke();
+  };
+
+  const triggerOn = () => {
+    props.nodes[2].value = 1;
+  };
+
+  const triggerOff = () => {
+    props.nodes[2].value = 0;
   };
 
   useEffect(() => {
@@ -48,12 +60,29 @@ function Envelope(props) {
 
   useEffect(() => {
     setInterval(() => {
-      if (props.nodes[2].getValue() >= -3 && props.nodes[0].value === 0) {
-        props.nodes[0].cancel();
-        props.nodes[0].triggerAttackRelease();
+      if (props.nodes[2].value === 1 && !hasBeenTriggered) {
+        props.nodes[0].triggerAttack();
+        setHasBeenTriggered(true);
+      } else if (props.nodes[2].value === 0 && hasBeenTriggered) {
+        props.nodes[0].triggerRelease();
+        setHasBeenTriggered(false);
       }
-    }, 16);
+    }, 1);
   }, []);
+
+  /*  useEffect(() => {
+    setInterval(() => {
+      console.log(props.nodes[2].value, props.nodes[2].overridden);
+    }, 1000);
+  }, []); */
+
+  useEffect(() => {
+    console.log(hasBeenTriggered);
+  }, [hasBeenTriggered]);
+
+  useEffect(() => {
+    console.log(props.nodes[2].value);
+  }, [props.nodes[2].value]);
 
   return (
     <Draggable cancel=".module-jack, .MuiSlider-root, .module-knob">
@@ -70,14 +99,12 @@ function Envelope(props) {
 
         <span></span>
 
-        <svg height={96} width={144} style={{ overflow: "visible" }}>
-          <path
-            stroke="#3f51b5"
-            stroke-width="4px"
-            fill="transparent"
-            d={`M 0 100 L ${linePoints[0][0]} ${linePoints[0][1]} L ${linePoints[1][0]} ${linePoints[1][1]} L ${linePoints[2][0]} ${linePoints[2][1]} L 144 100`}
-          />
-        </svg>
+        <canvas
+          height={96}
+          width={144}
+          id={"envelope-canvas-" + props.module.id}
+        />
+
         <div className="break" />
 
         <Knob
@@ -86,6 +113,7 @@ function Envelope(props) {
           step={0.2}
           max={10}
           defaultValue={props.nodes[0].attack}
+          mousePosition={props.mousePosition}
           onChange={(v) => {
             props.nodes[0].set({ attack: v });
           }}
@@ -96,6 +124,7 @@ function Envelope(props) {
           step={0.1}
           max={5}
           defaultValue={props.nodes[0].decay}
+          mousePosition={props.mousePosition}
           onChange={(v) => {
             props.nodes[0].set({ decay: v });
           }}
@@ -106,6 +135,7 @@ function Envelope(props) {
           step={0.05}
           max={1}
           defaultValue={props.nodes[0].sustain}
+          mousePosition={props.mousePosition}
           onChange={(v) => {
             props.nodes[0].set({ sustain: v });
           }}
@@ -116,6 +146,7 @@ function Envelope(props) {
           step={0.2}
           max={10}
           defaultValue={props.nodes[0].release}
+          mousePosition={props.mousePosition}
           onChange={(v) => {
             props.nodes[0].set({ release: v });
           }}
@@ -123,10 +154,7 @@ function Envelope(props) {
 
         <div className="break" />
 
-        <button
-          onMouseDown={() => props.nodes[0].triggerAttack()}
-          onMouseUp={() => props.nodes[0].triggerRelease()}
-        >
+        <button onMouseDown={triggerOn} onMouseUp={triggerOff}>
           Trigger
         </button>
         <div className="break" />
@@ -140,7 +168,8 @@ function Envelope(props) {
         />
 
         <Jack
-          type="in"
+          type="mod"
+          label="Trigger"
           index={2}
           module={props.module}
           setDrawingLine={props.setDrawingLine}

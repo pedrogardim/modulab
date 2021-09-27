@@ -33,6 +33,7 @@ import Envelope from "./Modules/Envelope";
 import ChMixer from "./Modules/ChMixer";
 import Oscilloscope from "./Modules/Oscilloscope";
 import Analyzer from "./Modules/Analyzer";
+import Trigger from "./Modules/Trigger";
 
 import ActionConfirm from "./Dialogs/ActionConfirm";
 
@@ -109,7 +110,7 @@ function Workspace(props) {
       let meter = new Tone.Waveform(1024);
       nodes = [meter];
     } else if (type === "Analyzer") {
-      let meter = new Tone.FFT(512);
+      let meter = new Tone.FFT(4096);
       nodes = [meter];
     } else if (type === "Filter") {
       let gain = new Tone.Limiter(0);
@@ -118,8 +119,9 @@ function Workspace(props) {
     } else if (type === "Envelope") {
       let gain = new Tone.Gain();
       let envelope = new Tone.AmplitudeEnvelope().connect(gain);
-      let triggerMeter = new Tone.Meter();
-      nodes = [envelope, gain, triggerMeter];
+      let trigger = new Tone.Signal({ units: "normalRange" });
+
+      nodes = [envelope, gain, trigger];
     } else if (type === "ChMixer") {
       let master = new Tone.Channel(-12);
       let ch1 = new Tone.Channel(0).connect(master);
@@ -128,6 +130,10 @@ function Workspace(props) {
       let ch4 = new Tone.Channel(0).connect(master);
 
       nodes = [master, ch1, ch2, ch3, ch4];
+    } else if (type === "Trigger") {
+      let gain = new Tone.Signal({ units: "normalRange" });
+
+      nodes = [gain];
     }
 
     setNodes((prev) => {
@@ -171,29 +177,21 @@ function Workspace(props) {
         },
       ]);
 
-    if (connection.type === "out" && connection.target.type === "in") {
-      nodes[connection.module][connection.index].connect(
-        nodes[connection.target.module][connection.target.index]
-      );
-      drawLine();
-    }
-    if (connection.type === "in" && connection.target.type === "out") {
-      nodes[connection.target.module][connection.target.index].connect(
-        nodes[connection.module][connection.index]
-      );
-      drawLine();
-    }
+    let originNode = nodes[connection.module][connection.index];
+    let targetNode = nodes[connection.target.module][connection.target.index];
 
-    if (connection.type === "out" && connection.target.type === "mod") {
-      nodes[connection.module][connection.index].connect(
-        nodes[connection.target.module][connection.target.index]
-      );
+    if (
+      connection.type === "out" &&
+      (connection.target.type === "in" || connection.target.type === "mod")
+    ) {
+      originNode.connect(targetNode);
       drawLine();
     }
-    if (connection.type === "mod" && connection.target.type === "out") {
-      nodes[connection.target.module][connection.target.index].connect(
-        nodes[connection.module][connection.index]
-      );
+    if (
+      (connection.type === "in" || connection.type === "mod") &&
+      connection.target.type === "out"
+    ) {
+      targetNode.connect(originNode);
       drawLine();
     }
   };
@@ -279,9 +277,12 @@ function Workspace(props) {
     Tone.start();
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseDown = (e) => {
     setMousePosition([e.pageX, e.pageY]);
-    drawingLine && drawingLine.line && drawingLine.line.position();
+  };
+
+  const handleMouseMove = (e) => {
+    mousePosition && setMousePosition([e.pageX, e.pageY]);
   };
 
   const handleMouseUp = () => {
@@ -290,6 +291,7 @@ function Workspace(props) {
     }
     drawingLine && drawingLine.line && drawingLine.line.remove();
     setDrawingLine(null);
+    setMousePosition(null);
   };
 
   useEffect(() => {
@@ -334,8 +336,13 @@ function Workspace(props) {
   }, [nodes]);
 
   useEffect(() => {
-    //console.log(drawingLine);
-  }, [drawingLine]);
+    mousePosition &&
+      drawingLine &&
+      drawingLine.line &&
+      drawingLine.line.position();
+
+    //console.log(mousePosition);
+  }, [mousePosition]);
 
   return (
     <div
@@ -345,6 +352,7 @@ function Workspace(props) {
         display: props.hidden ? "none" : "flex",
       }}
       onKeyDown={handleKeyDown}
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
@@ -361,6 +369,7 @@ function Workspace(props) {
           module.type === "MasterOut" ? (
             <MasterOut
               module={module}
+              mousePosition={mousePosition}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -368,6 +377,7 @@ function Workspace(props) {
           ) : module.type === "Oscillator" ? (
             <Oscillator
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -376,6 +386,7 @@ function Workspace(props) {
           ) : module.type === "NoiseGenerator" ? (
             <NoiseGenerator
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -384,6 +395,7 @@ function Workspace(props) {
           ) : module.type === "LFO" ? (
             <LFO
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -392,6 +404,7 @@ function Workspace(props) {
           ) : module.type === "Oscilloscope" ? (
             <Oscilloscope
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -400,6 +413,7 @@ function Workspace(props) {
           ) : module.type === "Analyzer" ? (
             <Analyzer
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -408,6 +422,7 @@ function Workspace(props) {
           ) : module.type === "Filter" ? (
             <Filter
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -416,6 +431,7 @@ function Workspace(props) {
           ) : module.type === "Envelope" ? (
             <Envelope
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -424,6 +440,16 @@ function Workspace(props) {
           ) : module.type === "ChMixer" ? (
             <ChMixer
               nodes={nodes[module.id]}
+              mousePosition={mousePosition}
+              module={module}
+              setDrawingLine={setDrawingLine}
+              drawingLine={drawingLine}
+              removeModule={() => removeModule(module.id)}
+            />
+          ) : module.type === "Trigger" ? (
+            <Trigger
+              nodes={nodes[module.id]}
+              mousePosition={mousePosition}
               module={module}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
@@ -464,6 +490,7 @@ function Workspace(props) {
             "Envelope",
             "ChMixer",
             "NoiseGenerator",
+            "Trigger",
             "Oscilloscope",
             "Analyzer",
           ].map((e, i) => (
@@ -500,10 +527,15 @@ function Workspace(props) {
         }
       />
 
-      <div
-        id="cursor-pixel"
-        style={{ left: mousePosition[0], top: mousePosition[1] }}
-      />
+      {
+        <div
+          id="cursor-pixel"
+          style={{
+            left: mousePosition && mousePosition[0],
+            top: mousePosition && mousePosition[1],
+          }}
+        />
+      }
 
       <Fab
         style={{ position: "absolute", bottom: 16, right: 16 }}

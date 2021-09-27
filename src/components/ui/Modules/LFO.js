@@ -59,6 +59,7 @@ function LFO(props) {
           onChange={(v) => {
             props.nodes[0].set({ frequency: v });
           }}
+          mousePosition={props.mousePosition}
         />
         <div className="break" />
         <Select

@@ -36,6 +36,7 @@ function NoiseGenerator(props) {
             props.nodes[0].playbackRate = v;
           }}
           color="lightgray"
+          mousePosition={props.mousePosition}
         />
         <div className="break" />
         <Select

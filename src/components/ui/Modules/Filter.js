@@ -27,6 +27,7 @@ function Filter(props) {
         </IconButton>
         <Knob
           exp
+          logScale
           size={80}
           min={20}
           step={1}
@@ -36,6 +37,7 @@ function Filter(props) {
           onChange={(v) => {
             props.nodes[0].set({ frequency: v });
           }}
+          mousePosition={props.mousePosition}
         />
         <div className="break" />
 
@@ -48,6 +50,7 @@ function Filter(props) {
           onChange={(v) => {
             props.nodes[0].set({ Q: v });
           }}
+          mousePosition={props.mousePosition}
         />
 
         <div className="break" />

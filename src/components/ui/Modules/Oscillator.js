@@ -27,6 +27,7 @@ function Oscillator(props) {
         </IconButton>
         <Knob
           exp
+          logScale
           size={64}
           min={20}
           step={1}
@@ -35,6 +36,7 @@ function Oscillator(props) {
           onChange={(v) => {
             props.nodes[0].set({ frequency: v });
           }}
+          mousePosition={props.mousePosition}
         />
         <div className="break" />
         <Select
@@ -65,14 +67,16 @@ function Oscillator(props) {
 
         <Knob
           exp
+          label={"Mod Depth"}
           size={36}
           min={0}
           step={1}
-          max={100000}
+          max={20000}
           defaultValue={props.nodes[1].gain.value}
           onChange={(v) => {
             props.nodes[1].set({ gain: v });
           }}
+          mousePosition={props.mousePosition}
         />
       </Card>
     </Draggable>

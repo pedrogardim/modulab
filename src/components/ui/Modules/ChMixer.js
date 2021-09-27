@@ -48,6 +48,7 @@ function ChMixer(props) {
 
         {[1, 2, 3, 4, 0].map((e) => (
           <Knob
+            mousePosition={props.mousePosition}
             type={e === 0 ? "out" : "in"}
             step={0.05}
             min={-1}
