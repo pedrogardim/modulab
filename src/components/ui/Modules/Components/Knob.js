@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import LeaderLine from "leader-line-new";
 
-import { Paper, Slider } from "@material-ui/core";
+import { Paper, Slider, TextField } from "@material-ui/core";
 
 import "./Knob.css";
 
@@ -12,6 +12,8 @@ function Knob(props) {
   const knobRef = useRef(null);
 
   const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [input, setInput] = useState(false);
   const [value, setValue] = useState(props.defaultValue);
   const [angle, setAngle] = useState(
     ((props.defaultValue - props.min) / (props.max - props.min)) *
@@ -30,6 +32,12 @@ function Knob(props) {
       props.mousePosition[0] - centerPosition[0],
       centerPosition[1] - props.mousePosition[1],
     ];
+
+    if (
+      Math.abs(deltaXY[0]) < props.size / 2 &&
+      Math.abs(deltaXY[1]) < props.size / 2
+    )
+      return;
 
     let angle = (Math.atan2(...deltaXY) * 180) / Math.PI;
 
@@ -54,6 +62,20 @@ function Knob(props) {
     setValue(value);
   };
 
+  const handleValueInput = (v) => {
+    //let val = v;
+    let val = v < props.min ? props.min : v > props.max ? props.max : v;
+
+    setValue(val);
+
+    let angle =
+      ((val - props.min) / (props.max - props.min)) * (135 - -135) + -135;
+
+    //angle = props.logScale ? logToLinearScale(val, -135, 135) : angle;
+
+    setAngle(Math.floor(angle));
+  };
+
   useEffect(() => {
     props.onChange(value);
   }, [value]);
@@ -62,6 +84,10 @@ function Knob(props) {
     !props.mousePosition && setOpen(false);
     props.mousePosition && open && handleKnobMove();
   }, [props.mousePosition]);
+  /* 
+  useEffect(() => {
+    console.log(input);
+  }, [input]); */
 
   return (
     <Paper
@@ -72,9 +98,12 @@ function Knob(props) {
         backgroundColor: props.color ? props.color : "#3f51b5",
       }}
       onMouseDown={() => setOpen(true)}
+      onClick={(e) => e.detail === 2 && setInput(true)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       ref={knobRef}
     >
-      {open && (
+      {(open || hovered) && !props.hideValue && (
         <div className="knob-value-label">
           {value.toString().split(".")[1] &&
           value.toString().split(".")[1].length > 2
@@ -90,6 +119,33 @@ function Knob(props) {
       >
         <div />
       </div>
+
+      {input && (
+        <TextField
+          autoFocus
+          style={{
+            position: "absolute",
+            minWidth: "100%",
+            top: 0,
+            backgroundColor: "white",
+            outline: "black",
+            textAlign: "center",
+          }}
+          defaultValue={value}
+          type="number"
+          inputProps={{ min: props.min, max: props.max, step: props.step }}
+          onBlur={(e) => {
+            handleValueInput(e.target.value);
+            setInput(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              handleValueInput(e.target.value);
+              setInput(false);
+            }
+          }}
+        />
+      )}
       <span className="module-jack-lbl">{props.label && props.label}</span>
     </Paper>
   );

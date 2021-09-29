@@ -65,7 +65,7 @@ function Jack(props) {
         borderColor:
           props.type === "in"
             ? "rgb(179, 120, 31)"
-            : props.type.includes("mod")
+            : props.type.includes("mod") || props.type.includes("trigger")
             ? "grey"
             : "rgb(32, 115, 192)",
       }}

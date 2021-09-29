@@ -13,9 +13,7 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function Envelope(props) {
-  const [hasBeenTriggered, setHasBeenTriggered] = useState(false);
-
-  const updateCurve = async () => {
+  const updateCurve = (curve) => {
     var canvas = document.getElementById(`envelope-canvas-${props.module.id}`);
     if (!canvas) return;
     var ctx = canvas.getContext("2d");
@@ -27,30 +25,28 @@ function Envelope(props) {
     ctx.strokeStyle = "#3f51b5";
     ctx.lineWidth = 2;
 
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
     ctx.beginPath();
     ctx.moveTo(0, canvasHeight);
 
-    let curve = await props.nodes[0].asArray(canvasWidth);
-
-    curve.map((e, i) => {
-      i === 0 && ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-      ctx.lineTo(i + 1, canvasHeight - e * canvasHeight, 1, 1);
-    });
+    curve.map((e, i) =>
+      ctx.lineTo(i + 1, canvasHeight - e * canvasHeight, 1, 1)
+    );
 
     ctx.stroke();
   };
-
+  /* 
   const triggerOn = () => {
     props.nodes[2].value = 1;
   };
 
   const triggerOff = () => {
     props.nodes[2].value = 0;
-  };
+  }; */
 
   useEffect(() => {
-    updateCurve();
+    props.nodes[0].asArray(144).then((r) => updateCurve(r));
   }, [
     props.nodes[0].attack,
     props.nodes[0].decay,
@@ -58,32 +54,14 @@ function Envelope(props) {
     props.nodes[0].release,
   ]);
 
-  useEffect(() => {
-    setInterval(() => {
-      if (props.nodes[2].value === 1 && !hasBeenTriggered) {
-        props.nodes[0].triggerAttack();
-        setHasBeenTriggered(true);
-      } else if (props.nodes[2].value === 0 && hasBeenTriggered) {
-        props.nodes[0].triggerRelease();
-        setHasBeenTriggered(false);
-      }
-    }, 1);
-  }, []);
-
-  /*  useEffect(() => {
-    setInterval(() => {
-      console.log(props.nodes[2].value, props.nodes[2].overridden);
-    }, 1000);
-  }, []); */
-
-  useEffect(() => {
-    console.log(hasBeenTriggered);
-  }, [hasBeenTriggered]);
-
-  useEffect(() => {
-    console.log(props.nodes[2].value);
-  }, [props.nodes[2].value]);
-
+  /* useEffect(() => {
+    if (props.nodes[2]) {
+      props.nodes[2].value === 1
+        ? props.nodes[0].triggerAttack()
+        : props.nodes[0].triggerRelease();
+    }
+  }, [props.nodes[2] && props.nodes[2].value]);
+ */
   return (
     <Draggable cancel=".module-jack, .MuiSlider-root, .module-knob">
       <Card
@@ -154,7 +132,10 @@ function Envelope(props) {
 
         <div className="break" />
 
-        <button onMouseDown={triggerOn} onMouseUp={triggerOff}>
+        <button
+          onMouseDown={() => props.nodes[0].triggerAttack()}
+          onMouseUp={() => props.nodes[0].triggerRelease()}
+        >
           Trigger
         </button>
         <div className="break" />
@@ -168,7 +149,7 @@ function Envelope(props) {
         />
 
         <Jack
-          type="mod"
+          type="trigger"
           label="Trigger"
           index={2}
           module={props.module}

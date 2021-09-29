@@ -119,9 +119,8 @@ function Workspace(props) {
     } else if (type === "Envelope") {
       let gain = new Tone.Gain();
       let envelope = new Tone.AmplitudeEnvelope().connect(gain);
-      let trigger = new Tone.Signal({ units: "normalRange" });
 
-      nodes = [envelope, gain, trigger];
+      nodes = [envelope, gain, null];
     } else if (type === "ChMixer") {
       let master = new Tone.Channel(-12);
       let ch1 = new Tone.Channel(0).connect(master);
@@ -131,9 +130,9 @@ function Workspace(props) {
 
       nodes = [master, ch1, ch2, ch3, ch4];
     } else if (type === "Trigger") {
-      let gain = new Tone.Signal({ units: "normalRange" });
+      let signal = new Tone.Signal({ units: "normalRange" });
 
-      nodes = [gain];
+      nodes = [signal];
     }
 
     setNodes((prev) => {
@@ -192,6 +191,31 @@ function Workspace(props) {
       connection.target.type === "out"
     ) {
       targetNode.connect(originNode);
+      drawLine();
+    }
+    if (
+      connection.type === "trigger" &&
+      connection.target.type === "triggerout"
+    ) {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        newNodes[connection.target.module][
+          newNodes[connection.target.module].length
+        ] = newNodes[connection.module][0];
+        return newNodes;
+      });
+      drawLine();
+    }
+    if (
+      connection.target.type === "trigger" &&
+      connection.type === "triggerout"
+    ) {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        newNodes[connection.module][newNodes[connection.module].length] =
+          newNodes[connection.target.module][0];
+        return newNodes;
+      });
       drawLine();
     }
   };
@@ -296,13 +320,10 @@ function Workspace(props) {
 
   useEffect(() => {
     //resetWorkspace();
-    Tone.Transport.loop = true;
-    Tone.Transport.loopStart = 0;
 
     let session = {
       description: "No description",
       tags: ["musa"],
-      bpm: Tone.Transport.bpm.value,
       modules: modules,
     };
 
@@ -317,6 +338,9 @@ function Workspace(props) {
 
   useEffect(() => {
     addModule("MasterOut");
+    // addModule("Envelope");
+    // addModule("Trigger");
+
     return () => {
       console.log("transport cleared");
     };

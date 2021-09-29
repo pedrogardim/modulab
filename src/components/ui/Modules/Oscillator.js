@@ -51,13 +51,6 @@ function Oscillator(props) {
         <div className="break" />
 
         <Jack
-          type="out"
-          index={0}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-        <Jack
           type="mod"
           index={1}
           module={props.module}
@@ -66,7 +59,7 @@ function Oscillator(props) {
         />
 
         <Knob
-          exp
+          hideValue
           label={"Mod Depth"}
           size={36}
           min={0}
@@ -77,6 +70,14 @@ function Oscillator(props) {
             props.nodes[1].set({ gain: v });
           }}
           mousePosition={props.mousePosition}
+        />
+
+        <Jack
+          type="out"
+          index={0}
+          module={props.module}
+          setDrawingLine={props.setDrawingLine}
+          drawingLine={props.drawingLine}
         />
       </Card>
     </Draggable>
