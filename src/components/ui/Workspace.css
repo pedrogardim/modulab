@@ -80,6 +80,10 @@
   height: 0px;
   width: 100%;
 }
+
+.ws-deleting-line:hover {
+  filter: brightness(2);
+}
 /* 
 .leader-line-line-path {
   pointer-events: all;

@@ -46,6 +46,8 @@ function Connection(props) {
     <svg
       height={attrib.height}
       width={attrib.width}
+      onClick={props.remove}
+      className={props.isDeleting && "ws-deleting-line"}
       style={{
         position: "absolute",
         top: 0,
@@ -53,7 +55,7 @@ function Connection(props) {
         transform: `translate(${attrib.x}px,${attrib.y}px)`,
         overflow: "visible",
         boxShadow: "0px -0px 10000px transparent",
-        pointerEvents: "none",
+        pointerEvents: !props.isDeleting && "none",
       }}
     >
       <path

@@ -64,7 +64,21 @@ function Trigger(props) {
   }, [clocktime, holdTime]);
 
   return (
-    <Draggable cancel=".module-jack, .module-knob">
+    <Draggable
+      defaultPostion={{ x: props.module.x, y: props.module.y }}
+      onStop={(e, data) =>
+        props.setModules((prev) => {
+          let newModules = [...prev];
+          newModules[props.index] = {
+            ...newModules[props.index],
+            x: data.x,
+            y: data.y,
+          };
+          return newModules;
+        })
+      }
+      cancel=".module-jack, .module-knob"
+    >
       <Card
         className="module"
         style={{

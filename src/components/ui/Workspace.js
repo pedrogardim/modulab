@@ -68,7 +68,7 @@ function Workspace(props) {
 
   const [optionsMenu, setOptionsMenu] = useState(false);
 
-  const [deleting, setDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const sessionKey = useParams().key;
   const autoSaverTime = 5 * 60 * 1000; //5min
@@ -155,8 +155,6 @@ function Workspace(props) {
   };
 
   const handleConnect = (connection) => {
-    setConnections((prev) => [...prev, connection]);
-
     let originNode = nodes[connection.module][connection.index];
     let targetNode = nodes[connection.target.module][connection.target.index];
 
@@ -165,14 +163,12 @@ function Workspace(props) {
       (connection.target.type === "in" || connection.target.type === "mod")
     ) {
       originNode.connect(targetNode);
-    }
-    if (
+    } else if (
       (connection.type === "in" || connection.type === "mod") &&
       connection.target.type === "out"
     ) {
       targetNode.connect(originNode);
-    }
-    if (
+    } else if (
       connection.type === "trigger" &&
       connection.target.type === "triggerout"
     ) {
@@ -183,8 +179,7 @@ function Workspace(props) {
         ] = newNodes[connection.module][0];
         return newNodes;
       });
-    }
-    if (
+    } else if (
       connection.target.type === "trigger" &&
       connection.type === "triggerout"
     ) {
@@ -194,10 +189,40 @@ function Workspace(props) {
           newNodes[connection.target.module][0];
         return newNodes;
       });
-    }
+    } else return;
+    setConnections((prev) => [...prev, connection]);
   };
 
-  const removeConnection = (connection) => {};
+  const removeConnection = (connIndex) => {
+    let connection = connections[connIndex];
+    let originNode = nodes[connection.module][connection.index];
+    let targetNode = nodes[connection.target.module][connection.target.index];
+
+    if (connection.type === "out") {
+      originNode.disconnect(targetNode);
+    }
+    if (connection.type === "in") {
+      targetNode.disconnect(originNode);
+    }
+    if (connection.type === "trigger") {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        delete newNodes[connection.target.module][
+          newNodes[connection.target.module].length
+        ];
+        return newNodes;
+      });
+    }
+    if (connection.type === "triggerout") {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        delete newNodes[connection.module][newNodes[connection.module].length];
+        return newNodes;
+      });
+    }
+
+    setConnections((prev) => prev.filter((e, i) => i !== connIndex));
+  };
 
   const startRecording = () => {
     setIsRecording(true);
@@ -291,7 +316,12 @@ function Workspace(props) {
 
   const handleKeyDown = (e) => {
     Tone.start();
-    if (e.key === "Control") setDeleting(true);
+    if (e.key === "Alt") setIsDeleting(true);
+  };
+
+  const handleKeyUp = (e) => {
+    Tone.start();
+    if (e.key === "Alt") setIsDeleting(false);
   };
 
   const handleMouseDown = (e) => {
@@ -329,7 +359,7 @@ function Workspace(props) {
   }, [props.user, props.session, sessionKey]);
 
   useEffect(() => {
-    addModule("MasterOut");
+    if (modules.length === 0) addModule("MasterOut");
     // addModule("Envelope");
     // addModule("Trigger");
 
@@ -347,6 +377,10 @@ function Workspace(props) {
   }, [nodes]);
 
   useEffect(() => {
+    console.log(modules);
+  }, [modules]);
+
+  useEffect(() => {
     /* mousePosition &&
       drawingLine &&
       drawingLine.line &&
@@ -360,9 +394,11 @@ function Workspace(props) {
       tabIndex={0}
       style={{
         display: props.hidden ? "none" : "flex",
+        cursor: isDeleting && "not-allowed",
         /*  transform: "scale(0.5)", */
       }}
       onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -382,6 +418,8 @@ function Workspace(props) {
               module={module}
               mousePosition={mousePosition}
               setDrawingLine={setDrawingLine}
+              index={moduleIndex}
+              setModules={setModules}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
             />
@@ -390,6 +428,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -399,6 +439,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -408,6 +450,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -417,6 +461,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -426,6 +472,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -435,6 +483,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -444,6 +494,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -453,6 +505,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -462,6 +516,8 @@ function Workspace(props) {
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
+              index={moduleIndex}
+              setModules={setModules}
               setDrawingLine={setDrawingLine}
               drawingLine={drawingLine}
               removeModule={() => removeModule(module.id)}
@@ -541,7 +597,12 @@ function Workspace(props) {
       }
 
       {connections.map((e, i) => (
-        <Connection connection={e} key={i} />
+        <Connection
+          isDeleting={isDeleting}
+          connection={e}
+          key={i}
+          remove={() => removeConnection(i)}
+        />
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
