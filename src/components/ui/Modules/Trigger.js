@@ -131,7 +131,10 @@ function Trigger(props) {
         </button>
         <div className="break" />
 
-        <button onMouseDown={() => triggerOn()} onMouseUp={() => triggerOff()}>
+        <button
+          onMouseDown={() => triggerOn(Tone.now())}
+          onMouseUp={() => triggerOff()}
+        >
           Trigger
         </button>
         <Jack

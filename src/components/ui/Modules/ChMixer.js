@@ -13,6 +13,14 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function ChMixer(props) {
+  const [mixerParams, setMixerParams] = useState(
+    [1, 2, 3, 4, 0].map((e) => ({
+      muted: props.nodes[e].mute,
+      volume: props.nodes[e].volume.value,
+      pan: props.nodes[e].pan.value,
+      id: e,
+    }))
+  );
   return (
     <Draggable
       defaultPostion={{ x: props.module.x, y: props.module.y }}
@@ -40,17 +48,22 @@ function ChMixer(props) {
         <IconButton className="close-btn" onClick={props.removeModule}>
           <Icon>close</Icon>
         </IconButton>
-        {[1, 2, 3, 4, 0].map((e) => (
+        {mixerParams.map((e, i) => (
           <Slider
             style={{
               height: 150,
-              filter: props.nodes[e].muted && "saturate(0)",
-              pointerEvents: props.nodes[e].muted && "none",
+              filter: e.muted && "saturate(0)",
+              pointerEvents: e.muted && "none",
             }}
             orientation="vertical"
-            value={parseInt(props.nodes[e].volume.value)}
+            value={parseInt(e.volume)}
             onChange={(_, v) => {
-              props.nodes[e].volume.value = v;
+              setMixerParams((prev) => {
+                let par = [...prev];
+                par[i].volume = v;
+                return par;
+              });
+              props.nodes[e.id].volume.value = v;
             }}
             color={e === 0 ? "secondary" : "primary"}
             min={-61}
@@ -60,28 +73,39 @@ function ChMixer(props) {
         ))}
         <div className="break" style={{ height: 8 }} />
 
-        {[1, 2, 3, 4, 0].map((e) => (
+        {mixerParams.map((e, i) => (
           <Knob
             mousePosition={props.mousePosition}
             type={e === 0 ? "out" : "in"}
             step={0.05}
             min={-1}
             max={1}
-            defaultValue={props.nodes[0].pan.value}
+            defaultValue={e.pan}
             size={24}
             onChange={(v) => {
-              props.nodes[e].pan.value = v;
+              setMixerParams((prev) => {
+                let par = [...prev];
+                par[i].pan = v;
+                return par;
+              });
+              props.nodes[e.id].pan.value = v;
             }}
           />
         ))}
 
         <div className="break" style={{ height: 8 }} />
 
-        {[1, 2, 3, 4, 0].map((e) => (
+        {mixerParams.map((e, i) => (
           <Button
-            onClick={() => {
-              props.nodes[e].mute = !props.nodes[e].muted;
-            }}
+            onClick={() =>
+              setMixerParams((prev) => {
+                let par = [...prev];
+                par[i].muted = !par[i].muted;
+                props.nodes[e.id].mute = par[i].muted;
+                return par;
+              })
+            }
+            color={mixerParams[i].muted ? "secondary" : "primary"}
           >
             M
           </Button>

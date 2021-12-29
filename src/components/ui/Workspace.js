@@ -150,7 +150,7 @@ function Workspace(props) {
     setConnections((prev) =>
       prev.filter((e) => e.module !== id && e.target.module !== id)
     );
-    nodes[id].forEach((e) => e.dispose());
+    nodes[id].forEach((e) => e && e.dispose && e.dispose());
     setModules((prev) => prev.filter((e) => e.id !== id));
   };
 

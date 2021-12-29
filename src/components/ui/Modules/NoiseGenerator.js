@@ -71,13 +71,13 @@ function NoiseGenerator(props) {
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}
         />
-        <Jack
+        {/* <Jack
           type="mod"
           index={1}
           module={props.module}
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}
-        />
+        /> */}
       </Card>
     </Draggable>
   );

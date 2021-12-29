@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
-import LeaderLine from "leader-line-new";
 
 import { Paper, Slider, TextField } from "@material-ui/core";
 
@@ -14,7 +13,10 @@ function Knob(props) {
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [input, setInput] = useState(false);
+
   const [value, setValue] = useState(props.defaultValue);
+  const [valueAtClick, setValueAtClick] = useState(0);
+
   const [angle, setAngle] = useState(
     ((props.defaultValue - props.min) / (props.max - props.min)) *
       (135 - -135) -
@@ -34,32 +36,56 @@ function Knob(props) {
     ];
 
     if (
+      props.rotatory &&
       Math.abs(deltaXY[0]) < props.size / 2 &&
       Math.abs(deltaXY[1]) < props.size / 2
     )
       return;
 
-    let angle = (Math.atan2(...deltaXY) * 180) / Math.PI;
+    if (props.rotatory) {
+      let angle = (Math.atan2(...deltaXY) * 180) / Math.PI;
 
-    angle = angle >= 135 ? 135 : angle < -135 ? -135 : angle;
+      angle = angle >= 135 ? 135 : angle < -135 ? -135 : angle;
 
-    setAngle(Math.floor(angle));
+      setAngle(Math.floor(angle));
 
-    let value =
-      ((angle - -135) / (135 - -135)) * (props.max - props.min) + props.min;
+      let value =
+        ((angle - -135) / (135 - -135)) * (props.max - props.min) + props.min;
 
-    value = props.logScale
-      ? props.min === 0
-        ? linearToLogScale(value, props.min + 1, props.max + 1) - 1
-        : linearToLogScale(value, props.min, props.max)
-      : value;
-
-    value =
-      typeof props.step === "number"
-        ? Math.round(value / props.step) * props.step
+      value = props.logScale
+        ? props.min === 0
+          ? linearToLogScale(value, props.min + 1, props.max + 1) - 1
+          : linearToLogScale(value, props.min, props.max)
         : value;
 
-    setValue(value);
+      value =
+        typeof props.step === "number"
+          ? Math.round(value / props.step) * props.step
+          : value;
+
+      setValue(value);
+    } else {
+      let valueDelta =
+        (deltaXY[1] / (window.innerHeight / 2)) * (props.max - props.min);
+
+      let value = valueAtClick + valueDelta;
+
+      value =
+        value < props.min ? props.min : value > props.max ? props.max : value;
+
+      /* value = props.logScale
+        ? props.min === 0
+          ? linearToLogScale(value, props.min + 1, props.max + 1) - 1
+          : linearToLogScale(value, props.min, props.max)
+        : value; */
+
+      value =
+        typeof props.step === "number"
+          ? Math.round(value / props.step) * props.step
+          : value;
+
+      setValue(value);
+    }
   };
 
   const handleValueInput = (v) => {
@@ -74,15 +100,26 @@ function Knob(props) {
     //angle = props.logScale ? logToLinearScale(val, -135, 135) : angle;
 
     setAngle(Math.floor(angle));
+    setOpen(false);
   };
 
   useEffect(() => {
     props.onChange(value);
+    if (!props.rotatory)
+      setAngle(
+        ((value - props.min) / (props.max - props.min)) * (135 - -135) - 135
+      );
   }, [value]);
 
   useEffect(() => {
+    if (!props.rotatory) setValueAtClick(value);
+    if (!open && typeof value === "number" && props.onChangeCommited)
+      props.onChangeCommited(value);
+  }, [open]);
+
+  useEffect(() => {
     !props.mousePosition && setOpen(false);
-    props.mousePosition && open && handleKnobMove();
+    if (props.mousePosition && open) handleKnobMove();
   }, [props.mousePosition]);
   /* 
   useEffect(() => {
@@ -96,6 +133,9 @@ function Knob(props) {
         height: props.size,
         width: props.size,
         backgroundColor: props.color ? props.color : "#3f51b5",
+        filter: props.disabled && "saturate(0)",
+        pointerEvents: props.disabled && "none",
+        ...props.style,
       }}
       onMouseDown={() => setOpen(true)}
       onClick={(e) => e.detail === 2 && setInput(true)}
