@@ -80,3 +80,11 @@
   height: 0px;
   width: 100%;
 }
+/* 
+.leader-line-line-path {
+  pointer-events: all;
+}
+
+.leader-line-line-path:hover {
+  stroke: red !important;
+} */

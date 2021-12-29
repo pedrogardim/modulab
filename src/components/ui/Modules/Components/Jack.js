@@ -14,16 +14,7 @@ function Jack(props) {
       module: props.module.id,
       index: props.index,
       type: props.type,
-      line: new LeaderLine(
-        jackRef.current.children[0],
-        document.getElementById("cursor-pixel"),
-        {
-          startPlug: "disc",
-          endPlug: "disc",
-          startSocketGravity: [0, 200],
-          endSocketGravity: [0, 200],
-        }
-      ),
+      color: "#" + (Math.random().toString(16) + "00000").slice(2, 8),
     });
   };
 
@@ -33,16 +24,14 @@ function Jack(props) {
       (props.drawingLine.module !== props.module.id ||
         props.drawingLine.index !== props.index)
     ) {
-      props.setDrawingLine((prev) => {
-        return {
-          ...prev,
-          target: {
-            module: props.module.id,
-            index: props.index,
-            type: props.type,
-          },
-        };
-      });
+      props.setDrawingLine((prev) => ({
+        ...prev,
+        target: {
+          module: props.module.id,
+          index: props.index,
+          type: props.type,
+        },
+      }));
     }
   };
 

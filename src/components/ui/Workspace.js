@@ -25,7 +25,6 @@ import LoadingScreen from "./LoadingScreen";
 
 import Oscillator from "./Modules/Oscillator";
 import NoiseGenerator from "./Modules/NoiseGenerator";
-
 import MasterOut from "./Modules/MasterOut";
 import LFO from "./Modules/LFO";
 import Filter from "./Modules/Filter";
@@ -36,6 +35,8 @@ import Analyzer from "./Modules/Analyzer";
 import Trigger from "./Modules/Trigger";
 
 import ActionConfirm from "./Dialogs/ActionConfirm";
+
+import Connection from "./Connection";
 
 import "./Workspace.css";
 
@@ -48,7 +49,6 @@ function Workspace(props) {
   const [nodes, setNodes] = useState({});
 
   const [connections, setConnections] = useState([]);
-  const [connectionAnimator, setConnectionAnimator] = useState(null);
 
   const [recorder, setRecorder] = useState(new Tone.Recorder());
 
@@ -135,17 +135,13 @@ function Workspace(props) {
       nodes = [signal];
     }
 
-    setNodes((prev) => {
-      let newNodes = { ...prev };
-      newNodes[moduleId] = nodes;
-      return newNodes;
-    });
+    setNodes((prev) => ({
+      ...prev,
+      [moduleId]: nodes,
+    }));
   };
 
   const removeModule = (id) => {
-    connections.forEach(
-      (e) => (e.module === id || e.target.module === id) && e.line.remove()
-    );
     setConnections((prev) =>
       prev.filter((e) => e.module !== id && e.target.module !== id)
     );
@@ -154,27 +150,7 @@ function Workspace(props) {
   };
 
   const handleConnect = (connection) => {
-    const drawLine = () =>
-      setConnections((prev) => [
-        ...prev,
-        {
-          ...connection,
-          line: new LeaderLine(
-            document.getElementById(
-              `jack-${connection.module}-${connection.index}`
-            ).children[0],
-            document.getElementById(
-              `jack-${connection.target.module}-${connection.target.index}`
-            ).children[0],
-            {
-              startPlug: "disc",
-              endPlug: "disc",
-              startSocketGravity: [0, 200],
-              endSocketGravity: [0, 200],
-            }
-          ),
-        },
-      ]);
+    setConnections((prev) => [...prev, connection]);
 
     let originNode = nodes[connection.module][connection.index];
     let targetNode = nodes[connection.target.module][connection.target.index];
@@ -184,14 +160,12 @@ function Workspace(props) {
       (connection.target.type === "in" || connection.target.type === "mod")
     ) {
       originNode.connect(targetNode);
-      drawLine();
     }
     if (
       (connection.type === "in" || connection.type === "mod") &&
       connection.target.type === "out"
     ) {
       targetNode.connect(originNode);
-      drawLine();
     }
     if (
       connection.type === "trigger" &&
@@ -204,7 +178,6 @@ function Workspace(props) {
         ] = newNodes[connection.module][0];
         return newNodes;
       });
-      drawLine();
     }
     if (
       connection.target.type === "trigger" &&
@@ -216,7 +189,6 @@ function Workspace(props) {
           newNodes[connection.target.module][0];
         return newNodes;
       });
-      drawLine();
     }
   };
 
@@ -313,7 +285,6 @@ function Workspace(props) {
     if (drawingLine && drawingLine.target) {
       handleConnect(drawingLine);
     }
-    drawingLine && drawingLine.line && drawingLine.line.remove();
     setDrawingLine(null);
     setMousePosition(null);
   };
@@ -347,12 +318,7 @@ function Workspace(props) {
   }, []);
 
   useEffect(() => {
-    clearInterval(connectionAnimator);
-    setConnectionAnimator(
-      setInterval(() => {
-        connections.forEach((e) => e.line.position());
-      }, 16)
-    );
+    console.log(connections);
   }, [connections]);
 
   useEffect(() => {
@@ -360,11 +326,10 @@ function Workspace(props) {
   }, [nodes]);
 
   useEffect(() => {
-    mousePosition &&
+    /* mousePosition &&
       drawingLine &&
       drawingLine.line &&
-      drawingLine.line.position();
-
+      drawingLine.line.position(); */
     //console.log(mousePosition);
   }, [mousePosition]);
 
@@ -560,6 +525,12 @@ function Workspace(props) {
           }}
         />
       }
+
+      {connections.map((e) => (
+        <Connection connection={e} key={e} />
+      ))}
+
+      {drawingLine && <Connection drawing connection={drawingLine} />}
 
       <Fab
         style={{ position: "absolute", bottom: 16, right: 16 }}
