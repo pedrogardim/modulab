@@ -8,6 +8,8 @@ import LeaderLine from "leader-line-new";
 
 import { useParams } from "react-router-dom";
 
+import { encodeAudioFile } from "../../utils/audioutils";
+
 import {
   Fab,
   Icon,
@@ -51,6 +53,7 @@ function Workspace(props) {
   const [connections, setConnections] = useState([]);
 
   const [recorder, setRecorder] = useState(new Tone.Recorder());
+  const [isRecording, setIsRecording] = useState(false);
 
   const [modulePicker, setModulePicker] = useState(false);
 
@@ -64,6 +67,8 @@ function Workspace(props) {
   const [drawingLine, setDrawingLine] = useState(null);
 
   const [optionsMenu, setOptionsMenu] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
 
   const sessionKey = useParams().key;
   const autoSaverTime = 5 * 60 * 1000; //5min
@@ -195,17 +200,32 @@ function Workspace(props) {
   const removeConnection = (connection) => {};
 
   const startRecording = () => {
+    setIsRecording(true);
     recorder.start();
   };
 
-  const stopRecording = async () => {
-    const recording = await recorder.stop();
+  const stopRecording = () => {
+    setIsRecording(false);
+    recorder.stop().then((blob) => {
+      console.log(blob);
+      blob.arrayBuffer().then((arrayBuffer) => {
+        console.log(arrayBuffer);
+        Tone.getContext().rawContext.decodeAudioData(
+          arrayBuffer,
+          (audiobuffer) => {
+            console.log(audiobuffer);
+            const url = URL.createObjectURL(
+              encodeAudioFile(audiobuffer, "mp3")
+            );
+            const anchor = document.createElement("a");
+            anchor.download = "recording.mp3";
+            anchor.href = url;
+            anchor.click();
+          }
+        );
+      });
+    });
     // download the recording by creating an anchor element and blob url
-    const url = URL.createObjectURL(recording);
-    const anchor = document.createElement("a");
-    anchor.download = "recording.webm";
-    anchor.href = url;
-    anchor.click();
   };
 
   const handleUndo = (action) => {
@@ -271,6 +291,7 @@ function Workspace(props) {
 
   const handleKeyDown = (e) => {
     Tone.start();
+    if (e.key === "Control") setDeleting(true);
   };
 
   const handleMouseDown = (e) => {
@@ -339,6 +360,7 @@ function Workspace(props) {
       tabIndex={0}
       style={{
         display: props.hidden ? "none" : "flex",
+        /*  transform: "scale(0.5)", */
       }}
       onKeyDown={handleKeyDown}
       onMouseDown={handleMouseDown}
@@ -458,14 +480,6 @@ function Workspace(props) {
         ""
       )}
 
-      <IconButton
-        color="primary"
-        style={{ marginTop: 48, left: 16 }}
-        onClick={(e) => setModulePicker(e.target)}
-      >
-        <Icon style={{ fontSize: 40 }}>add_circle_outline</Icon>
-      </IconButton>
-
       {modulePicker && (
         <Menu
           onClose={() => setModulePicker(null)}
@@ -526,20 +540,26 @@ function Workspace(props) {
         />
       }
 
-      {connections.map((e) => (
-        <Connection connection={e} key={e} />
+      {connections.map((e, i) => (
+        <Connection connection={e} key={i} />
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
 
       <Fab
         style={{ position: "absolute", bottom: 16, right: 16 }}
-        onClick={() =>
-          recorder.state === "started" ? stopRecording() : startRecording()
-        }
-        color={recorder.state === "started" ? "secondary" : "primary"}
+        onClick={isRecording ? stopRecording : startRecording}
+        color={isRecording ? "secondary" : "primary"}
       >
-        <Icon>{recorder.state === "started" ? "stop" : "voicemail"}</Icon>
+        <Icon>{isRecording ? "stop" : "voicemail"}</Icon>
+      </Fab>
+
+      <Fab
+        color="primary"
+        style={{ position: "absolute", bottom: 16, right: 80 }}
+        onClick={(e) => setModulePicker(e.target)}
+      >
+        <Icon style={{ fontSize: 40 }}>add</Icon>
       </Fab>
     </div>
   );

@@ -53,7 +53,7 @@ function Connection(props) {
         transform: `translate(${attrib.x}px,${attrib.y}px)`,
         overflow: "visible",
         boxShadow: "0px -0px 10000px transparent",
-        pointerEvents: props.drawing && "none",
+        pointerEvents: "none",
       }}
     >
       <path
