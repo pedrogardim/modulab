@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { useTranslation } from "react-i18next";
 
-import { Card, Icon, IconButton } from "@material-ui/core";
+import { Card, Icon, IconButton, Button } from "@material-ui/core";
 
 import Draggable from "react-draggable";
 import Jack from "./Components/Jack";
@@ -17,6 +17,8 @@ function Trigger(props) {
   const [holdTime, setHoldTime] = useState(0.5);
 
   const [eventSchedule, setEventSchedule] = useState(null);
+
+  const [state, setState] = useState(false);
 
   const triggerOn = (time) => {
     /* time !== undefined
@@ -65,7 +67,7 @@ function Trigger(props) {
 
   return (
     <Draggable
-      defaultPostion={{ x: props.module.x, y: props.module.y }}
+      defaultPosition={{ x: props.module.x, y: props.module.y }}
       onStop={(e, data) =>
         props.setModules((prev) => {
           let newModules = [...prev];
@@ -86,6 +88,9 @@ function Trigger(props) {
           width: 250,
         }}
       >
+        <IconButton className="close-btn" onClick={props.removeModule}>
+          <Icon>close</Icon>
+        </IconButton>
         <div
           style={{
             backgroundColor: "red",
@@ -121,30 +126,38 @@ function Trigger(props) {
             setHoldTime(v);
           }}
         />
-        <button
-          onClick={() => {
-            Tone.Transport.toggle();
-            console.log(Tone.Transport.state);
-          }}
-        >
-          {Tone.Transport.state === "started" ? "Stop" : "Start"}
-        </button>
-        <div className="break" />
 
-        <button
-          onMouseDown={() => triggerOn(Tone.now())}
-          onMouseUp={() => triggerOff()}
-        >
-          Trigger
-        </button>
         <Jack
           type="triggerout"
-          label="Trigger Out"
+          label="Tr"
           index={0}
           module={props.module}
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}
         />
+
+        <div width="30px" />
+
+        <div className="break" />
+
+        <Button
+          onMouseDown={() => triggerOn(Tone.now())}
+          onMouseUp={() => triggerOff()}
+          variant="outlined"
+          color="primary"
+        >
+          Trigger
+        </Button>
+        <Button
+          onClick={() => {
+            Tone.Transport.toggle();
+            setState((prev) => !prev);
+          }}
+          variant={state ? "contained" : "outlined"}
+          color="primary"
+        >
+          {state ? "Stop" : "Start"}
+        </Button>
       </Card>
     </Draggable>
   );

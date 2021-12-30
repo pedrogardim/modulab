@@ -1,10 +1,14 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, {
+  useState,
+  useEffect,
+  Fragment,
+  useRef,
+  useCallback,
+} from "react";
 import { Helmet } from "react-helmet";
 import * as Tone from "tone";
 import firebase from "firebase";
 import { useTranslation } from "react-i18next";
-
-import LeaderLine from "leader-line-new";
 
 import { useParams } from "react-router-dom";
 
@@ -73,15 +77,61 @@ function Workspace(props) {
   const sessionKey = useParams().key;
   const autoSaverTime = 5 * 60 * 1000; //5min
 
-  const addModule = (type) => {
+  const loadSession = (json) => {
+    clearWorkspace(true);
+
+    let session = json
+      ? json
+      : localStorage.getItem("musalabsSession") &&
+        JSON.parse(localStorage.getItem("musalabsSession"));
+
+    /*  if (
+      !session ||
+      session.modules.findIndex((e) => e.type === "MasterOut") === -1
+    ) {
+      addModule("MasterOut");
+    } */
+
+    if (!session) return;
+
+    //console.log("loading session", session);
+
+    session.modules.forEach((e) =>
+      addModule(
+        e.type,
+        e,
+        session.connections.filter((e) => e.module === e.id)
+      )
+    );
+
+    //session.connections.forEach((e) => handleConnect(e));
+  };
+
+  const loadConnections = () => {
+    if (!localStorage.getItem("musalabsSession")) return;
+    let conn = JSON.parse(localStorage.getItem("musalabsSession")).connections;
+    if (connections.length !== conn.length)
+      conn.forEach((e) => handleConnect(e));
+  };
+
+  const addModule = (type, module, conn) => {
+    //console.log("adding module", type, module, conn);
     let moduleId = !modules.length
       ? 0
       : Math.max(...modules.map((e) => e.id)) + 1;
-    let newModule = {
-      id: moduleId,
-      type: type,
-    };
-    setModules((prev) => [...prev, newModule]);
+    let newModule = module
+      ? { ...module }
+      : {
+          id: moduleId,
+          type: type,
+          x: 0,
+          y: 0,
+        };
+
+    if (modules.findIndex((e) => newModule.id === e.id) !== -1) {
+      //console.log("prevented", newModule.id);
+      return;
+    }
 
     let nodes;
     if (type === "MasterOut") {
@@ -142,8 +192,10 @@ function Workspace(props) {
 
     setNodes((prev) => ({
       ...prev,
-      [moduleId]: nodes,
+      [newModule.id]: nodes,
     }));
+
+    setModules((prev) => [...prev, newModule]);
   };
 
   const removeModule = (id) => {
@@ -155,6 +207,11 @@ function Workspace(props) {
   };
 
   const handleConnect = (connection) => {
+    if (!nodes[connection.module] || !nodes[connection.target.module]) {
+      //console.log("failed");
+      //handleConnect(connection);
+      return;
+    }
     let originNode = nodes[connection.module][connection.index];
     let targetNode = nodes[connection.target.module][connection.target.index];
 
@@ -189,7 +246,7 @@ function Workspace(props) {
           newNodes[connection.target.module][0];
         return newNodes;
       });
-    } else return;
+    } else return true;
     setConnections((prev) => [...prev, connection]);
   };
 
@@ -224,6 +281,15 @@ function Workspace(props) {
     setConnections((prev) => prev.filter((e, i) => i !== connIndex));
   };
 
+  const clearWorkspace = (total) => {
+    modules.forEach((e, i) => {
+      //if (e.type !== "MasterOut")
+      removeModule(e.id);
+    });
+    if (total) return;
+    addModule("MasterOut");
+  };
+
   const startRecording = () => {
     setIsRecording(true);
     recorder.start();
@@ -232,13 +298,13 @@ function Workspace(props) {
   const stopRecording = () => {
     setIsRecording(false);
     recorder.stop().then((blob) => {
-      console.log(blob);
+      //console.log(blob);
       blob.arrayBuffer().then((arrayBuffer) => {
-        console.log(arrayBuffer);
+        //console.log(arrayBuffer);
         Tone.getContext().rawContext.decodeAudioData(
           arrayBuffer,
           (audiobuffer) => {
-            console.log(audiobuffer);
+            //console.log(audiobuffer);
             const url = URL.createObjectURL(
               encodeAudioFile(audiobuffer, "mp3")
             );
@@ -359,25 +425,47 @@ function Workspace(props) {
   }, [props.user, props.session, sessionKey]);
 
   useEffect(() => {
-    if (modules.length === 0) addModule("MasterOut");
+    //localStorage.setItem("musalabsSession", "");
+
+    loadSession();
     // addModule("Envelope");
     // addModule("Trigger");
 
     return () => {
-      console.log("transport cleared");
+      //console.log("transport cleared");
     };
   }, []);
 
   useEffect(() => {
-    console.log(connections);
+    //console.log(connections);
+    connections &&
+      connections.length > 0 &&
+      localStorage.setItem(
+        "musalabsSession",
+        JSON.stringify({
+          modules: [...modules],
+          connections: [...connections],
+        })
+      );
   }, [connections]);
 
   useEffect(() => {
-    console.log(nodes);
+    loadConnections();
+    //console.log("nodes", nodes);
   }, [nodes]);
 
   useEffect(() => {
-    console.log(modules);
+    //console.log(modules);
+    if (modules && modules.length > 0) {
+      localStorage.setItem(
+        "musalabsSession",
+        JSON.stringify({
+          modules: [...modules],
+          connections: [...connections],
+        })
+      );
+      //console.log("stored");
+    }
   }, [modules]);
 
   useEffect(() => {
@@ -415,6 +503,7 @@ function Workspace(props) {
         modules.map((module, moduleIndex) =>
           module.type === "MasterOut" ? (
             <MasterOut
+              key={module.id}
               module={module}
               mousePosition={mousePosition}
               setDrawingLine={setDrawingLine}
@@ -425,6 +514,7 @@ function Workspace(props) {
             />
           ) : module.type === "Oscillator" ? (
             <Oscillator
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -436,6 +526,7 @@ function Workspace(props) {
             />
           ) : module.type === "NoiseGenerator" ? (
             <NoiseGenerator
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -447,6 +538,7 @@ function Workspace(props) {
             />
           ) : module.type === "LFO" ? (
             <LFO
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -458,6 +550,7 @@ function Workspace(props) {
             />
           ) : module.type === "Oscilloscope" ? (
             <Oscilloscope
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -469,6 +562,7 @@ function Workspace(props) {
             />
           ) : module.type === "Analyzer" ? (
             <Analyzer
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -480,6 +574,7 @@ function Workspace(props) {
             />
           ) : module.type === "Filter" ? (
             <Filter
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -491,6 +586,7 @@ function Workspace(props) {
             />
           ) : module.type === "Envelope" ? (
             <Envelope
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -502,6 +598,7 @@ function Workspace(props) {
             />
           ) : module.type === "ChMixer" ? (
             <ChMixer
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -513,6 +610,7 @@ function Workspace(props) {
             />
           ) : module.type === "Trigger" ? (
             <Trigger
+              key={module.id}
               nodes={nodes[module.id]}
               mousePosition={mousePosition}
               module={module}
@@ -552,6 +650,7 @@ function Workspace(props) {
             "Trigger",
             "Oscilloscope",
             "Analyzer",
+            "MasterOut",
           ].map((e, i) => (
             <MenuItem
               onClick={() => {
@@ -620,7 +719,15 @@ function Workspace(props) {
         style={{ position: "absolute", bottom: 16, right: 80 }}
         onClick={(e) => setModulePicker(e.target)}
       >
-        <Icon style={{ fontSize: 40 }}>add</Icon>
+        <Icon>add</Icon>
+      </Fab>
+
+      <Fab
+        color="primary"
+        style={{ position: "absolute", bottom: 16, right: 144 }}
+        onClick={() => clearWorkspace()}
+      >
+        <Icon>delete</Icon>
       </Fab>
     </div>
   );
@@ -629,3 +736,24 @@ function Workspace(props) {
 export default Workspace;
 
 const deepCopy = (a) => JSON.parse(JSON.stringify(a));
+
+function useStateCallback(initialState) {
+  const [state, setState] = useState(initialState);
+  const cbRef = useRef(null); // init mutable ref container for callbacks
+
+  const setStateCallback = useCallback((state, cb) => {
+    cbRef.current = cb; // store current, passed callback in ref
+    setState(state);
+  }, []); // keep object reference stable, exactly like `useState`
+
+  useEffect(() => {
+    // cb.current is `null` on initial render,
+    // so we only invoke callback on state *updates*
+    if (cbRef.current) {
+      cbRef.current(state);
+      cbRef.current = null; // reset callback after execution
+    }
+  }, [state]);
+
+  return [state, setStateCallback];
+}

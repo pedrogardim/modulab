@@ -25,7 +25,7 @@ function LFO(props) {
 
   return (
     <Draggable
-      defaultPostion={{ x: props.module.x, y: props.module.y }}
+      defaultPosition={{ x: props.module.x, y: props.module.y }}
       onStop={(e, data) =>
         props.setModules((prev) => {
           let newModules = [...prev];

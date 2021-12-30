@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { useParams } from "react-router-dom";
 
-import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
+import { Card, Select, Button, Icon, IconButton } from "@material-ui/core";
 
 import Draggable from "react-draggable";
 
@@ -64,7 +64,7 @@ function Envelope(props) {
  */
   return (
     <Draggable
-      defaultPostion={{ x: props.module.x, y: props.module.y }}
+      defaultPosition={{ x: props.module.x, y: props.module.y }}
       onStop={(e, data) =>
         props.setModules((prev) => {
           let newModules = [...prev];
@@ -102,7 +102,7 @@ function Envelope(props) {
         <Knob
           size={36}
           min={0}
-          step={0.2}
+          step={0.01}
           max={10}
           defaultValue={props.nodes[0].attack}
           mousePosition={props.mousePosition}
@@ -113,7 +113,7 @@ function Envelope(props) {
         <Knob
           size={36}
           min={0}
-          step={0.1}
+          step={0.01}
           max={5}
           defaultValue={props.nodes[0].decay}
           mousePosition={props.mousePosition}
@@ -124,7 +124,7 @@ function Envelope(props) {
         <Knob
           size={36}
           min={0}
-          step={0.05}
+          step={0.01}
           max={1}
           defaultValue={props.nodes[0].sustain}
           mousePosition={props.mousePosition}
@@ -135,7 +135,7 @@ function Envelope(props) {
         <Knob
           size={36}
           min={0}
-          step={0.2}
+          step={0.01}
           max={10}
           defaultValue={props.nodes[0].release}
           mousePosition={props.mousePosition}
@@ -146,12 +146,14 @@ function Envelope(props) {
 
         <div className="break" />
 
-        <button
+        <Button
           onMouseDown={() => props.nodes[0].triggerAttack()}
           onMouseUp={() => props.nodes[0].triggerRelease()}
+          variant="outlined"
+          color="primary"
         >
           Trigger
-        </button>
+        </Button>
         <div className="break" />
 
         <Jack

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
-import LeaderLine from "leader-line-new";
 
 import "./Jack.css";
 
