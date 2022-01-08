@@ -82,7 +82,7 @@
 }
 
 .ws-deleting-line:hover {
-  filter: brightness(2);
+  filter: brightness(1.3);
 }
 /* 
 .leader-line-line-path {

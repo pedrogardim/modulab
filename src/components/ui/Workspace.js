@@ -306,10 +306,15 @@ function Workspace(props) {
           (audiobuffer) => {
             //console.log(audiobuffer);
             const url = URL.createObjectURL(
-              encodeAudioFile(audiobuffer, "mp3")
+              encodeAudioFile(audiobuffer, "wav")
             );
             const anchor = document.createElement("a");
-            anchor.download = "recording.mp3";
+            anchor.download =
+              new Date()
+                .toLocaleString()
+                .replaceAll("/", "-")
+                .replaceAll(" ", "_")
+                .replaceAll(":", "-") + ".wav";
             anchor.href = url;
             anchor.click();
           }
