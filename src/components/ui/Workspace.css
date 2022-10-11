@@ -1,15 +1,22 @@
 .workspace {
   position: relative;
-  background: radial-gradient(#ffffff, #d1d1d1);
-  width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-
   align-items: center;
   justify-content: flex-start;
   outline: none;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.ws-background{
+  position:fixed;
+  background: #121212;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  pointer-events: none;
 }
 
 .workspace-module-cont {
@@ -74,6 +81,7 @@
   justify-content: space-around;
   align-content: space-evenly;
   justify-items: center;
+  /* background-color:#2f2f2f !important */
 }
 
 .break {

@@ -27,6 +27,8 @@ import {
   Fade,
 } from "@material-ui/core";
 
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
 import LoadingScreen from "./LoadingScreen";
 
 import Module from "./Modules/Module";
@@ -496,135 +498,145 @@ function Workspace(props) {
   }, [drawingLine]);
 
   return (
-    <div
-      className="workspace"
-      tabIndex={0}
-      style={{
-        display: props.hidden ? "none" : "flex",
-        cursor: isDeleting && "not-allowed",
-        /*  transform: "scale(0.5)", */
-      }}
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      {!soundStarted && (
-        <div
-          className="sound-start-layer"
-          onClick={() => {
-            setSoundStarted(true);
-            Tone.start();
-          }}
-        >
-          <Icon>play_arrow</Icon>
-        </div>
-      )}
-      {/* isPlaying && (
+    <>
+      <div className="ws-background" />
+
+      <TransformWrapper
+        limitToBounds={false}
+        doubleClick={{ disabled: true }}
+        panning={{
+          excluded: ["module", "module-jack", "module-knob", "close-btn"],
+        }}
+      >
+        <TransformComponent>
+          <div
+            className="workspace"
+            tabIndex={0}
+            style={{
+              display: props.hidden ? "none" : "flex",
+              cursor: isDeleting && "not-allowed",
+              /*  transform: "scale(0.5)", */
+            }}
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          >
+            {!soundStarted && (
+              <div
+                className="sound-start-layer"
+                onClick={() => {
+                  setSoundStarted(true);
+                  Tone.start();
+                }}
+              >
+                <Icon>play_arrow</Icon>
+              </div>
+            )}
+            {/* isPlaying && (
         <Helmet>
           <title>{"▶ " + document.title}</title>
         </Helmet>
       ) */}
 
-      <LoadingScreen open={!Boolean(modules)} />
+            <LoadingScreen open={!Boolean(modules)} />
 
-      {modules !== null ? (
-        modules.map((module, moduleIndex) => (
-          <Module
-            key={module.id}
-            module={module}
-            mousePosition={mousePosition}
-            setDrawingLine={setDrawingLine}
-            index={moduleIndex}
-            setModules={setModules}
-            drawingLine={drawingLine}
-            removeModule={() => removeModule(module.id)}
-            nodes={nodes[module.id]}
-          />
-        ))
-      ) : !modules.length ? (
-        <>
-          <Typography variant="h1">:v</Typography>
-          <div className="break" />
-          <p>{t("workspace.empty")}</p>
-        </>
-      ) : (
-        ""
-      )}
+            {modules !== null ? (
+              modules.map((module, moduleIndex) => (
+                <Module
+                  key={module.id}
+                  module={module}
+                  mousePosition={mousePosition}
+                  setDrawingLine={setDrawingLine}
+                  index={moduleIndex}
+                  setModules={setModules}
+                  drawingLine={drawingLine}
+                  removeModule={() => removeModule(module.id)}
+                  nodes={nodes[module.id]}
+                />
+              ))
+            ) : !modules.length ? (
+              <>
+                <Typography variant="h1">:v</Typography>
+                <div className="break" />
+                <p>{t("workspace.empty")}</p>
+              </>
+            ) : (
+              ""
+            )}
 
-      {modulePicker && (
-        <Menu
-          onClose={() => setModulePicker(null)}
-          open={Boolean(modulePicker)}
-          anchorEl={modulePicker}
-        >
-          {[
-            "Oscillator",
-            "LFO",
-            "Filter",
-            "Envelope",
-            "ChMixer",
-            "NoiseGenerator",
-            "Trigger",
-            "Oscilloscope",
-            "Analyzer",
-            "MasterOut",
-          ].map((e, i) => (
-            <MenuItem
-              onClick={() => {
-                addModule(e);
-                setModulePicker(null);
-              }}
-            >
-              {e}
-            </MenuItem>
-          ))}
-        </Menu>
-      )}
+            {modulePicker && (
+              <Menu
+                onClose={() => setModulePicker(null)}
+                open={Boolean(modulePicker)}
+                anchorEl={modulePicker}
+              >
+                {[
+                  "Oscillator",
+                  "LFO",
+                  "Filter",
+                  "Envelope",
+                  "ChMixer",
+                  "NoiseGenerator",
+                  "Trigger",
+                  "Oscilloscope",
+                  "Analyzer",
+                  "MasterOut",
+                ].map((e, i) => (
+                  <MenuItem
+                    onClick={() => {
+                      addModule(e);
+                      setModulePicker(null);
+                    }}
+                  >
+                    {e}
+                  </MenuItem>
+                ))}
+              </Menu>
+            )}
 
-      {matrix && (
-        <Matrix
-          onClose={() => setMatrix(false)}
-          modules={modules}
-          nodes={nodes}
-          connections={connections}
-          handleConnect={handleConnect}
-          removeConnection={removeConnection}
-        />
-      )}
+            {matrix && (
+              <Matrix
+                onClose={() => setMatrix(false)}
+                modules={modules}
+                nodes={nodes}
+                connections={connections}
+                handleConnect={handleConnect}
+                removeConnection={removeConnection}
+              />
+            )}
 
-      <Snackbar
-        open={!!snackbarMessage}
-        message={snackbarMessage}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
+            {/* <Snackbar
+            open={!!snackbarMessage}
+            message={snackbarMessage}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            autoHideDuration={3000}
+            onClose={handleSnackbarClose}
+            action={
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleSnackbarClose}
+              >
+                <Icon fontSize="small">close</Icon>
+              </IconButton>
+            }
+          /> */}
+          </div>
+        </TransformComponent>
+      </TransformWrapper>
+      <div
+        id="cursor-pixel"
+        style={{
+          left: mousePosition && mousePosition[0],
+          top: mousePosition && mousePosition[1],
         }}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleSnackbarClose}
-          >
-            <Icon fontSize="small">close</Icon>
-          </IconButton>
-        }
       />
-
-      {
-        <div
-          id="cursor-pixel"
-          style={{
-            left: mousePosition && mousePosition[0],
-            top: mousePosition && mousePosition[1],
-          }}
-        />
-      }
-
       {connections.map((e, i) => (
         <Connection
           isDeleting={isDeleting}
@@ -635,7 +647,6 @@ function Workspace(props) {
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
-
       <Fab
         style={{ position: "absolute", bottom: 16, right: 16 }}
         onClick={isRecording ? stopRecording : startRecording}
@@ -666,7 +677,7 @@ function Workspace(props) {
       >
         <Icon>grid_on</Icon>
       </Fab>
-    </div>
+    </>
   );
 }
 

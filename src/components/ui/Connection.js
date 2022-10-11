@@ -1,10 +1,6 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
-
-import { useTranslation } from "react-i18next";
+import React from "react";
 
 function Connection(props) {
-  const { t } = useTranslation();
-
   const gravity = 150;
 
   if (!props.connection || typeof props.connection.module !== "number")
