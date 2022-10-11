@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
-
-import firebase from "firebase";
-
 import * as Tone from "tone";
 
 import { getRandomColor } from "../utils/colorUtils";
-
 import { encodeAudioFile } from "../utils/audioutils";
-
 import { useParams } from "react-router-dom";
 
 function useSession() {
@@ -16,10 +11,10 @@ function useSession() {
 
   const [connections, setConnections] = useState([]);
 
-  const [recorder, setRecorder] = useState(new Tone.Recorder());
+  const [recorder] = useState(new Tone.Recorder());
   const [isRecording, setIsRecording] = useState(false);
 
-  const sessionKey = useParams().key;
+  //const sessionKey = useParams().key;
 
   const loadConnections = () => {
     if (!localStorage.getItem("musalabsSession")) return;

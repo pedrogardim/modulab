@@ -23,7 +23,7 @@ import Oscilloscope from "./Oscilloscope";
 import Analyzer from "./Analyzer";
 import Trigger from "./Trigger";
 
-import { modulesInfo } from "../../../utils/ModulesInfo";
+import { modulesInfo } from "../../../utils/modulesInfo";
 
 const components = {
   Oscillator: Oscillator,

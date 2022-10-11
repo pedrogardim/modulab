@@ -4,9 +4,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  Button,
-  TextField,
   IconButton,
   Icon,
 } from "@material-ui/core";
@@ -14,6 +11,7 @@ import {
 import "./Matrix.css";
 
 import { getRandomColor } from "../../../utils/colorUtils";
+import { modulesInfo } from "../../../utils/modulesInfo";
 
 import { useTranslation } from "react-i18next";
 
@@ -23,36 +21,12 @@ function Matrix(props) {
 
   const { modules, connections, handleConnect, removeConnection } = props;
 
-  const modulesConnections = {
-    Analyzer: [["in", 0]],
-
-    ChMixer: [
-      ["in", 1],
-      ["in", 2],
-      ["in", 3],
-      ["in", 4],
-      ["out", 0],
-    ],
-    Envelope: [["in", 0][("trigger", 2)], ["out", 1]],
-    Filter: [["in", 0], "out", 1],
-    LFO: [["out", 0]],
-    MasterOut: [["in", 0]],
-    NoiseGenerator: [["out", 0]],
-    Oscillator: [
-      ["out", 0],
-      ["mod", 1],
-    ],
-
-    Oscilloscope: [["in", 0]],
-    Trigger: [["triggerout", 0]],
-  };
-
   const outputs = modules.map((e) =>
-    modulesConnections[e.type].filter((e) => e[0] === "out")
+    modulesInfo[e.type].con.filter((e) => e[0] === "out")
   );
 
   const inputs = modules.map((e) =>
-    modulesConnections[e.type].filter((e) => e[0] === "in" || e[0] === "mod")
+    modulesInfo[e.type].con.filter((e) => e[0] === "in" || e[0] === "mod")
   );
 
   const checkConnection = (id1, con1, id2, con2) => {

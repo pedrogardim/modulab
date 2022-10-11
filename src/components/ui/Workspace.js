@@ -1,28 +1,16 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
 import * as Tone from "tone";
-import firebase from "firebase";
 import { useTranslation } from "react-i18next";
 
-import {
-  Fab,
-  Icon,
-  IconButton,
-  Typography,
-  Tooltip,
-  Snackbar,
-  Menu,
-  MenuItem,
-  Paper,
-  Fade,
-} from "@material-ui/core";
+import { Fab, Icon, Typography, Menu, MenuItem } from "@material-ui/core";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
+import { modulesInfo } from "../../utils/modulesInfo";
 
 import useSession from "../../hooks/useSession";
 
 import Module from "./Modules/Module";
-import ActionConfirm from "./Dialogs/ActionConfirm";
 import Matrix from "./Matrix/Matrix";
 import Connection from "./Connection";
 
@@ -48,18 +36,12 @@ function Workspace(props) {
   } = useSession();
 
   const [mousePosition, setMousePosition] = useState([]);
-
   const [soundStarted, setSoundStarted] = useState(false);
-
   const [modulePicker, setModulePicker] = useState(false);
-
   const [drawingLine, setDrawingLine] = useState(null);
-
   const [isDeleting, setIsDeleting] = useState(false);
-
   const [matrix, setMatrix] = useState(false);
-
-  const autoSaverTime = 5 * 60 * 1000; //5min
+  const [moveState, setMoveState] = useState(false);
 
   const handleKeyDown = (e) => {
     //Tone.start();
@@ -107,6 +89,10 @@ function Workspace(props) {
             "option",
           ],
         }}
+        onWheel={() => setMoveState((p) => !p)}
+        onPanning={() => setMoveState((p) => !p)}
+        onZoom={() => setMoveState((p) => !p)}
+        onPinching={() => setMoveState((p) => !p)}
       >
         <TransformComponent>
           <div
@@ -115,7 +101,6 @@ function Workspace(props) {
             style={{
               display: props.hidden ? "none" : "flex",
               cursor: isDeleting && "not-allowed",
-              /*  transform: "scale(0.5)", */
             }}
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
@@ -134,11 +119,6 @@ function Workspace(props) {
                 <Icon>play_arrow</Icon>
               </div>
             )}
-            {/* isPlaying && (
-        <Helmet>
-          <title>{"▶ " + document.title}</title>
-        </Helmet>
-      ) */}
 
             {modules !== null ? (
               modules.map((module, moduleIndex) => (
@@ -170,18 +150,7 @@ function Workspace(props) {
                 open={Boolean(modulePicker)}
                 anchorEl={modulePicker}
               >
-                {[
-                  "Oscillator",
-                  "LFO",
-                  "Filter",
-                  "Envelope",
-                  "ChMixer",
-                  "NoiseGenerator",
-                  "Trigger",
-                  "Oscilloscope",
-                  "Analyzer",
-                  "MasterOut",
-                ].map((e, i) => (
+                {Object.keys(modulesInfo).map((e, i) => (
                   <MenuItem
                     onClick={() => {
                       addModule(e);
@@ -204,27 +173,6 @@ function Workspace(props) {
                 removeConnection={removeConnection}
               />
             )}
-
-            {/* <Snackbar
-            open={!!snackbarMessage}
-            message={snackbarMessage}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            autoHideDuration={3000}
-            onClose={handleSnackbarClose}
-            action={
-              <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={handleSnackbarClose}
-              >
-                <Icon fontSize="small">close</Icon>
-              </IconButton>
-            }
-          /> */}
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -239,7 +187,7 @@ function Workspace(props) {
         <Connection
           isDeleting={isDeleting}
           connection={e}
-          key={i}
+          key={i + moveState * 1}
           remove={() => removeConnection(i)}
         />
       ))}
