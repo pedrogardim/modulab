@@ -68,6 +68,7 @@ function Envelope(props) {
         height={96}
         width={144}
         id={"envelope-canvas-" + props.module.id}
+        style={{ pointerEvents: "none" }}
       />
 
       <div className="break" />

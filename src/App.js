@@ -16,6 +16,7 @@ import {
   Typography,
   ThemeProvider,
   createTheme,
+  CssBaseline,
   Fade,
 } from "@material-ui/core";
 
@@ -93,6 +94,7 @@ function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
+      {/* <CssBaseline /> */}
       {/* <Fade in={!isOnline}>
         <div className="app-offline-screen">
           <AppLogo

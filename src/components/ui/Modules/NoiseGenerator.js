@@ -1,13 +1,5 @@
-import React, { useState, useEffect, Fragment } from "react";
-import * as Tone from "tone";
-import firebase from "firebase";
-import { useTranslation } from "react-i18next";
-
-import { useParams } from "react-router-dom";
-
-import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
-
-import Draggable from "react-draggable";
+import React from "react";
+import { Select, MenuItem } from "@material-ui/core";
 
 import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
@@ -30,12 +22,11 @@ function NoiseGenerator(props) {
       />
       <div className="break" />
       <Select
-        native
         onChange={(e) => props.nodes[0].set({ type: e.target.value })}
         defaultValue={props.nodes[0].type}
       >
         {["white", "brown", "pink"].map((e) => (
-          <option value={e}>{e}</option>
+          <MenuItem value={e}>{e}</MenuItem>
         ))}
       </Select>
       <div className="break" />

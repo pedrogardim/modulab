@@ -30,7 +30,6 @@ function Oscillator(props) {
       />
       <div className="break" />
       <Select
-        native
         onChange={(e) => props.nodes[0].set({ type: e.target.value })}
         defaultValue={props.nodes[0].type}
       >

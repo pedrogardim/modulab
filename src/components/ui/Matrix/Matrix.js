@@ -13,6 +13,8 @@ import {
 
 import "./Matrix.css";
 
+import { getRandomColor } from "../../../utils/colorUtils";
+
 import { useTranslation } from "react-i18next";
 
 function Matrix(props) {
@@ -75,7 +77,7 @@ function Matrix(props) {
         module: id1,
         index: con1,
         type: "out",
-        color: "#" + (Math.random().toString(16) + "00000").slice(2, 8),
+        color: getRandomColor(),
         target: {
           module: id2,
           index: con2,

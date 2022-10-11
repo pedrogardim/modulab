@@ -8,6 +8,7 @@
   outline: none;
   min-width: 100vw;
   min-height: 100vh;
+  color:white !important;
 }
 
 .ws-background{
@@ -73,7 +74,7 @@
 
 .module {
   overflow: visible !important;
-  position: absolute !important;
+  position: fixed !important;
   display: flex !important;
   flex-wrap: wrap;
   flex-direction: row;
@@ -81,7 +82,7 @@
   justify-content: space-around;
   align-content: space-evenly;
   justify-items: center;
-  /* background-color:#2f2f2f !important */
+  background-color:#323232 !important;
 }
 
 .break {

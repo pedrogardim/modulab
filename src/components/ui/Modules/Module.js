@@ -50,6 +50,8 @@ function Module(props) {
     nodes,
   } = props;
 
+  const [isMouseInside, setIsMouseInside] = useState(false);
+
   const moduleInfo = modulesInfo[module.type];
 
   const Component = components[module.type];
@@ -74,12 +76,17 @@ function Module(props) {
       }
       cancel=".module-jack, .MuiSlider-root, .module-knob"
     >
-      <Card
+      <div
         className="module"
         style={{
           width: moduleInfo.x,
           height: moduleInfo.y,
+          outline: isMouseInside && "solid 1px " + module.c,
         }}
+        onMouseMove={() => setIsMouseInside(true)}
+        onMouseEnter={() => setIsMouseInside(true)}
+        onMouseLeave={() => setIsMouseInside(false)}
+        onMouseUp={() => setIsMouseInside(false)}
       >
         {moduleInfo.closeBtn !== false && (
           <IconButton className="close-btn" onClick={removeModule}>
@@ -88,7 +95,7 @@ function Module(props) {
         )}
 
         <Component {...props} />
-      </Card>
+      </div>
     </Draggable>
   );
 }

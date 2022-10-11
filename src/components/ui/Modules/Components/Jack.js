@@ -2,6 +2,8 @@ import React, { useState, useEffect, Fragment, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { getRandomColor } from "../../../../utils/colorUtils";
+
 import "./Jack.css";
 
 function Jack(props) {
@@ -13,7 +15,7 @@ function Jack(props) {
       module: props.module.id,
       index: props.index,
       type: props.type,
-      color: "#" + (Math.random().toString(16) + "00000").slice(2, 8),
+      color: getRandomColor(),
     });
   };
 
