@@ -29,16 +29,7 @@ import {
 
 import LoadingScreen from "./LoadingScreen";
 
-import Oscillator from "./Modules/Oscillator";
-import NoiseGenerator from "./Modules/NoiseGenerator";
-import MasterOut from "./Modules/MasterOut";
-import LFO from "./Modules/LFO";
-import Filter from "./Modules/Filter";
-import Envelope from "./Modules/Envelope";
-import ChMixer from "./Modules/ChMixer";
-import Oscilloscope from "./Modules/Oscilloscope";
-import Analyzer from "./Modules/Analyzer";
-import Trigger from "./Modules/Trigger";
+import Module from "./Modules/Module";
 
 import ActionConfirm from "./Dialogs/ActionConfirm";
 import Matrix from "./Matrix/Matrix";
@@ -130,6 +121,7 @@ function Workspace(props) {
           type: type,
           x: 0,
           y: 0,
+          c: "#" + (Math.random().toString(16) + "00000").slice(2, 8),
         };
 
     if (modules.findIndex((e) => newModule.id === e.id) !== -1) {
@@ -211,7 +203,7 @@ function Workspace(props) {
   };
 
   const handleConnect = (connection) => {
-    console.log(connection);
+    //console.log(connection);
     if (!nodes[connection.module] || !nodes[connection.target.module]) {
       //console.log("failed");
       //handleConnect(connection);
@@ -464,7 +456,7 @@ function Workspace(props) {
   }, []);
 
   useEffect(() => {
-    console.log(connections);
+    //console.log(connections);
     connections &&
       connections.length > 0 &&
       localStorage.setItem(
@@ -478,11 +470,11 @@ function Workspace(props) {
 
   useEffect(() => {
     loadConnections();
-    console.log("nodes", nodes);
+    //console.log("nodes", nodes);
   }, [nodes]);
 
   useEffect(() => {
-    console.log(modules);
+    //console.log(modules);
     if (modules && modules.length > 0) {
       localStorage.setItem(
         "musalabsSession",
@@ -500,7 +492,7 @@ function Workspace(props) {
       drawingLine &&
       drawingLine.line &&
       drawingLine.line.position(); */
-    console.log(drawingLine);
+    //console.log(drawingLine);
   }, [drawingLine]);
 
   return (
@@ -538,136 +530,25 @@ function Workspace(props) {
       <LoadingScreen open={!Boolean(modules)} />
 
       {modules !== null ? (
-        modules.map((module, moduleIndex) =>
-          module.type === "MasterOut" ? (
-            <MasterOut
-              key={module.id}
-              module={module}
-              mousePosition={mousePosition}
-              setDrawingLine={setDrawingLine}
-              index={moduleIndex}
-              setModules={setModules}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Oscillator" ? (
-            <Oscillator
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "NoiseGenerator" ? (
-            <NoiseGenerator
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "LFO" ? (
-            <LFO
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Oscilloscope" ? (
-            <Oscilloscope
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Analyzer" ? (
-            <Analyzer
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Filter" ? (
-            <Filter
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Envelope" ? (
-            <Envelope
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "ChMixer" ? (
-            <ChMixer
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : module.type === "Trigger" ? (
-            <Trigger
-              key={module.id}
-              nodes={nodes[module.id]}
-              mousePosition={mousePosition}
-              module={module}
-              index={moduleIndex}
-              setModules={setModules}
-              setDrawingLine={setDrawingLine}
-              drawingLine={drawingLine}
-              removeModule={() => removeModule(module.id)}
-            />
-          ) : (
-            ""
-          )
-        )
+        modules.map((module, moduleIndex) => (
+          <Module
+            key={module.id}
+            module={module}
+            mousePosition={mousePosition}
+            setDrawingLine={setDrawingLine}
+            index={moduleIndex}
+            setModules={setModules}
+            drawingLine={drawingLine}
+            removeModule={() => removeModule(module.id)}
+            nodes={nodes[module.id]}
+          />
+        ))
       ) : !modules.length ? (
-        <Fragment>
+        <>
           <Typography variant="h1">:v</Typography>
           <div className="break" />
           <p>{t("workspace.empty")}</p>
-        </Fragment>
+        </>
       ) : (
         ""
       )}

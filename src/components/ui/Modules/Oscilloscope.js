@@ -60,46 +60,20 @@ function Oscilloscope(props) {
   }, []);
 
   return (
-    <Draggable
-      defaultPosition={{ x: props.module.x, y: props.module.y }}
-      onStop={(e, data) =>
-        props.setModules((prev) => {
-          let newModules = [...prev];
-          newModules[props.index] = {
-            ...newModules[props.index],
-            x: data.x,
-            y: data.y,
-          };
-          return newModules;
-        })
-      }
-      cancel=".module-jack, .MuiSlider-root, .module-knob"
-    >
-      <Card
-        className="module"
-        style={{
-          height: 300,
-          width: 512,
-        }}
-      >
-        <IconButton className="close-btn" onClick={props.removeModule}>
-          <Icon>close</Icon>
-        </IconButton>
-
-        <canvas
-          height="250px"
-          width="512px"
-          id={`oscilloscope-${props.module.id}`}
-        />
-        <Jack
-          type="in"
-          index={0}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-      </Card>
-    </Draggable>
+    <>
+      <canvas
+        height="250px"
+        width="512px"
+        id={`oscilloscope-${props.module.id}`}
+      />
+      <Jack
+        type="in"
+        index={0}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
+    </>
   );
 }
 

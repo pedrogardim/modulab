@@ -63,125 +63,97 @@ function Envelope(props) {
   }, [props.nodes[2] && props.nodes[2].value]);
  */
   return (
-    <Draggable
-      defaultPosition={{ x: props.module.x, y: props.module.y }}
-      onStop={(e, data) =>
-        props.setModules((prev) => {
-          let newModules = [...prev];
-          newModules[props.index] = {
-            ...newModules[props.index],
-            x: data.x,
-            y: data.y,
-          };
-          return newModules;
-        })
-      }
-      cancel=".module-jack, .MuiSlider-root, .module-knob"
-    >
-      <Card
-        className="module"
-        style={{
-          height: 360,
-          width: 160,
+    <>
+      <canvas
+        height={96}
+        width={144}
+        id={"envelope-canvas-" + props.module.id}
+      />
+
+      <div className="break" />
+
+      <Knob
+        size={36}
+        min={0}
+        step={0.01}
+        max={10}
+        defaultValue={props.nodes[0].attack}
+        mousePosition={props.mousePosition}
+        onChange={(v) => {
+          props.nodes[0].set({ attack: v });
         }}
+      />
+      <Knob
+        size={36}
+        min={0}
+        step={0.01}
+        max={5}
+        defaultValue={props.nodes[0].decay}
+        mousePosition={props.mousePosition}
+        onChange={(v) => {
+          props.nodes[0].set({ decay: v });
+        }}
+      />
+      <Knob
+        size={36}
+        min={0}
+        step={0.01}
+        max={1}
+        defaultValue={props.nodes[0].sustain}
+        mousePosition={props.mousePosition}
+        onChange={(v) => {
+          props.nodes[0].set({ sustain: v });
+        }}
+      />
+      <Knob
+        size={36}
+        min={0}
+        step={0.01}
+        max={10}
+        defaultValue={props.nodes[0].release}
+        mousePosition={props.mousePosition}
+        onChange={(v) => {
+          props.nodes[0].set({ release: v });
+        }}
+      />
+
+      <div className="break" />
+
+      <Button
+        onMouseDown={() => props.nodes[0].triggerAttack()}
+        onMouseUp={() => props.nodes[0].triggerRelease()}
+        variant="outlined"
+        color="primary"
       >
-        <IconButton className="close-btn" onClick={props.removeModule}>
-          <Icon>close</Icon>
-        </IconButton>
+        Trigger
+      </Button>
+      <div className="break" />
 
-        <span></span>
+      <Jack
+        type="in"
+        index={0}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
 
-        <canvas
-          height={96}
-          width={144}
-          id={"envelope-canvas-" + props.module.id}
-        />
+      <Jack
+        type="trigger"
+        label="Trigger"
+        index={2}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
 
-        <div className="break" />
-
-        <Knob
-          size={36}
-          min={0}
-          step={0.01}
-          max={10}
-          defaultValue={props.nodes[0].attack}
-          mousePosition={props.mousePosition}
-          onChange={(v) => {
-            props.nodes[0].set({ attack: v });
-          }}
-        />
-        <Knob
-          size={36}
-          min={0}
-          step={0.01}
-          max={5}
-          defaultValue={props.nodes[0].decay}
-          mousePosition={props.mousePosition}
-          onChange={(v) => {
-            props.nodes[0].set({ decay: v });
-          }}
-        />
-        <Knob
-          size={36}
-          min={0}
-          step={0.01}
-          max={1}
-          defaultValue={props.nodes[0].sustain}
-          mousePosition={props.mousePosition}
-          onChange={(v) => {
-            props.nodes[0].set({ sustain: v });
-          }}
-        />
-        <Knob
-          size={36}
-          min={0}
-          step={0.01}
-          max={10}
-          defaultValue={props.nodes[0].release}
-          mousePosition={props.mousePosition}
-          onChange={(v) => {
-            props.nodes[0].set({ release: v });
-          }}
-        />
-
-        <div className="break" />
-
-        <Button
-          onMouseDown={() => props.nodes[0].triggerAttack()}
-          onMouseUp={() => props.nodes[0].triggerRelease()}
-          variant="outlined"
-          color="primary"
-        >
-          Trigger
-        </Button>
-        <div className="break" />
-
-        <Jack
-          type="in"
-          index={0}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-
-        <Jack
-          type="trigger"
-          label="Trigger"
-          index={2}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-
-        <Jack
-          type="out"
-          index={1}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-      </Card>
-    </Draggable>
+      <Jack
+        type="out"
+        index={1}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
+    </>
   );
 }
 

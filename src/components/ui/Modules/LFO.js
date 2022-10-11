@@ -24,85 +24,59 @@ function LFO(props) {
   }, []);
 
   return (
-    <Draggable
-      defaultPosition={{ x: props.module.x, y: props.module.y }}
-      onStop={(e, data) =>
-        props.setModules((prev) => {
-          let newModules = [...prev];
-          newModules[props.index] = {
-            ...newModules[props.index],
-            x: data.x,
-            y: data.y,
-          };
-          return newModules;
-        })
-      }
-      cancel=".module-jack, .MuiSlider-root, .module-knob"
-    >
-      <Card
-        className="module"
+    <>
+      <div
         style={{
-          height: 300,
-          width: 200,
+          backgroundColor: "red",
+          filter: `brightness(${1 + LEDLvl / 23})`,
+          position: "absolute",
+          height: 16,
+          width: 16,
+          top: 8,
+          left: 8,
+          borderRadius: "100%",
         }}
+      ></div>
+      <Knob
+        exp
+        size={72}
+        min={0.1}
+        step={0.1}
+        max={10}
+        color="green"
+        defaultValue={props.nodes[0].frequency.value}
+        onChange={(v) => {
+          props.nodes[0].set({ frequency: v });
+        }}
+        mousePosition={props.mousePosition}
+      />
+      <div className="break" />
+      <Select
+        native
+        onChange={(e) => props.nodes[0].set({ type: e.target.value })}
+        defaultValue={props.nodes[0].type}
       >
-        <IconButton className="close-btn" onClick={props.removeModule}>
-          <Icon>close</Icon>
-        </IconButton>
+        {["sine", "square", "sawtooth", "triangle"].map((e) => (
+          <option value={e}>{e}</option>
+        ))}
+      </Select>
+      <div className="break" />
 
-        <div
-          style={{
-            backgroundColor: "red",
-            filter: `brightness(${1 + LEDLvl / 23})`,
-            position: "absolute",
-            height: 16,
-            width: 16,
-            top: 8,
-            left: 8,
-            borderRadius: "100%",
-          }}
-        ></div>
-        <Knob
-          exp
-          size={72}
-          min={0.1}
-          step={0.1}
-          max={10}
-          color="green"
-          defaultValue={props.nodes[0].frequency.value}
-          onChange={(v) => {
-            props.nodes[0].set({ frequency: v });
-          }}
-          mousePosition={props.mousePosition}
-        />
-        <div className="break" />
-        <Select
-          native
-          onChange={(e) => props.nodes[0].set({ type: e.target.value })}
-          defaultValue={props.nodes[0].type}
-        >
-          {["sine", "square", "sawtooth", "triangle"].map((e) => (
-            <option value={e}>{e}</option>
-          ))}
-        </Select>
-        <div className="break" />
-
-        <Jack
-          type="out"
-          index={0}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-        {/* <Jack
+      <Jack
+        type="out"
+        index={0}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
+      {/* <Jack
           type="mod"
           index={1}
           module={props.module}
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}
         /> */}
-      </Card>
-    </Draggable>
+    </>
   );
 }
 

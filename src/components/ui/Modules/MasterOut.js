@@ -12,37 +12,15 @@ import Jack from "./Components/Jack";
 
 function MasterOut(props) {
   return (
-    <Draggable
-      defaultPosition={{ x: props.module.x, y: props.module.y }}
-      onStop={(e, data) =>
-        props.setModules((prev) => {
-          let newModules = [...prev];
-          newModules[props.index] = {
-            ...newModules[props.index],
-            x: data.x,
-            y: data.y,
-          };
-          return newModules;
-        })
-      }
-      cancel=".module-jack, .module-knob"
-    >
-      <Card
-        className="module"
-        style={{
-          height: 100,
-          width: 100,
-        }}
-      >
-        <Jack
-          type="in"
-          index={0}
-          module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
-        />
-      </Card>
-    </Draggable>
+    <>
+      <Jack
+        type="in"
+        index={0}
+        module={props.module}
+        setDrawingLine={props.setDrawingLine}
+        drawingLine={props.drawingLine}
+      />
+    </>
   );
 }
 
