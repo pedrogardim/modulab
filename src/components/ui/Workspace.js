@@ -41,6 +41,7 @@ import Analyzer from "./Modules/Analyzer";
 import Trigger from "./Modules/Trigger";
 
 import ActionConfirm from "./Dialogs/ActionConfirm";
+import Matrix from "./Matrix/Matrix";
 
 import Connection from "./Connection";
 
@@ -55,6 +56,7 @@ function Workspace(props) {
   const [nodes, setNodes] = useState({});
 
   const [connections, setConnections] = useState([]);
+  const [soundStarted, setSoundStarted] = useState(false);
 
   const [recorder, setRecorder] = useState(new Tone.Recorder());
   const [isRecording, setIsRecording] = useState(false);
@@ -73,6 +75,8 @@ function Workspace(props) {
   const [optionsMenu, setOptionsMenu] = useState(false);
 
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [matrix, setMatrix] = useState(false);
 
   const sessionKey = useParams().key;
   const autoSaverTime = 5 * 60 * 1000; //5min
@@ -207,6 +211,7 @@ function Workspace(props) {
   };
 
   const handleConnect = (connection) => {
+    console.log(connection);
     if (!nodes[connection.module] || !nodes[connection.target.module]) {
       //console.log("failed");
       //handleConnect(connection);
@@ -214,6 +219,23 @@ function Workspace(props) {
     }
     let originNode = nodes[connection.module][connection.index];
     let targetNode = nodes[connection.target.module][connection.target.index];
+
+    //check if is existing
+
+    if (
+      connections.find(
+        (e, i) =>
+          (e.module === connection.module &&
+            e.index === connection.index &&
+            e.target.module === connection.target.module &&
+            e.target.index === connection.target.index) ||
+          (e.module === connection.target.module &&
+            e.index === connection.target.index &&
+            e.target.module === connection.module &&
+            e.target.index === connection.index)
+      )
+    )
+      return;
 
     if (
       connection.type === "out" &&
@@ -386,12 +408,12 @@ function Workspace(props) {
   };
 
   const handleKeyDown = (e) => {
-    Tone.start();
+    //Tone.start();
     if (e.key === "Alt") setIsDeleting(true);
   };
 
   const handleKeyUp = (e) => {
-    Tone.start();
+    //Tone.start();
     if (e.key === "Alt") setIsDeleting(false);
   };
 
@@ -442,7 +464,7 @@ function Workspace(props) {
   }, []);
 
   useEffect(() => {
-    //console.log(connections);
+    console.log(connections);
     connections &&
       connections.length > 0 &&
       localStorage.setItem(
@@ -456,11 +478,11 @@ function Workspace(props) {
 
   useEffect(() => {
     loadConnections();
-    //console.log("nodes", nodes);
+    console.log("nodes", nodes);
   }, [nodes]);
 
   useEffect(() => {
-    //console.log(modules);
+    console.log(modules);
     if (modules && modules.length > 0) {
       localStorage.setItem(
         "musalabsSession",
@@ -478,8 +500,8 @@ function Workspace(props) {
       drawingLine &&
       drawingLine.line &&
       drawingLine.line.position(); */
-    //console.log(mousePosition);
-  }, [mousePosition]);
+    console.log(drawingLine);
+  }, [drawingLine]);
 
   return (
     <div
@@ -496,6 +518,17 @@ function Workspace(props) {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
+      {!soundStarted && (
+        <div
+          className="sound-start-layer"
+          onClick={() => {
+            setSoundStarted(true);
+            Tone.start();
+          }}
+        >
+          <Icon>play_arrow</Icon>
+        </div>
+      )}
       {/* isPlaying && (
         <Helmet>
           <title>{"▶ " + document.title}</title>
@@ -669,6 +702,17 @@ function Workspace(props) {
         </Menu>
       )}
 
+      {matrix && (
+        <Matrix
+          onClose={() => setMatrix(false)}
+          modules={modules}
+          nodes={nodes}
+          connections={connections}
+          handleConnect={handleConnect}
+          removeConnection={removeConnection}
+        />
+      )}
+
       <Snackbar
         open={!!snackbarMessage}
         message={snackbarMessage}
@@ -733,6 +777,13 @@ function Workspace(props) {
         onClick={() => clearWorkspace()}
       >
         <Icon>delete</Icon>
+      </Fab>
+      <Fab
+        color="primary"
+        style={{ position: "absolute", bottom: 16, right: 208 }}
+        onClick={() => setMatrix(true)}
+      >
+        <Icon>grid_on</Icon>
       </Fab>
     </div>
   );

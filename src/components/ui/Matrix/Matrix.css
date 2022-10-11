@@ -1,0 +1,76 @@
+.matrix-header-column{
+    width:128px;
+    height:512px;
+    outline:solid black 1px;
+    display: flex;
+    flex-direction: column;
+}
+
+.matrix-header-column-header{
+    width:100%;
+    height:64px;
+}
+
+.matrix-header-column-module{
+    width:100%;
+    height:128px;
+    outline: solid black 1px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.matrix-header-column-module-inputs-cont{
+    width: 48px;
+    outline: solid black 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.matrix-header-column-module-input{
+    width: 100%;
+    height:64px;
+    display: flex;
+    outline: solid black 1px;
+}
+
+.matrix-module-column{
+    outline:solid black 1px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+
+.matrix-module-column-header{
+    height:32px;
+    outline:solid black 1px;
+}
+
+.matrix-module-connection-column{
+    width:64px;
+    outline:solid black 1px;
+    display: flex;
+    flex-direction: column;
+}
+
+.matrix-module-connection-column-header{
+    height: 32px;
+    outline: solid black 1px;
+}
+
+.matrix-module-connection-tile{
+    width: 64px;
+    height: 64px;
+    outline: solid black 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.matrix-module-connection-tile > div{
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+}

@@ -92,3 +92,16 @@
 .leader-line-line-path:hover {
   stroke: red !important;
 } */
+
+.sound-start-layer{
+  z-index: 999;
+  background-color:rgba(0, 0, 0, 0.68);
+  font-size:90px !important;
+  width:100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:white;
+
+}

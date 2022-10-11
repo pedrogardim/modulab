@@ -14,6 +14,8 @@ import {
   Toolbar,
   AppBar,
   Typography,
+  ThemeProvider,
+  createTheme,
   Fade,
 } from "@material-ui/core";
 
@@ -29,6 +31,12 @@ import AppLogo from "./components/ui/AppLogo";
 //import AuthDialog from "./components/ui/Dialogs/AuthDialog";
 
 import ActionConfirm from "./components/ui/Dialogs/ActionConfirm";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 //import { createNewSession } from "./utils/sessionUtils";
 
@@ -84,7 +92,7 @@ function App() {
   }, [unsavedChanges]);
 
   return (
-    <Fragment>
+    <ThemeProvider theme={darkTheme}>
       {/* <Fade in={!isOnline}>
         <div className="app-offline-screen">
           <AppLogo
@@ -162,7 +170,7 @@ function App() {
         onClose={() => setFollowingRoute(null)}
         action={() => handlePageNav(...followingRoute)}
       /> */}
-    </Fragment>
+    </ThemeProvider>
   );
 }
 
