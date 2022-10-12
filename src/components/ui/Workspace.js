@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import * as Tone from "tone";
 import { useTranslation } from "react-i18next";
 
@@ -34,6 +34,8 @@ function Workspace(props) {
     removeModule,
     clearWorkspace,
   } = useSession();
+
+  const cursorPixelRef = useRef(null);
 
   const [mousePosition, setMousePosition] = useState([]);
   const [soundStarted, setSoundStarted] = useState(false);
@@ -135,6 +137,7 @@ function Workspace(props) {
                   drawingLine={drawingLine}
                   removeModule={() => removeModule(module.id)}
                   nodes={nodes[module.id]}
+                  cursorPixelRef={cursorPixelRef}
                 />
               ))
             ) : !modules.length ? (
@@ -182,6 +185,7 @@ function Workspace(props) {
 
       <div
         id="cursor-pixel"
+        ref={cursorPixelRef}
         style={{
           left: mousePosition && mousePosition[0],
           top: mousePosition && mousePosition[1],
