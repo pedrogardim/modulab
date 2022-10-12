@@ -86,7 +86,7 @@ function Analyzer(props) {
         height="250px"
         width="512px"
         id={`analyzer-${props.module.id}`}
-        style={{ imageRendering: "pixelated" }}
+        style={{ imageRendering: "pixelated", pointerEvents: "none" }}
         onClick={() => setLogMode((prev) => !prev)}
       />
       <Jack

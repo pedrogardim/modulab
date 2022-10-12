@@ -127,8 +127,8 @@ function Knob(props) {
   }, [input]); */
 
   return (
-    <div
-      className="module-knob"
+    <Paper
+      className="knob"
       style={{
         height: props.size,
         width: props.size,
@@ -187,7 +187,7 @@ function Knob(props) {
         />
       )}
       <span className="module-jack-lbl">{props.label && props.label}</span>
-    </div>
+    </Paper>
   );
 }
 

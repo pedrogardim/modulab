@@ -6,8 +6,8 @@
   align-items: center;
   justify-content: flex-start;
   outline: none;
-  min-width: 100vw;
-  min-height: 100vh;
+  min-width: 9999px;
+  min-height: 9999px;
   color:white !important;
 }
 
@@ -83,6 +83,7 @@
   align-content: space-evenly;
   justify-items: center;
   background-color:#323232 !important;
+  outline: solid 1px #4d4d4d;
 }
 
 .break {
@@ -103,7 +104,7 @@
 } */
 
 .sound-start-layer{
-  z-index: 999;
+  z-index: 9999;
   background-color:rgba(0, 0, 0, 0.68);
   font-size:90px !important;
   width:100vw;

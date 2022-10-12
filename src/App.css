@@ -88,8 +88,7 @@ body *::-webkit-scrollbar-thumb {
 .app-wrapper {
   flex: 1;
   height: 100vh;
-  overflow-y: overlay;
-  overflow-x: hidden;
+  overflow:hidden;
   position: relative;
 }
 

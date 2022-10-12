@@ -1,17 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
-import * as Tone from "tone";
-import firebase from "firebase";
-import { useTranslation } from "react-i18next";
 
-import { useParams } from "react-router-dom";
-
-import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
+import { Icon, IconButton } from "@material-ui/core";
 
 import Draggable from "react-draggable";
-
-import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
-
 import Oscillator from "./Oscillator";
 import NoiseGenerator from "./NoiseGenerator";
 import MasterOut from "./MasterOut";
@@ -39,16 +30,7 @@ const components = {
 };
 
 function Module(props) {
-  const {
-    module,
-    mousePosition,
-    setDrawingLine,
-    index,
-    setModules,
-    drawingLine,
-    removeModule,
-    nodes,
-  } = props;
+  const { module, index, setModules, removeModule } = props;
 
   const [isMouseInside, setIsMouseInside] = useState(false);
 
@@ -59,8 +41,8 @@ function Module(props) {
   return (
     <Draggable
       defaultPosition={{
-        x: Math.round(module.x * 32) / 32,
-        y: Math.round(module.y * 32) / 32,
+        x: 32 * Math.round(module.x / 32),
+        y: 32 * Math.round(module.y / 32),
       }}
       grid={[32, 32]}
       onStop={(e, data) =>
@@ -68,13 +50,13 @@ function Module(props) {
           let newModules = [...prev];
           newModules[index] = {
             ...newModules[index],
-            x: data.x,
-            y: data.y,
+            x: 32 * Math.round(data.x / 32),
+            y: 32 * Math.round(data.y / 32),
           };
           return newModules;
         })
       }
-      cancel=".module-jack, .MuiSlider-root, .module-knob"
+      cancel=".module-jack, .MuiSlider-root, .knob"
     >
       <div
         className="module"
@@ -87,6 +69,9 @@ function Module(props) {
         onMouseEnter={() => setIsMouseInside(true)}
         onMouseLeave={() => setIsMouseInside(false)}
         onMouseUp={() => setIsMouseInside(false)}
+        onMouseDown={(e) => {
+          console.log(e);
+        }}
       >
         {moduleInfo.closeBtn !== false && (
           <IconButton className="close-btn" onClick={removeModule}>

@@ -1,12 +1,12 @@
 export const modulesInfo = {
   Analyzer: {
     x: 512,
-    y: 288,
+    y: 320,
     con: [["in", 0]],
   },
   ChMixer: {
     x: 512,
-    y: 288,
+    y: 320,
     con: [
       ["in", 1],
       ["in", 2],
@@ -16,33 +16,33 @@ export const modulesInfo = {
     ],
   },
   Envelope: {
-    x: 160,
+    x: 192,
     y: 320,
     con: [["in", 0][("trigger", 2)], ["out", 1]],
   },
   Filter: {
-    x: 160,
+    x: 128,
     y: 320,
     con: [["in", 0], "out", 1],
   },
   LFO: {
-    x: 160,
+    x: 128,
     y: 320,
     con: [["out", 0]],
   },
   MasterOut: {
-    x: 96,
-    y: 96,
+    x: 128,
+    y: 128,
     closeBtn: false,
     con: [["in", 0]],
   },
   NoiseGenerator: {
-    x: 160,
+    x: 128,
     y: 320,
     con: [["out", 0]],
   },
   Oscillator: {
-    x: 160,
+    x: 128,
     y: 320,
     con: [
       ["out", 0],
@@ -50,13 +50,13 @@ export const modulesInfo = {
     ],
   },
   Oscilloscope: {
-    x: 160,
+    x: 512,
     y: 320,
     con: [["in", 0]],
   },
   Trigger: {
     x: 320,
-    y: 160,
+    y: 128,
     con: [["triggerout", 0]],
   },
 };

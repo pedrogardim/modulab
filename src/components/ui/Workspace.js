@@ -72,6 +72,17 @@ function Workspace(props) {
   return (
     <>
       <div className="ws-background" />
+      {!soundStarted && (
+        <div
+          className="sound-start-layer"
+          onClick={() => {
+            setSoundStarted(true);
+            Tone.start();
+          }}
+        >
+          <Icon>play_arrow</Icon>
+        </div>
+      )}
 
       <TransformWrapper
         limitToBounds={false}
@@ -79,14 +90,18 @@ function Workspace(props) {
         minScale={0.1}
         maxScale={2}
         wheel={{ step: 0.1 }}
+        initialPositionX={-4500}
+        initialPositionY={-4500}
         panning={{
           excluded: [
             "module",
             "module-jack",
-            "module-knob",
+            "knob",
             "close-btn",
             "select",
             "option",
+            "span",
+            "button",
           ],
         }}
         onWheel={() => setMoveState((p) => !p)}
@@ -108,18 +123,6 @@ function Workspace(props) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
           >
-            {!soundStarted && (
-              <div
-                className="sound-start-layer"
-                onClick={() => {
-                  setSoundStarted(true);
-                  Tone.start();
-                }}
-              >
-                <Icon>play_arrow</Icon>
-              </div>
-            )}
-
             {modules !== null ? (
               modules.map((module, moduleIndex) => (
                 <Module
@@ -176,6 +179,7 @@ function Workspace(props) {
           </div>
         </TransformComponent>
       </TransformWrapper>
+
       <div
         id="cursor-pixel"
         style={{

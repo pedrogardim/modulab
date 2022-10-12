@@ -64,7 +64,7 @@ function useSession() {
           id: moduleId,
           type: type,
           x: 0,
-          y: 0,
+          y: 4500,
           c: getRandomColor(),
         };
 

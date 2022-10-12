@@ -64,6 +64,7 @@ function Oscilloscope(props) {
       <canvas
         height="250px"
         width="512px"
+        style={{ pointerEvents: "none", imageRendering: "pixelated" }}
         id={`oscilloscope-${props.module.id}`}
       />
       <Jack
