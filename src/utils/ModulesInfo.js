@@ -89,7 +89,7 @@ export const modulesInfo = {
       ["pitch", 0],
       ["out", 0],
     ],
-    defaultParam: { f: 440, wt: 0, md: 0 },
+    defaultParam: { f: 440, t: 0, md: 0, d: 0 },
   },
   Oscilloscope: {
     x: 512,

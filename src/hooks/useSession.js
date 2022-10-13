@@ -63,23 +63,30 @@ function useSession() {
     if (type === "MasterOut") {
       let limiter = new Tone.Limiter(0).connect(recorder).toDestination();
       nodes = [limiter];
-    } else if (type === "Oscillator") {
+    }
+    ////
+    else if (type === "Oscillator") {
       let osc = new Tone.Oscillator({
         frequency: newModule.p.f,
-        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.wt],
+        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.t],
+        detune: newModule.p.d,
       }).start();
       let modGain = new Tone.Gain(newModule.p.md).connect(osc.frequency);
       nodes = [osc, modGain];
-    } else if (type === "NoiseGenerator") {
+    }
+    ////
+    else if (type === "NoiseGenerator") {
       let noise = new Tone.Noise(
         ["white", "brown", "pink"][newModule.p.t]
       ).start();
       nodes = [noise];
-    } else if (type === "LFO") {
+    }
+    ////
+    else if (type === "LFO") {
       let meter = new Tone.Meter();
       let lfo = new Tone.LFO({
         frequency: newModule.p.f,
-        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.wt],
+        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.t],
         min: 0,
         max: 1,
         amplitude: 1,
@@ -87,13 +94,19 @@ function useSession() {
         .start()
         .connect(meter);
       nodes = [lfo, meter];
-    } else if (type === "Oscilloscope") {
+    }
+    ////
+    else if (type === "Oscilloscope") {
       let meter = new Tone.Waveform(1024);
       nodes = [meter];
-    } else if (type === "Analyzer") {
+    }
+    ////
+    else if (type === "Analyzer") {
       let meter = new Tone.FFT(4096);
       nodes = [meter];
-    } else if (type === "Filter") {
+    }
+    ////
+    else if (type === "Filter") {
       let gain = new Tone.Limiter(0);
       let filter = new Tone.Filter({
         frequency: newModule.p.f,
@@ -111,7 +124,9 @@ function useSession() {
       }).connect(gain);
 
       nodes = [envelope];
-    } else if (type === "ChMixer") {
+    }
+    ////
+    else if (type === "ChMixer") {
       let master = new Tone.Channel({
         volume: newModule.p[0].v,
         pan: newModule.p[0].p,

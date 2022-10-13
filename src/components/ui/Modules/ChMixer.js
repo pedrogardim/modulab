@@ -108,10 +108,10 @@ function ChMixer(props) {
 
       <div className="break" style={{ height: 0 }} />
 
-      {[1, 2, 3, 4, 0].map((e) => (
+      {[1, 2, 3, 4, 0].map((e, i) => (
         <Jack
           type={e === 0 ? "out" : "in"}
-          index={e}
+          index={i}
           module={module}
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}

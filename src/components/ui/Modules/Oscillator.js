@@ -37,6 +37,27 @@ function Oscillator(props) {
         mousePosition={props.mousePosition}
       />
       <div className="break" />
+      <Knob
+        exp
+        logScale
+        size={32}
+        min={-2400}
+        step={1}
+        max={2400}
+        defaultValue={module.p.d}
+        onChange={(v) => {
+          props.nodes[0].set({ detune: v });
+        }}
+        onChangeCommitted={(v) =>
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.d = v;
+            return newModules;
+          })
+        }
+        mousePosition={props.mousePosition}
+      />
+      <div className="break" />
       <Select
         native
         onChange={(e) => {
@@ -51,7 +72,7 @@ function Oscillator(props) {
             return newModules;
           });
         }}
-        defaultValue={props.nodes[0].type}
+        defaultValue={module.p.t}
       >
         {["sine", "square", "sawtooth", "triangle"].map((e, i) => (
           <option value={i}>{e}</option>
