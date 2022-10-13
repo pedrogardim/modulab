@@ -115,7 +115,7 @@ function useSession() {
       let gain = new Tone.Gain();
       let envelope = new Tone.AmplitudeEnvelope().connect(gain);
 
-      nodes = [envelope, gain, null];
+      nodes = [envelope];
     } else if (type === "ChMixer") {
       let master = new Tone.Channel(-12);
       let ch1 = new Tone.Channel(0).connect(master);
@@ -128,6 +128,8 @@ function useSession() {
       let signal = new Tone.Signal({ units: "normalRange" });
 
       nodes = [signal];
+    } else {
+      nodes = [[], []];
     }
 
     setNodes((prev) => ({
@@ -147,14 +149,38 @@ function useSession() {
   };
 
   const handleConnect = (connection) => {
-    //console.log(connection);
-    if (!nodes[connection.module] || !nodes[connection.target.module]) {
-      //console.log("failed");
+    console.log(connection);
+
+    if (!nodes[connection.module] && !nodes[connection.target.module]) {
+      console.log(
+        "failed",
+        nodes[connection.module],
+        nodes[connection.target.module]
+      );
       //handleConnect(connection);
       return;
     }
-    let originNode = nodes[connection.module][connection.index];
-    let targetNode = nodes[connection.target.module][connection.target.index];
+
+    const modulesTypes = [
+      [modules.find((e) => e.id === connection.module).type, connection.index],
+      [
+        modules.find((e) => e.id === connection.target.module).type,
+        connection.target.index,
+      ],
+    ];
+
+    console.log(modulesTypes);
+
+    const connectionTypes = modulesTypes.map(
+      (t) => modulesInfo[t[0]].con[t[1]][0]
+    );
+
+    const connectionNode = modulesTypes.map(
+      (t) => modulesInfo[t[0]].con[t[1]][1]
+    );
+
+    let originNode = nodes[connection.module][connectionNode[0]];
+    let targetNode = nodes[connection.target.module][connectionNode[1]];
 
     //check if is existing
 
@@ -173,17 +199,7 @@ function useSession() {
     )
       return;
 
-    const modulesTypes = [
-      [modules.find((e) => e.id === connection.module).type, connection.index],
-      [
-        modules.find((e) => e.id === connection.target.module).type,
-        connection.target.index,
-      ],
-    ];
-
-    const connectionTypes = modulesTypes.map(
-      (type) => modulesInfo[type[0]].con.find((e) => e[1] === type[1])[0]
-    );
+    console.log(connectionTypes);
 
     if (
       connectionTypes[0] === "out" &&
@@ -201,9 +217,7 @@ function useSession() {
     ) {
       setNodes((prev) => {
         let newNodes = { ...prev };
-        newNodes[connection.target.module][
-          newNodes[connection.target.module].length
-        ] = newNodes[connection.module][0];
+        newNodes[connection.target.module][0].push(originNode);
         return newNodes;
       });
     } else if (
@@ -212,8 +226,25 @@ function useSession() {
     ) {
       setNodes((prev) => {
         let newNodes = { ...prev };
-        newNodes[connection.module][newNodes[connection.module].length] =
-          newNodes[connection.target.module][0];
+        newNodes[connection.module][0].push(targetNode);
+        return newNodes;
+      });
+    } else if (
+      connectionTypes[0] === "pitch" &&
+      connectionTypes[1] === "pitchout"
+    ) {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        newNodes[connection.target.module][1].push(originNode);
+        return newNodes;
+      });
+    } else if (
+      connectionTypes[1] === "pitch" &&
+      connectionTypes[0] === "pitchout"
+    ) {
+      setNodes((prev) => {
+        let newNodes = { ...prev };
+        newNodes[connection.module][1].push(targetNode);
         return newNodes;
       });
     } else return true;
@@ -222,8 +253,6 @@ function useSession() {
 
   const removeConnection = (connIndex) => {
     let connection = connections[connIndex];
-    let originNode = nodes[connection.module][connection.index];
-    let targetNode = nodes[connection.target.module][connection.target.index];
 
     const modulesTypes = [
       [modules.find((e) => e.id === connection.module).type, connection.index],
@@ -233,9 +262,18 @@ function useSession() {
       ],
     ];
 
+    console.log(modulesTypes);
+
     const connectionTypes = modulesTypes.map(
-      (type) => modulesInfo[type[0]].con.find((e) => e[1] === type[1])[0]
+      (t) => modulesInfo[t[0]].con[t[1]][0]
     );
+
+    const connectionNode = modulesTypes.map(
+      (t) => modulesInfo[t[0]].con[t[1]][1]
+    );
+
+    let originNode = nodes[connection.module][connectionNode[0]];
+    let targetNode = nodes[connection.target.module][connectionNode[1]];
 
     if (connectionTypes[0] === "out") {
       originNode.disconnect(targetNode);
@@ -353,11 +391,11 @@ function useSession() {
 
   useEffect(() => {
     loadConnections();
-    //console.log("nodes", nodes);
+    console.log("nodes", nodes);
   }, [nodes]);
 
   useEffect(() => {
-    //console.log(modules);
+    console.log(modules);
     if (modules && modules.length > 0) {
       localStorage.setItem(
         "musalabsSession",

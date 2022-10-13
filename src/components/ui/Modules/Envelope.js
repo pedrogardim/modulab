@@ -141,7 +141,7 @@ function Envelope(props) {
       <Jack
         type="trigger"
         label="Trigger"
-        index={2}
+        index={1}
         module={props.module}
         setDrawingLine={props.setDrawingLine}
         drawingLine={props.drawingLine}
@@ -149,7 +149,7 @@ function Envelope(props) {
 
       <Jack
         type="out"
-        index={1}
+        index={2}
         module={props.module}
         setDrawingLine={props.setDrawingLine}
         drawingLine={props.drawingLine}

@@ -23,6 +23,7 @@ import ChMixer from "./ChMixer";
 import Oscilloscope from "./Oscilloscope";
 import Analyzer from "./Analyzer";
 import Trigger from "./Trigger";
+import SeqP16 from "./SeqP16";
 
 import { modulesInfo } from "../../../utils/modulesInfo";
 
@@ -36,6 +37,7 @@ const components = {
   ChMixer: ChMixer,
   Oscilloscope: Oscilloscope,
   Analyzer: Analyzer,
+  SeqP16: SeqP16,
   Trigger: Trigger,
 };
 

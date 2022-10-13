@@ -20,8 +20,8 @@ export const modulesInfo = {
     y: 320,
     con: [
       ["in", 0],
-      ["trigger", 2],
-      ["out", 1],
+      ["trigger", 0],
+      ["out", 0],
     ],
   },
   Filter: {
@@ -29,7 +29,7 @@ export const modulesInfo = {
     y: 320,
     con: [
       ["in", 0],
-      ["out", 1],
+      ["out", 0],
     ],
   },
   LFO: {
@@ -52,8 +52,9 @@ export const modulesInfo = {
     x: 128,
     y: 320,
     con: [
-      ["out", 0],
       ["mod", 1],
+      ["pitch", 0],
+      ["out", 0],
     ],
   },
   Oscilloscope: {
@@ -61,9 +62,17 @@ export const modulesInfo = {
     y: 320,
     con: [["in", 0]],
   },
+  SeqP16: {
+    x: 512,
+    y: 96,
+    con: [
+      ["triggerout", 0],
+      ["pitchout", 0],
+    ],
+  },
   Trigger: {
     x: 320,
-    y: 128,
+    y: 64,
     con: [["triggerout", 0]],
   },
 };

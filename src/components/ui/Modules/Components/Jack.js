@@ -53,8 +53,12 @@ function Jack(props) {
         borderColor:
           props.type === "in"
             ? "rgb(179, 120, 31)"
-            : props.type.includes("mod") || props.type.includes("trigger")
+            : props.type.includes("mod")
             ? "grey"
+            : props.type.includes("trigger")
+            ? "#941EC0"
+            : props.type.includes("pitch")
+            ? "#1EC02A"
             : "rgb(32, 115, 192)",
       }}
       ref={jackRef}

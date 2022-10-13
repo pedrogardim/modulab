@@ -22,18 +22,29 @@ function Matrix(props) {
   const { modules, connections, handleConnect, removeConnection } = props;
 
   const outputs = modules.map((e) =>
-    modulesInfo[e.type].con.filter(
-      (e) => e[0] === "out" || e[0] === "triggerout"
-    )
+    modulesInfo[e.type].con
+      .map((e, i) => [e[0], i])
+      .filter(
+        (e) => e[0] === "out" || e[0] === "triggerout" || e[0] === "pitchout"
+      )
   );
 
   const inputs = modules.map((e) =>
-    modulesInfo[e.type].con.filter(
-      (e) => e[0] === "in" || e[0] === "mod" || e[0] === "trigger"
-    )
+    modulesInfo[e.type].con
+      .map((e, i) => [e[0], i])
+      .filter(
+        (e) =>
+          e[0] === "in" ||
+          e[0] === "mod" ||
+          e[0] === "trigger" ||
+          e[0] === "pitch"
+      )
   );
 
+  console.log(outputs, inputs);
+
   const checkConnection = (id1, con1, id2, con2) => {
+    //console.log(id1, con1, id2, con2);
     let result = connections.find(
       (e, i) =>
         (e.module === id1 &&

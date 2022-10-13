@@ -45,7 +45,7 @@
 .matrix-module-column{
     outline:solid black 1px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
 }
 
