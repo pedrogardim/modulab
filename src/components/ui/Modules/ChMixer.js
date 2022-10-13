@@ -13,11 +13,12 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function ChMixer(props) {
+  const { setModules, module, nodes, index } = props;
   const [mixerParams, setMixerParams] = useState(
     [1, 2, 3, 4, 0].map((e) => ({
-      muted: props.nodes[e].mute,
-      volume: props.nodes[e].volume.value,
-      pan: props.nodes[e].pan.value,
+      muted: module.p[e].m,
+      volume: module.p[e].v,
+      pan: module.p[e].p,
       id: e,
     }))
   );
@@ -38,11 +39,18 @@ function ChMixer(props) {
               par[i].volume = v;
               return par;
             });
-            props.nodes[e.id].volume.value = v;
+            nodes[e.id].volume.value = v;
+          }}
+          onChangeCommitted={(_, v) => {
+            setModules((prev) => {
+              let newModules = [...prev];
+              newModules[index].p[e.id].v = v;
+              return newModules;
+            });
           }}
           color={e === 0 ? "secondary" : "primary"}
           min={-61}
-          max={10}
+          max={12}
           valueLabelDisplay="auto"
         />
       ))}
@@ -63,40 +71,53 @@ function ChMixer(props) {
               par[i].pan = v;
               return par;
             });
-            props.nodes[e.id].pan.value = v;
+            nodes[e.id].pan.value = v;
+          }}
+          onChangeCommitted={(v) => {
+            setModules((prev) => {
+              let newModules = [...prev];
+              newModules[index].p[e.id].p = v;
+              return newModules;
+            });
           }}
         />
       ))}
 
-      <div className="break" style={{ height: 8 }} />
+      <div className="break" style={{ height: 0 }} />
 
       {mixerParams.map((e, i) => (
         <Button
-          onClick={() =>
+          onClick={() => {
             setMixerParams((prev) => {
               let par = [...prev];
               par[i].muted = !par[i].muted;
-              props.nodes[e.id].mute = par[i].muted;
+              nodes[e.id].mute = par[i].muted;
               return par;
-            })
-          }
+            });
+            setModules((prev) => {
+              let newModules = [...prev];
+              newModules[index].p[e.id].m = !newModules[index].p.m;
+              return newModules;
+            });
+          }}
           color={mixerParams[i].muted ? "secondary" : "primary"}
         >
           M
         </Button>
       ))}
 
-      <div className="break" style={{ height: 8 }} />
+      <div className="break" style={{ height: 0 }} />
 
       {[1, 2, 3, 4, 0].map((e) => (
         <Jack
           type={e === 0 ? "out" : "in"}
           index={e}
-          module={props.module}
+          module={module}
           setDrawingLine={props.setDrawingLine}
           drawingLine={props.drawingLine}
         />
       ))}
+      <div className="break" style={{ height: 32 }} />
     </>
   );
 }

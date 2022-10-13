@@ -13,12 +13,14 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function SeqP16(props) {
-  const [steps, setSteps] = useState(Array(16).fill(false));
-  const [pitches, setPitches] = useState(Array(16).fill(60));
+  const { module, nodes, setModules, index } = props;
+
+  const [steps, setSteps] = useState(module.p.steps);
+  const [pitches, setPitches] = useState(module.p.p);
   const [eventId, setEventId] = useState(null);
   const [stepTime, setStepTime] = useState("16n");
   const [currentStep, setCurrentStep] = useState(0);
-  const [pitchMode, setPitchMode] = useState(false);
+  const [pitchMode, setPitchMode] = useState(module.p.m);
 
   const toggleStep = (index) => {
     setSteps((prev) => {
@@ -29,20 +31,17 @@ function SeqP16(props) {
   };
 
   const triggerOn = (time, pitch) => {
-    if (props.nodes) {
-      props.nodes[0] &&
-        props.nodes[0].map((e) => e.triggerAttack(time ? time : 0));
-      props.nodes[1] &&
-        props.nodes[1].map((e) =>
+    if (nodes) {
+      nodes[0] && nodes[0].map((e) => e.triggerAttack(time ? time : 0));
+      nodes[1] &&
+        nodes[1].map((e) =>
           e.frequency.setValueAtTime(Tone.Frequency(pitch, "midi"), time)
         );
     }
   };
 
   const triggerOff = (time) => {
-    props.nodes &&
-      props.nodes[0] &&
-      props.nodes[0].map((e) => e.triggerRelease(time ? time : 0));
+    nodes && nodes[0] && nodes[0].map((e) => e.triggerRelease(time ? time : 0));
   };
 
   useEffect(() => {
@@ -63,8 +62,21 @@ function SeqP16(props) {
 
     setEventId(id);
 
-    console.log(steps, props.nodes);
+    setModules((prev) => {
+      let newModules = [...prev];
+      newModules[index].p.steps = [...steps];
+      newModules[index].p.p = [...pitches];
+      return newModules;
+    });
   }, [steps, pitches]);
+
+  useEffect(() => {
+    setModules((prev) => {
+      let newModules = [...prev];
+      newModules[index].p.m = pitchMode;
+      return newModules;
+    });
+  }, [pitchMode]);
 
   return (
     <>

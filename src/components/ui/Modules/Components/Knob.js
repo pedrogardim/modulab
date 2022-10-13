@@ -113,8 +113,8 @@ function Knob(props) {
 
   useEffect(() => {
     if (!props.rotatory) setValueAtClick(value);
-    if (!open && typeof value === "number" && props.onChangeCommited)
-      props.onChangeCommited(value);
+    if (!open && typeof value === "number" && props.onChangeCommitted)
+      props.onChangeCommitted(value);
   }, [open]);
 
   useEffect(() => {

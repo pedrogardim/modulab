@@ -14,8 +14,6 @@ function useSession() {
   const [recorder] = useState(new Tone.Recorder());
   const [isRecording, setIsRecording] = useState(false);
 
-  //const sessionKey = useParams().key;
-
   const loadConnections = () => {
     if (!localStorage.getItem("musalabsSession")) return;
     let conn = JSON.parse(localStorage.getItem("musalabsSession")).connections;
@@ -31,16 +29,7 @@ function useSession() {
       : localStorage.getItem("musalabsSession") &&
         JSON.parse(localStorage.getItem("musalabsSession"));
 
-    /*  if (
-      !session ||
-      session.modules.findIndex((e) => e.type === "MasterOut") === -1
-    ) {
-      addModule("MasterOut");
-    } */
-
     if (!session) return;
-
-    //console.log("loading session", session);
 
     session.modules.forEach((e) =>
       addModule(
@@ -49,12 +38,9 @@ function useSession() {
         session.connections.filter((e) => e.module === e.id)
       )
     );
-
-    //session.connections.forEach((e) => handleConnect(e));
   };
 
   const addModule = (type, module, conn) => {
-    //console.log("adding module", type, module, conn);
     let moduleId = !modules.length
       ? 0
       : Math.max(...modules.map((e) => e.id)) + 1;
@@ -66,10 +52,10 @@ function useSession() {
           x: 0,
           y: 4500,
           c: getRandomColor(),
+          p: { ...modulesInfo[type].defaultParam },
         };
 
     if (modules.findIndex((e) => newModule.id === e.id) !== -1) {
-      //console.log("prevented", newModule.id);
       return;
     }
 
@@ -79,21 +65,21 @@ function useSession() {
       nodes = [limiter];
     } else if (type === "Oscillator") {
       let osc = new Tone.Oscillator({
-        frequency: 400,
-        type: "sine",
-        volume: -6,
+        frequency: newModule.p.f,
+        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.wt],
       }).start();
-      let modGain = new Tone.Gain(0).connect(osc.frequency);
+      let modGain = new Tone.Gain(newModule.p.md).connect(osc.frequency);
       nodes = [osc, modGain];
     } else if (type === "NoiseGenerator") {
-      let noise = new Tone.Noise("white").start();
+      let noise = new Tone.Noise(
+        ["white", "brown", "pink"][newModule.p.t]
+      ).start();
       nodes = [noise];
     } else if (type === "LFO") {
       let meter = new Tone.Meter();
-
       let lfo = new Tone.LFO({
-        frequency: 1,
-        type: "sine",
+        frequency: newModule.p.f,
+        type: ["sine", "square", "sawtooth", "triangle"][newModule.p.wt],
         min: 0,
         max: 1,
         amplitude: 1,
@@ -109,25 +95,38 @@ function useSession() {
       nodes = [meter];
     } else if (type === "Filter") {
       let gain = new Tone.Limiter(0);
-      let filter = new Tone.Filter().connect(gain);
+      let filter = new Tone.Filter({
+        frequency: newModule.p.f,
+        Q: newModule.p.q,
+        type: ["lowpass", "highpass", "bandpass"][newModule.p.t],
+      }).connect(gain);
       nodes = [filter, gain];
     } else if (type === "Envelope") {
       let gain = new Tone.Gain();
-      let envelope = new Tone.AmplitudeEnvelope().connect(gain);
+      let envelope = new Tone.AmplitudeEnvelope({
+        attack: newModule.p.a,
+        decay: newModule.p.d,
+        sustain: newModule.p.s,
+        release: newModule.p.r,
+      }).connect(gain);
 
       nodes = [envelope];
     } else if (type === "ChMixer") {
-      let master = new Tone.Channel(-12);
-      let ch1 = new Tone.Channel(0).connect(master);
-      let ch2 = new Tone.Channel(0).connect(master);
-      let ch3 = new Tone.Channel(0).connect(master);
-      let ch4 = new Tone.Channel(0).connect(master);
-
-      nodes = [master, ch1, ch2, ch3, ch4];
-    } else if (type === "Trigger") {
-      let signal = new Tone.Signal({ units: "normalRange" });
-
-      nodes = [signal];
+      let master = new Tone.Channel({
+        volume: newModule.p[0].v,
+        pan: newModule.p[0].p,
+        mute: newModule.p[0].m,
+      });
+      let channels = Array(4)
+        .fill(0)
+        .map((e, i) =>
+          new Tone.Channel({
+            volume: newModule.p[i + 1].v,
+            pan: newModule.p[i + 1].p,
+            mute: newModule.p[i + 1].m,
+          }).connect(master)
+        );
+      nodes = [master, ...channels];
     } else {
       nodes = [[], []];
     }
@@ -149,8 +148,6 @@ function useSession() {
   };
 
   const handleConnect = (connection) => {
-    console.log(connection);
-
     if (!nodes[connection.module] && !nodes[connection.target.module]) {
       console.log(
         "failed",
@@ -168,8 +165,6 @@ function useSession() {
         connection.target.index,
       ],
     ];
-
-    console.log(modulesTypes);
 
     const connectionTypes = modulesTypes.map(
       (t) => modulesInfo[t[0]].con[t[1]][0]
@@ -198,8 +193,6 @@ function useSession() {
       )
     )
       return;
-
-    console.log(connectionTypes);
 
     if (
       connectionTypes[0] === "out" &&

@@ -13,6 +13,7 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function Oscillator(props) {
+  const { index, module, setModules } = props;
   return (
     <>
       <Knob
@@ -22,19 +23,38 @@ function Oscillator(props) {
         min={20}
         step={1}
         max={20000}
-        defaultValue={props.nodes[0].frequency.value}
+        defaultValue={module.p.f}
         onChange={(v) => {
           props.nodes[0].set({ frequency: v });
         }}
+        onChangeCommitted={(v) =>
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.f = v;
+            return newModules;
+          })
+        }
         mousePosition={props.mousePosition}
       />
       <div className="break" />
       <Select
-        onChange={(e) => props.nodes[0].set({ type: e.target.value })}
+        native
+        onChange={(e) => {
+          props.nodes[0].set({
+            type: ["sine", "square", "sawtooth", "triangle"][
+              parseInt(e.target.value)
+            ],
+          });
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.t = parseInt(e.target.value);
+            return newModules;
+          });
+        }}
         defaultValue={props.nodes[0].type}
       >
-        {["sine", "square", "sawtooth", "triangle"].map((e) => (
-          <option value={e}>{e}</option>
+        {["sine", "square", "sawtooth", "triangle"].map((e, i) => (
+          <option value={i}>{e}</option>
         ))}
       </Select>
       <div className="break" />
@@ -54,10 +74,17 @@ function Oscillator(props) {
         min={0}
         step={1}
         max={20000}
-        defaultValue={props.nodes[1].gain.value}
+        defaultValue={module.p.md}
         onChange={(v) => {
           props.nodes[1].set({ gain: v });
         }}
+        onChangeCommitted={(v) =>
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.md = v;
+            return newModules;
+          })
+        }
         mousePosition={props.mousePosition}
       />
 

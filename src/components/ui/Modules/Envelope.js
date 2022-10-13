@@ -13,8 +13,17 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function Envelope(props) {
+  const {
+    setModules,
+    index,
+    nodes,
+    module,
+    mousePosition,
+    setDrawingLine,
+    drawingLine,
+  } = props;
   const updateCurve = (curve) => {
-    var canvas = document.getElementById(`envelope-canvas-${props.module.id}`);
+    var canvas = document.getElementById(`envelope-canvas-${module.id}`);
     if (!canvas) return;
     var ctx = canvas.getContext("2d");
     var canvasWidth = canvas.width;
@@ -38,36 +47,31 @@ function Envelope(props) {
   };
   /* 
   const triggerOn = () => {
-    props.nodes[2].value = 1;
+    nodes[2].value = 1;
   };
 
   const triggerOff = () => {
-    props.nodes[2].value = 0;
+    nodes[2].value = 0;
   }; */
 
   useEffect(() => {
-    props.nodes[0].asArray(144).then((r) => updateCurve(r));
-  }, [
-    props.nodes[0].attack,
-    props.nodes[0].decay,
-    props.nodes[0].sustain,
-    props.nodes[0].release,
-  ]);
+    nodes[0].asArray(144).then((r) => updateCurve(r));
+  }, [nodes[0].attack, nodes[0].decay, nodes[0].sustain, nodes[0].release]);
 
   /* useEffect(() => {
-    if (props.nodes[2]) {
-      props.nodes[2].value === 1
-        ? props.nodes[0].triggerAttack()
-        : props.nodes[0].triggerRelease();
+    if (nodes[2]) {
+      nodes[2].value === 1
+        ? nodes[0].triggerAttack()
+        : nodes[0].triggerRelease();
     }
-  }, [props.nodes[2] && props.nodes[2].value]);
+  }, [nodes[2] && nodes[2].value]);
  */
   return (
     <>
       <canvas
         height={96}
         width={144}
-        id={"envelope-canvas-" + props.module.id}
+        id={"envelope-canvas-" + module.id}
         style={{ pointerEvents: "none", imageRendering: "pixelated" }}
       />
 
@@ -78,10 +82,17 @@ function Envelope(props) {
         min={0}
         step={0.01}
         max={10}
-        defaultValue={props.nodes[0].attack}
-        mousePosition={props.mousePosition}
+        defaultValue={module.p.a}
+        mousePosition={mousePosition}
         onChange={(v) => {
-          props.nodes[0].set({ attack: v });
+          nodes[0].set({ attack: v });
+        }}
+        onChangeCommitted={(v) => {
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.a = v;
+            return newModules;
+          });
         }}
       />
       <Knob
@@ -89,10 +100,17 @@ function Envelope(props) {
         min={0}
         step={0.01}
         max={5}
-        defaultValue={props.nodes[0].decay}
-        mousePosition={props.mousePosition}
+        defaultValue={module.p.d}
+        mousePosition={mousePosition}
         onChange={(v) => {
-          props.nodes[0].set({ decay: v });
+          nodes[0].set({ decay: v });
+        }}
+        onChangeCommitted={(v) => {
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.d = v;
+            return newModules;
+          });
         }}
       />
       <Knob
@@ -100,10 +118,17 @@ function Envelope(props) {
         min={0}
         step={0.01}
         max={1}
-        defaultValue={props.nodes[0].sustain}
-        mousePosition={props.mousePosition}
+        defaultValue={module.p.s}
+        mousePosition={mousePosition}
         onChange={(v) => {
-          props.nodes[0].set({ sustain: v });
+          nodes[0].set({ sustain: v });
+        }}
+        onChangeCommitted={(v) => {
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.s = v;
+            return newModules;
+          });
         }}
       />
       <Knob
@@ -111,18 +136,25 @@ function Envelope(props) {
         min={0}
         step={0.01}
         max={10}
-        defaultValue={props.nodes[0].release}
-        mousePosition={props.mousePosition}
+        defaultValue={module.p.r}
+        mousePosition={mousePosition}
         onChange={(v) => {
-          props.nodes[0].set({ release: v });
+          nodes[0].set({ release: v });
+        }}
+        onChangeCommitted={(v) => {
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.r = v;
+            return newModules;
+          });
         }}
       />
 
       <div className="break" />
 
       <Button
-        onMouseDown={() => props.nodes[0].triggerAttack()}
-        onMouseUp={() => props.nodes[0].triggerRelease()}
+        onMouseDown={() => nodes[0].triggerAttack()}
+        onMouseUp={() => nodes[0].triggerRelease()}
         variant="outlined"
         color="primary"
       >
@@ -133,26 +165,26 @@ function Envelope(props) {
       <Jack
         type="in"
         index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
 
       <Jack
         type="trigger"
         label="Trigger"
         index={1}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
 
       <Jack
         type="out"
         index={2}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
     </>
   );

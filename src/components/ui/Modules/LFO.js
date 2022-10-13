@@ -16,6 +16,7 @@ let lightIntensity = 0;
 
 function LFO(props) {
   const [LEDLvl, setLEDLvl] = useState(0);
+  const { module, setModules, index } = props;
 
   useEffect(() => {
     setInterval(() => {
@@ -44,20 +45,38 @@ function LFO(props) {
         step={0.1}
         max={10}
         color="green"
-        defaultValue={props.nodes[0].frequency.value}
+        defaultValue={module.p.f}
         onChange={(v) => {
           props.nodes[0].set({ frequency: v });
         }}
+        onChangeCommitted={(v) =>
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.f = v;
+            return newModules;
+          })
+        }
         mousePosition={props.mousePosition}
       />
       <div className="break" />
       <Select
         native
-        onChange={(e) => props.nodes[0].set({ type: e.target.value })}
+        onChange={(e) => {
+          props.nodes[0].set({
+            type: ["sine", "square", "sawtooth", "triangle"][
+              parseInt(e.target.value)
+            ],
+          });
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.t = parseInt(e.target.value);
+            return newModules;
+          });
+        }}
         defaultValue={props.nodes[0].type}
       >
-        {["sine", "square", "sawtooth", "triangle"].map((e) => (
-          <option value={e}>{e}</option>
+        {["sine", "square", "sawtooth", "triangle"].map((e, i) => (
+          <option value={i}>{e}</option>
         ))}
       </Select>
       <div className="break" />

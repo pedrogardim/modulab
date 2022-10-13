@@ -5,9 +5,10 @@ import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
 
 function NoiseGenerator(props) {
+  const { index, module, setModules } = props;
   return (
     <>
-      <Knob
+      {/* <Knob
         exp
         size={64}
         min={0}
@@ -20,13 +21,22 @@ function NoiseGenerator(props) {
         color="lightgray"
         mousePosition={props.mousePosition}
       />
-      <div className="break" />
+      <div className="break" /> */}
       <Select
-        onChange={(e) => props.nodes[0].set({ type: e.target.value })}
-        defaultValue={props.nodes[0].type}
+        onChange={(e) => {
+          props.nodes[0].set({
+            type: ["white", "brown", "pink"][parseInt(e.target.value)],
+          });
+          setModules((prev) => {
+            let newModules = [...prev];
+            newModules[index].p.t = parseInt(e.target.value);
+            return newModules;
+          });
+        }}
+        defaultValue={module.p.t}
       >
-        {["white", "brown", "pink"].map((e) => (
-          <MenuItem value={e}>{e}</MenuItem>
+        {["white", "brown", "pink"].map((e, i) => (
+          <MenuItem value={i}>{e}</MenuItem>
         ))}
       </Select>
       <div className="break" />
