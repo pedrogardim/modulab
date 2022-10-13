@@ -14,7 +14,6 @@ function Jack(props) {
     props.setDrawingLine({
       module: props.module.id,
       index: props.index,
-      type: props.type,
       color: getRandomColor(),
     });
   };
@@ -30,7 +29,6 @@ function Jack(props) {
         target: {
           module: props.module.id,
           index: props.index,
-          type: props.type,
         },
       }));
     }

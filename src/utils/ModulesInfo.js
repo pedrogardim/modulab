@@ -18,12 +18,19 @@ export const modulesInfo = {
   Envelope: {
     x: 192,
     y: 320,
-    con: [["in", 0][("trigger", 2)], ["out", 1]],
+    con: [
+      ["in", 0],
+      ["trigger", 2],
+      ["out", 1],
+    ],
   },
   Filter: {
     x: 128,
     y: 320,
-    con: [["in", 0], "out", 1],
+    con: [
+      ["in", 0],
+      ["out", 1],
+    ],
   },
   LFO: {
     x: 128,

@@ -1,6 +1,6 @@
 .matrix-header-column{
     width:128px;
-    height:512px;
+    /* height:512px; */
     outline:solid black 1px;
     display: flex;
     flex-direction: column;
@@ -17,7 +17,9 @@
     outline: solid black 1px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content:space-between;
+    align-items: center;
+
 }
 
 .matrix-header-column-module-inputs-cont{
@@ -26,6 +28,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+
 }
 
 .matrix-header-column-module-input{
@@ -33,6 +37,9 @@
     height:64px;
     display: flex;
     outline: solid black 1px;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .matrix-module-column{
@@ -46,6 +53,9 @@
 .matrix-module-column-header{
     height:32px;
     outline:solid black 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .matrix-module-connection-column{
@@ -58,6 +68,9 @@
 .matrix-module-connection-column-header{
     height: 32px;
     outline: solid black 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .matrix-module-connection-tile{
@@ -67,10 +80,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.3)
 }
 
 .matrix-module-connection-tile > div{
     width: 32px;
     height: 32px;
     border-radius: 999px;
+    box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.34);
 }

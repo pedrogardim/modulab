@@ -3,7 +3,7 @@ import * as Tone from "tone";
 
 import { getRandomColor } from "../utils/colorUtils";
 import { encodeAudioFile } from "../utils/audioutils";
-import { useParams } from "react-router-dom";
+import { modulesInfo } from "../utils/modulesInfo";
 
 function useSession() {
   const [modules, setModules] = useState([]);
@@ -173,19 +173,31 @@ function useSession() {
     )
       return;
 
+    const modulesTypes = [
+      [modules.find((e) => e.id === connection.module).type, connection.index],
+      [
+        modules.find((e) => e.id === connection.target.module).type,
+        connection.target.index,
+      ],
+    ];
+
+    const connectionTypes = modulesTypes.map(
+      (type) => modulesInfo[type[0]].con.find((e) => e[1] === type[1])[0]
+    );
+
     if (
-      connection.type === "out" &&
-      (connection.target.type === "in" || connection.target.type === "mod")
+      connectionTypes[0] === "out" &&
+      (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
     ) {
       originNode.connect(targetNode);
     } else if (
-      (connection.type === "in" || connection.type === "mod") &&
-      connection.target.type === "out"
+      (connectionTypes[0] === "in" || connectionTypes[0] === "mod") &&
+      connectionTypes[1] === "out"
     ) {
       targetNode.connect(originNode);
     } else if (
-      connection.type === "trigger" &&
-      connection.target.type === "triggerout"
+      connectionTypes[0] === "trigger" &&
+      connectionTypes[1] === "triggerout"
     ) {
       setNodes((prev) => {
         let newNodes = { ...prev };
@@ -195,8 +207,8 @@ function useSession() {
         return newNodes;
       });
     } else if (
-      connection.target.type === "trigger" &&
-      connection.type === "triggerout"
+      connectionTypes[1] === "trigger" &&
+      connectionTypes[0] === "triggerout"
     ) {
       setNodes((prev) => {
         let newNodes = { ...prev };
@@ -213,13 +225,25 @@ function useSession() {
     let originNode = nodes[connection.module][connection.index];
     let targetNode = nodes[connection.target.module][connection.target.index];
 
-    if (connection.type === "out") {
+    const modulesTypes = [
+      [modules.find((e) => e.id === connection.module).type, connection.index],
+      [
+        modules.find((e) => e.id === connection.target.module).type,
+        connection.target.index,
+      ],
+    ];
+
+    const connectionTypes = modulesTypes.map(
+      (type) => modulesInfo[type[0]].con.find((e) => e[1] === type[1])[0]
+    );
+
+    if (connectionTypes[0] === "out") {
       originNode.disconnect(targetNode);
     }
-    if (connection.type === "in") {
+    if (connectionTypes[0] === "in") {
       targetNode.disconnect(originNode);
     }
-    if (connection.type === "trigger") {
+    if (connectionTypes[0] === "trigger") {
       setNodes((prev) => {
         let newNodes = { ...prev };
         delete newNodes[connection.target.module][
@@ -228,7 +252,7 @@ function useSession() {
         return newNodes;
       });
     }
-    if (connection.type === "triggerout") {
+    if (connectionTypes[0] === "triggerout") {
       setNodes((prev) => {
         let newNodes = { ...prev };
         delete newNodes[connection.module][newNodes[connection.module].length];

@@ -22,11 +22,15 @@ function Matrix(props) {
   const { modules, connections, handleConnect, removeConnection } = props;
 
   const outputs = modules.map((e) =>
-    modulesInfo[e.type].con.filter((e) => e[0] === "out")
+    modulesInfo[e.type].con.filter(
+      (e) => e[0] === "out" || e[0] === "triggerout"
+    )
   );
 
   const inputs = modules.map((e) =>
-    modulesInfo[e.type].con.filter((e) => e[0] === "in" || e[0] === "mod")
+    modulesInfo[e.type].con.filter(
+      (e) => e[0] === "in" || e[0] === "mod" || e[0] === "trigger"
+    )
   );
 
   const checkConnection = (id1, con1, id2, con2) => {
@@ -93,6 +97,7 @@ function Matrix(props) {
                 className="matrix-header-column-module"
                 style={{
                   height: inputs[i].length * 64,
+                  background: e.c,
                 }}
               >
                 {e.type}
@@ -121,6 +126,7 @@ function Matrix(props) {
                 className="matrix-module-column"
                 style={{
                   width: outputs[i].length * 64,
+                  background: e.c,
                 }}
               >
                 <div
@@ -154,16 +160,23 @@ function Matrix(props) {
                             )
                           }
                         >
-                          <div
-                            style={{
-                              backgroundColor: checkConnection(
-                                modules[modIndex].id,
-                                input[1],
-                                e.id,
-                                output[1]
-                              ),
-                            }}
-                          />
+                          {checkConnection(
+                            modules[modIndex].id,
+                            input[1],
+                            e.id,
+                            output[1]
+                          ) && (
+                            <div
+                              style={{
+                                backgroundColor: checkConnection(
+                                  modules[modIndex].id,
+                                  input[1],
+                                  e.id,
+                                  output[1]
+                                ),
+                              }}
+                            />
+                          )}
                         </div>
                       ))
                     )}
