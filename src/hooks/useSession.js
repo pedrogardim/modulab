@@ -142,6 +142,13 @@ function useSession() {
           }).connect(master)
         );
       nodes = [master, ...channels];
+    }
+    /////
+    else if (type === "VCA") {
+      let amp = new Tone.Gain(0, "normalRange");
+      let controlGain = new Tone.Gain(0, "audioRan").connect(amp.gain);
+
+      nodes = [amp, controlGain];
     } else {
       nodes = [[], []];
     }

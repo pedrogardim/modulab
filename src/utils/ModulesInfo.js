@@ -110,9 +110,19 @@ export const modulesInfo = {
       m: false,
     },
   },
-  Trigger: {
+  VCA: {
+    x: 256,
+    y: 128,
+    con: [
+      ["in", 0],
+      ["out", 0],
+      ["mod", 1],
+    ],
+    defaultParam: { v: 0, md: 0 },
+  },
+  /* Trigger: {
     x: 320,
     y: 64,
     con: [["triggerout", 0]],
-  },
+  }, */
 };

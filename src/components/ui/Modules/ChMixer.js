@@ -96,7 +96,7 @@ function ChMixer(props) {
             });
             setModules((prev) => {
               let newModules = [...prev];
-              newModules[index].p[e.id].m = !newModules[index].p.m;
+              newModules[index].p[e.id].m = !newModules[index].p[e.id].m;
               return newModules;
             });
           }}

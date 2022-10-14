@@ -24,6 +24,7 @@ import Oscilloscope from "./Oscilloscope";
 import Analyzer from "./Analyzer";
 import Trigger from "./Trigger";
 import SeqP16 from "./SeqP16";
+import VCA from "./VCA";
 
 import { modulesInfo } from "../../../utils/modulesInfo";
 
@@ -39,6 +40,7 @@ const components = {
   Analyzer: Analyzer,
   SeqP16: SeqP16,
   Trigger: Trigger,
+  VCA: VCA,
 };
 
 function Module(props) {
