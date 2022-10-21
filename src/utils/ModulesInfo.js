@@ -47,9 +47,8 @@ export const modulesInfo = {
     x: 192,
     y: 320,
     con: [
-      ["in", 0],
-      ["trigger", 0],
       ["out", 0],
+      ["in", 0],
     ],
     defaultParam: { a: 0.01, d: 0.1, s: 0.5, r: 0.1 },
   },

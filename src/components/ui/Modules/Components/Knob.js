@@ -104,7 +104,7 @@ function Knob(props) {
   };
 
   useEffect(() => {
-    props.onChange(value);
+    if (typeof value === "number") props.onChange(value);
     if (!props.rotatory)
       setAngle(
         ((value - props.min) / (props.max - props.min)) * (135 - -135) - 135

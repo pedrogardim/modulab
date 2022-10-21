@@ -22,7 +22,7 @@ function Workspace(props) {
     modules,
     setModules,
     nodes,
-    //setNodes,
+    setNodes,
     connections,
     // setConnections,
     isRecording,
@@ -74,7 +74,7 @@ function Workspace(props) {
   return (
     <>
       <div className="ws-background" />
-      {!soundStarted && (
+      {/* !soundStarted && (
         <div
           className="sound-start-layer"
           onClick={() => {
@@ -84,7 +84,7 @@ function Workspace(props) {
         >
           <Icon>play_arrow</Icon>
         </div>
-      )}
+      ) */}
 
       <TransformWrapper
         limitToBounds={false}
@@ -138,6 +138,8 @@ function Workspace(props) {
                   removeModule={() => removeModule(module.id)}
                   nodes={nodes[module.id]}
                   cursorPixelRef={cursorPixelRef}
+                  connections={connections}
+                  setNodes={setNodes}
                 />
               ))
             ) : !modules.length ? (
@@ -162,6 +164,7 @@ function Workspace(props) {
                       addModule(e);
                       setModulePicker(null);
                     }}
+                    key={i}
                   >
                     {e}
                   </MenuItem>

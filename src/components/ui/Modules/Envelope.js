@@ -9,8 +9,14 @@ import { Card, Select, Button, Icon, IconButton } from "@material-ui/core";
 
 import Draggable from "react-draggable";
 
+import { AudioWorkletNode } from "standardized-audio-context";
+
+//import TriggerDetectorNode from "../../../../public/worklet/triggerDetector";
+
 import Jack from "./Components/Jack";
 import Knob from "./Components/Knob";
+
+let triggered = false;
 
 function Envelope(props) {
   const {
@@ -21,7 +27,13 @@ function Envelope(props) {
     mousePosition,
     setDrawingLine,
     drawingLine,
+    connections,
+    setNodes,
   } = props;
+  /* 
+  
+ const [eventId, setEventId] = useState(null);
+
   const updateCurve = (curve) => {
     var canvas = document.getElementById(`envelope-canvas-${module.id}`);
     if (!canvas) return;
@@ -45,27 +57,55 @@ function Envelope(props) {
 
     ctx.stroke();
   };
-  /* 
+
   const triggerOn = () => {
-    nodes[2].value = 1;
+    console.log("triggerOnEnv");
   };
 
   const triggerOff = () => {
-    nodes[2].value = 0;
-  }; */
+    console.log("triggerOffEnv");
+  };
 
   useEffect(() => {
     nodes[0].asArray(144).then((r) => updateCurve(r));
   }, [nodes[0].attack, nodes[0].decay, nodes[0].sustain, nodes[0].release]);
-
-  /* useEffect(() => {
-    if (nodes[2]) {
-      nodes[2].value === 1
-        ? nodes[0].triggerAttack()
-        : nodes[0].triggerRelease();
-    }
-  }, [nodes[2] && nodes[2].value]);
  */
+
+  useEffect(() => {
+    const context = Tone.getContext().rawContext;
+    class TriggerDetectorNode extends AudioWorkletNode {
+      constructor(actx, options) {
+        super(actx, "TriggerDetector", {
+          numberOfInputs: 1,
+          numberOfOutputs: 1,
+          channelCount: 1,
+          parameterData: options,
+        });
+        this.attack = this.parameters.get("attack");
+        this.attackcurve = this.parameters.get("attackcurve");
+        this.decay = this.parameters.get("decay");
+        this.sustain = this.parameters.get("sustain");
+        this.release = this.parameters.get("release");
+      }
+    }
+    context.audioWorklet
+      .addModule("worklet/triggerDetector.js")
+      .then(() => {
+        let node = new TriggerDetectorNode(context, {
+          //processorOptions: { env: nodes[0] },
+        });
+        console.log(node);
+        setNodes((prev) => {
+          let newNodes = { ...prev };
+          newNodes[module.id][0] = node;
+          return newNodes;
+        });
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
+  //console.log(nodes[1].getValue());
+
   return (
     <>
       <canvas
@@ -85,7 +125,7 @@ function Envelope(props) {
         defaultValue={module.p.a}
         mousePosition={mousePosition}
         onChange={(v) => {
-          nodes[0].set({ attack: v });
+          nodes[0] && nodes[0].attack.setValueAtTime(v, Tone.now());
         }}
         onChangeCommitted={(v) => {
           setModules((prev) => {
@@ -103,7 +143,7 @@ function Envelope(props) {
         defaultValue={module.p.d}
         mousePosition={mousePosition}
         onChange={(v) => {
-          nodes[0].set({ decay: v });
+          nodes[0] && nodes[0].decay.setValueAtTime(v, Tone.now());
         }}
         onChangeCommitted={(v) => {
           setModules((prev) => {
@@ -121,7 +161,7 @@ function Envelope(props) {
         defaultValue={module.p.s}
         mousePosition={mousePosition}
         onChange={(v) => {
-          nodes[0].set({ sustain: v });
+          nodes[0] && nodes[0].sustain.setValueAtTime(v, Tone.now());
         }}
         onChangeCommitted={(v) => {
           setModules((prev) => {
@@ -139,7 +179,7 @@ function Envelope(props) {
         defaultValue={module.p.r}
         mousePosition={mousePosition}
         onChange={(v) => {
-          nodes[0].set({ release: v });
+          nodes[0] && nodes[0].release.setValueAtTime(v, Tone.now());
         }}
         onChangeCommitted={(v) => {
           setModules((prev) => {
@@ -162,16 +202,16 @@ function Envelope(props) {
       </Button>
       <div className="break" />
 
-      <Jack
+      {/* <Jack
         type="in"
         index={0}
         module={module}
         setDrawingLine={setDrawingLine}
         drawingLine={drawingLine}
-      />
+      /> */}
 
       <Jack
-        type="trigger"
+        type="in"
         label="Trigger"
         index={1}
         module={module}
@@ -181,7 +221,7 @@ function Envelope(props) {
 
       <Jack
         type="out"
-        index={2}
+        index={0}
         module={module}
         setDrawingLine={setDrawingLine}
         drawingLine={drawingLine}

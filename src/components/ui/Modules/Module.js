@@ -99,7 +99,7 @@ function Module(props) {
       </Draggable>
       <Menu
         anchorEl={anchorEl}
-        open={anchorEl}
+        open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem
@@ -124,7 +124,7 @@ function Module(props) {
         )}
       </Menu>
       <Dialog
-        open={colorPicker}
+        open={Boolean(colorPicker)}
         onClose={() => setColorPicker(false)}
         maxWidth="xs"
         fullWidth

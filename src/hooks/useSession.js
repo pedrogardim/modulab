@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import * as Tone from "tone";
 
+import { EnvelopeNode } from "../customNodes/EnvelopeNode";
+
 import { getRandomColor } from "../utils/colorUtils";
 import { encodeAudioFile } from "../utils/audioutils";
 import { modulesInfo } from "../utils/modulesInfo";
@@ -22,6 +24,7 @@ function useSession() {
   };
 
   const loadSession = (json) => {
+    localStorage.setItem("musalabsSession", "");
     clearWorkspace(true);
 
     let session = json
@@ -38,6 +41,8 @@ function useSession() {
         session.connections.filter((e) => e.module === e.id)
       )
     );
+
+    Tone.Transport.start();
   };
 
   const addModule = (type, module, conn) => {
@@ -114,16 +119,17 @@ function useSession() {
         type: ["lowpass", "highpass", "bandpass"][newModule.p.t],
       }).connect(gain);
       nodes = [filter, gain];
-    } else if (type === "Envelope") {
-      let gain = new Tone.Gain();
-      let envelope = new Tone.AmplitudeEnvelope({
+    }
+    /////
+    if (type === "Envelope") {
+      /* let envelope = new EnvelopeNode({
         attack: newModule.p.a,
         decay: newModule.p.d,
         sustain: newModule.p.s,
         release: newModule.p.r,
-      }).connect(gain);
-
-      nodes = [envelope];
+      });
+      nodes = [envelope]; */
+      nodes = [];
     }
     ////
     else if (type === "ChMixer") {
@@ -149,7 +155,7 @@ function useSession() {
       let controlGain = new Tone.Gain(0, "audioRan").connect(amp.gain);
 
       nodes = [amp, controlGain];
-    } else {
+    } else if (type === "SeqP16") {
       nodes = [[], []];
     }
 
@@ -199,6 +205,8 @@ function useSession() {
     let originNode = nodes[connection.module][connectionNode[0]];
     let targetNode = nodes[connection.target.module][connectionNode[1]];
 
+    console.log(originNode, targetNode);
+
     //check if is existing
 
     if (
@@ -216,17 +224,34 @@ function useSession() {
     )
       return;
 
+    console.log(connectionTypes);
+
     if (
       connectionTypes[0] === "out" &&
       (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
     ) {
-      originNode.connect(targetNode);
+      //originNode.connect(targetNode);
+      try {
+        Tone.connect(originNode, targetNode, [0], [0]);
+        //originNode.connect(targetNode);
+      } catch (e) {
+        console.log(e);
+      }
     } else if (
       (connectionTypes[0] === "in" || connectionTypes[0] === "mod") &&
       connectionTypes[1] === "out"
     ) {
-      targetNode.connect(originNode);
-    } else if (
+      //console.log("case2");
+      //targetNode.connect(originNode);
+      try {
+        Tone.connect(targetNode, originNode, [0], [0]);
+        //targetNode.connect(originNode);
+      } catch (e) {
+        console.log(e);
+      }
+
+      //Tone.connect(targetNode, originNode);
+    } /* else if (
       connectionTypes[0] === "trigger" &&
       connectionTypes[1] === "triggerout"
     ) {
@@ -244,7 +269,7 @@ function useSession() {
         newNodes[connection.module][0].push(targetNode);
         return newNodes;
       });
-    } else if (
+    } */ else if (
       connectionTypes[0] === "pitch" &&
       connectionTypes[1] === "pitchout"
     ) {
@@ -381,8 +406,12 @@ function useSession() {
 
   useEffect(() => {
     //localStorage.setItem("musalabsSession", "");
+    console.log("USEEFFECT TRIGGERED");
 
     loadSession();
+    EnvelopeNode.Initialize(Tone.getContext().rawContext)
+      .then((e) => console.log("EnvelopeNode.Initialize"))
+      .catch((e) => console.log(e));
     // addModule("Envelope");
     // addModule("Trigger");
 
