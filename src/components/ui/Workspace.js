@@ -104,6 +104,8 @@ function Workspace(props) {
             "option",
             "span",
             "button",
+            "text-input",
+            "input",
           ],
         }}
         onWheel={() => setMoveState((p) => !p)}
@@ -162,7 +164,7 @@ function Workspace(props) {
                   <MenuItem
                     onClick={() => {
                       addModule(e);
-                      setModulePicker(null);
+                      //setModulePicker(null);
                     }}
                     key={i}
                   >

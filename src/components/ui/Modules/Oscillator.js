@@ -20,7 +20,7 @@ function Oscillator(props) {
         exp
         logScale
         size={64}
-        min={20}
+        min={0}
         step={1}
         max={20000}
         defaultValue={module.p.f}
@@ -81,13 +81,14 @@ function Oscillator(props) {
       <div className="break" />
 
       <Jack
+        label="CV"
         type="mod"
         index={0}
         module={props.module}
         setDrawingLine={props.setDrawingLine}
         drawingLine={props.drawingLine}
       />
-
+      {/* 
       <Knob
         hideValue
         label={"Mod Depth"}
@@ -115,7 +116,7 @@ function Oscillator(props) {
         module={props.module}
         setDrawingLine={props.setDrawingLine}
         drawingLine={props.drawingLine}
-      />
+      /> */}
 
       <Jack
         type="out"

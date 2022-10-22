@@ -25,6 +25,8 @@ import Analyzer from "./Analyzer";
 import Trigger from "./Trigger";
 import SeqP16 from "./SeqP16";
 import VCA from "./VCA";
+import Meter from "./Meter";
+import Signal from "./Signal";
 
 import { modulesInfo } from "../../../utils/modulesInfo";
 
@@ -41,6 +43,8 @@ const components = {
   SeqP16: SeqP16,
   Trigger: Trigger,
   VCA: VCA,
+  Meter: Meter,
+  Signal: Signal,
 };
 
 function Module(props) {
@@ -80,7 +84,7 @@ function Module(props) {
             return newModules;
           })
         }
-        cancel=".module-jack, .MuiSlider-root, .knob"
+        cancel=".module-jack, .MuiSlider-root, .knob, .text-input, input"
       >
         <div
           className="module"

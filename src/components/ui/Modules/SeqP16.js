@@ -31,17 +31,17 @@ function SeqP16(props) {
   };
 
   const triggerOn = (time, pitch) => {
-    if (nodes) {
-      nodes[0] && nodes[0].map((e) => e.triggerAttack(time ? time : 0));
-      nodes[1] &&
-        nodes[1].map((e) =>
-          e.frequency.setValueAtTime(Tone.Frequency(pitch, "midi"), time)
-        );
-    }
+    nodes[0] && nodes[0].setValueAtTime(1, time);
+
+    nodes[1] &&
+      nodes[1].setValueAtTime(
+        Tone.Frequency(pitch, "midi").toFrequency(),
+        time
+      );
   };
 
   const triggerOff = (time) => {
-    nodes && nodes[0] && nodes[0].map((e) => e.triggerRelease(time ? time : 0));
+    nodes[0] && nodes[0].setValueAtTime(0, time);
   };
 
   useEffect(() => {
@@ -168,15 +168,15 @@ function SeqP16(props) {
       </IconButton>
 
       <Jack
-        type="triggerout"
-        label="tr"
+        type="out"
+        label="trigger"
         index={0}
         module={props.module}
         setDrawingLine={props.setDrawingLine}
         drawingLine={props.drawingLine}
       />
       <Jack
-        type="pitchout"
+        type="out"
         label="pitch"
         index={1}
         module={props.module}

@@ -76,7 +76,7 @@ function useSession() {
         type: ["sine", "square", "sawtooth", "triangle"][newModule.p.t],
         detune: newModule.p.d,
       }).start();
-      let modGain = new Tone.Gain(newModule.p.md).connect(osc.frequency);
+      let modGain = new Tone.Gain(1).connect(osc.frequency);
       nodes = [osc, modGain];
     }
     ////
@@ -152,11 +152,18 @@ function useSession() {
     /////
     else if (type === "VCA") {
       let amp = new Tone.Gain(0, "normalRange");
-      let controlGain = new Tone.Gain(0, "audioRan").connect(amp.gain);
+      let controlGain = new Tone.Gain(0, "audioRange").connect(amp.gain);
 
       nodes = [amp, controlGain];
     } else if (type === "SeqP16") {
-      nodes = [[], []];
+      nodes = [
+        new Tone.Signal(0, "normalRange"),
+        new Tone.Signal(440, "number"),
+      ];
+    } else if (type === "Meter") {
+      nodes = [new Tone.DCMeter()];
+    } else if (type === "Signal") {
+      nodes = [new Tone.Signal()];
     }
 
     setNodes((prev) => ({
@@ -224,8 +231,6 @@ function useSession() {
     )
       return;
 
-    console.log(connectionTypes);
-
     if (
       connectionTypes[0] === "out" &&
       (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
@@ -249,44 +254,6 @@ function useSession() {
       } catch (e) {
         console.log(e);
       }
-
-      //Tone.connect(targetNode, originNode);
-    } /* else if (
-      connectionTypes[0] === "trigger" &&
-      connectionTypes[1] === "triggerout"
-    ) {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        newNodes[connection.target.module][0].push(originNode);
-        return newNodes;
-      });
-    } else if (
-      connectionTypes[1] === "trigger" &&
-      connectionTypes[0] === "triggerout"
-    ) {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        newNodes[connection.module][0].push(targetNode);
-        return newNodes;
-      });
-    } */ else if (
-      connectionTypes[0] === "pitch" &&
-      connectionTypes[1] === "pitchout"
-    ) {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        newNodes[connection.target.module][1].push(originNode);
-        return newNodes;
-      });
-    } else if (
-      connectionTypes[1] === "pitch" &&
-      connectionTypes[0] === "pitchout"
-    ) {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        newNodes[connection.module][1].push(targetNode);
-        return newNodes;
-      });
     } else return true;
     setConnections((prev) => [...prev, connection]);
   };
@@ -320,22 +287,6 @@ function useSession() {
     }
     if (connectionTypes[0] === "in") {
       targetNode.disconnect(originNode);
-    }
-    if (connectionTypes[0] === "trigger") {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        delete newNodes[connection.target.module][
-          newNodes[connection.target.module].length
-        ];
-        return newNodes;
-      });
-    }
-    if (connectionTypes[0] === "triggerout") {
-      setNodes((prev) => {
-        let newNodes = { ...prev };
-        delete newNodes[connection.module][newNodes[connection.module].length];
-        return newNodes;
-      });
     }
 
     setConnections((prev) => prev.filter((e, i) => i !== connIndex));

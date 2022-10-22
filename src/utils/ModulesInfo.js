@@ -88,7 +88,7 @@ export const modulesInfo = {
       ["pitch", 0],
       ["out", 0],
     ],
-    defaultParam: { f: 440, t: 0, md: 0, d: 0 },
+    defaultParam: { f: 440, t: 0, md: 55, d: 0 },
   },
   Oscilloscope: {
     x: 512,
@@ -100,8 +100,8 @@ export const modulesInfo = {
     x: 512,
     y: 96,
     con: [
-      ["triggerout", 0],
-      ["pitchout", 0],
+      ["out", 0],
+      ["out", 1],
     ],
     defaultParam: {
       steps: new Array(16).fill(false),
@@ -119,9 +119,15 @@ export const modulesInfo = {
     ],
     defaultParam: { v: 0, md: 0 },
   },
-  /* Trigger: {
-    x: 320,
-    y: 64,
-    con: [["triggerout", 0]],
-  }, */
+  Meter: {
+    x: 128,
+    y: 128,
+    con: [["in", 0]],
+  },
+  Signal: {
+    x: 128,
+    y: 128,
+    defaultParam: { v: 0 },
+    con: [["out", 0]],
+  },
 };
