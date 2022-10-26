@@ -26,7 +26,7 @@ import Trigger from "./Trigger";
 import SeqP16 from "./SeqP16";
 import VCA from "./VCA";
 import Meter from "./Meter";
-import Signal from "./Signal";
+import SignalOp from "./SignalOp";
 
 import { modulesInfo } from "../../../utils/modulesInfo";
 
@@ -44,7 +44,7 @@ const components = {
   Trigger: Trigger,
   VCA: VCA,
   Meter: Meter,
-  Signal: Signal,
+  SignalOp: SignalOp,
 };
 
 function Module(props) {

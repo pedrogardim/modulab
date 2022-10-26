@@ -124,10 +124,13 @@ export const modulesInfo = {
     y: 128,
     con: [["in", 0]],
   },
-  Signal: {
-    x: 128,
+  SignalOp: {
+    x: 256,
     y: 128,
-    defaultParam: { v: 0 },
-    con: [["out", 0]],
+    defaultParam: { op: 0, v: 0 },
+    con: [
+      ["in", 0],
+      ["out", 1],
+    ],
   },
 };

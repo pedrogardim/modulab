@@ -164,6 +164,8 @@ function useSession() {
       nodes = [new Tone.DCMeter()];
     } else if (type === "Signal") {
       nodes = [new Tone.Signal()];
+    } else if (type === "SignalOp") {
+      nodes = [new Tone.Signal(), new Tone.Signal()];
     }
 
     setNodes((prev) => ({
