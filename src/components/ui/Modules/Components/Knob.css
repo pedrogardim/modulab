@@ -1,6 +1,12 @@
-.knob {
+.track-knob {
   border-radius: 100% !important;
   position: relative;
+  cursor: pointer;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.track-knob > * {
+  pointer-events: none !important;
 }
 
 .knob-backdrop {
@@ -10,8 +16,10 @@
   top: 0;
   left: 0;
   z-index: 9999 !important;
-  background-color: turquoise;
-  opacity: 0.2;
+  cursor: pointer;
+
+  /*   background-color: blue;
+  opacity: 0.1; */
 }
 
 .knob-mark-cont {
@@ -28,7 +36,7 @@
   height: 30%;
   top: 0;
   left: 50%;
-  margin-left: -4px;
+  margin-left: -2px;
   width: 8%;
   background: white;
   border-radius: 2px;
@@ -45,4 +53,16 @@
   user-select: none;
   color: white !important;
   mix-blend-mode: difference;
+}
+
+.knob-lbl {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: -24px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.562);
+  user-select: none;
+  white-space: nowrap;
 }
