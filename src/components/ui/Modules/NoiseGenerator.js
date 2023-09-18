@@ -2,8 +2,7 @@ import React from "react";
 import { Select, MenuItem } from "@material-ui/core";
 
 import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
-
+import Knob from "../input";
 function NoiseGenerator(props) {
   const { index, module, setModules } = props;
   return (

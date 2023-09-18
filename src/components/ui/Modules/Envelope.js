@@ -14,8 +14,7 @@ import { AudioWorkletNode } from "standardized-audio-context";
 //import TriggerDetectorNode from "../../../../public/worklet/triggerDetector";
 
 import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
-
+import Knob from "../input";
 let triggered = false;
 
 function Envelope(props) {

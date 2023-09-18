@@ -7,8 +7,7 @@ import { Card, Icon, IconButton, Button } from "@material-ui/core";
 
 import Draggable from "react-draggable";
 import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
-
+import Knob from "../input";
 function Trigger(props) {
   const { t } = useTranslation();
 
