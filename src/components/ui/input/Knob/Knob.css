@@ -1,0 +1,68 @@
+.track-knob {
+  border-radius: 100% !important;
+  position: relative;
+  cursor: pointer;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.track-knob > * {
+  pointer-events: none !important;
+}
+
+.knob-backdrop {
+  width: 100vw;
+  height: 100vh;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  z-index: 9999 !important;
+  cursor: pointer;
+
+  /*   background-color: blue;
+  opacity: 0.1; */
+}
+
+.knob-mark-cont {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.knob-mark-cont > div {
+  position: absolute;
+  height: 30%;
+  top: 0;
+  left: 50%;
+  margin-left: -2px;
+  width: 8%;
+  background: white;
+  border-radius: 2px;
+}
+
+.knob-value-label {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  color: white !important;
+  mix-blend-mode: difference;
+}
+
+.knob-lbl {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: -24px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.562);
+  user-select: none;
+  white-space: nowrap;
+}
