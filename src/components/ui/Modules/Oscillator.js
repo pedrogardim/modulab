@@ -10,8 +10,7 @@ import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
 import Draggable from "react-draggable";
 
 import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
-
+import Knob from "../input";
 function Oscillator(props) {
   const { index, module, setModules } = props;
   return (

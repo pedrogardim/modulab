@@ -10,7 +10,7 @@ import { Card, Slider, Icon, IconButton, Button } from "@material-ui/core";
 import Draggable from "react-draggable";
 
 import Jack from "./Components/Jack";
-import Knob from "./Components/Knob";
+import Knob from "../input";
 
 function ChMixer(props) {
   const { setModules, module, nodes, index } = props;
