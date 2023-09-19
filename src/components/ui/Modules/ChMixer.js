@@ -1,13 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
-import * as Tone from "tone";
-import firebase from "firebase";
-import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
-import { useParams } from "react-router-dom";
-
-import { Card, Slider, Icon, IconButton, Button } from "@material-ui/core";
-
-import Draggable from "react-draggable";
+import { Slider, Button } from "@material-ui/core";
 
 import Jack from "./Components/Jack";
 import { Knob } from "../input";

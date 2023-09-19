@@ -1,16 +1,7 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
-import * as Tone from "tone";
-
-import { useTranslation } from "react-i18next";
-
-import { Card, Icon, IconButton, Button } from "@material-ui/core";
-
-import Draggable from "react-draggable";
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
-function VCA(props) {
-  const { setModules, index, module } = props;
 
+function VCA({ setModules, index, module }) {
   return (
     <>
       <Jack

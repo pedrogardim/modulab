@@ -1,11 +1,11 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
+import { useState, useEffect } from "react";
+
 import * as Tone from "tone";
 
 import { useTranslation } from "react-i18next";
 
-import { Card, Icon, IconButton, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
-import Draggable from "react-draggable";
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 function Trigger(props) {

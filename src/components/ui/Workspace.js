@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import * as Tone from "tone";
+
 import { useTranslation } from "react-i18next";
 
 import { Fab, Icon, Typography, Menu, MenuItem } from "@material-ui/core";

@@ -29,9 +29,8 @@ function Envelope(props) {
     connections,
     setNodes,
   } = props;
-  /* 
-  
- const [eventId, setEventId] = useState(null);
+
+  const [eventId, setEventId] = useState(null);
 
   const updateCurve = (curve) => {
     var canvas = document.getElementById(`envelope-canvas-${module.id}`);
@@ -65,43 +64,42 @@ function Envelope(props) {
     console.log("triggerOffEnv");
   };
 
-  useEffect(() => {
-    nodes[0].asArray(144).then((r) => updateCurve(r));
-  }, [nodes[0].attack, nodes[0].decay, nodes[0].sustain, nodes[0].release]);
- */
+  // useEffect(() => {
+  //   nodes[0].asArray(144).then((r) => updateCurve(r));
+  // }, [nodes[0].attack, nodes[0].decay, nodes[0].sustain, nodes[0].release]);
 
-  useEffect(() => {
-    const context = Tone.getContext().rawContext;
-    class TriggerDetectorNode extends AudioWorkletNode {
-      constructor(actx, options) {
-        super(actx, "TriggerDetector", {
-          numberOfInputs: 1,
-          numberOfOutputs: 1,
-          channelCount: 1,
-          parameterData: options,
-        });
-        this.attack = this.parameters.get("attack");
-        this.attackcurve = this.parameters.get("attackcurve");
-        this.decay = this.parameters.get("decay");
-        this.sustain = this.parameters.get("sustain");
-        this.release = this.parameters.get("release");
-      }
-    }
-    context.audioWorklet
-      .addModule("worklet/triggerDetector.js")
-      .then(() => {
-        let node = new TriggerDetectorNode(context, {
-          //processorOptions: { env: nodes[0] },
-        });
-        console.log(node);
-        setNodes((prev) => {
-          let newNodes = { ...prev };
-          newNodes[module.id][0] = node;
-          return newNodes;
-        });
-      })
-      .catch((e) => console.log(e));
-  }, []);
+  // useEffect(() => {
+  //   const context = Tone.getContext().rawContext;
+  //   class TriggerDetectorNode extends AudioWorkletNode {
+  //     constructor(actx, options) {
+  //       super(actx, "TriggerDetector", {
+  //         numberOfInputs: 1,
+  //         numberOfOutputs: 1,
+  //         channelCount: 1,
+  //         parameterData: options,
+  //       });
+  //       this.attack = this.parameters.get("attack");
+  //       this.attackcurve = this.parameters.get("attackcurve");
+  //       this.decay = this.parameters.get("decay");
+  //       this.sustain = this.parameters.get("sustain");
+  //       this.release = this.parameters.get("release");
+  //     }
+  //   }
+  //   context.audioWorklet
+  //     .addModule("worklet/triggerDetector.js")
+  //     .then(() => {
+  //       let node = new TriggerDetectorNode(context, {
+  //         //processorOptions: { env: nodes[0] },
+  //       });
+  //       console.log(node);
+  //       setNodes((prev) => {
+  //         let newNodes = { ...prev };
+  //         newNodes[module.id][0] = node;
+  //         return newNodes;
+  //       });
+  //     })
+  //     .catch((e) => console.log(e));
+  // }, []);
 
   //console.log(nodes[1].getValue());
 
