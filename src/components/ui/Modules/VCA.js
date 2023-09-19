@@ -1,16 +1,24 @@
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 
-function VCA({ setModules, index, module }) {
+function VCA({
+  setModules,
+  index,
+  module,
+  setDrawingLine,
+  drawingLine,
+  nodes,
+  mousePosition,
+}) {
   return (
     <>
       <Jack
         type="in"
         label="In"
         index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
       <Knob
         label={"Gain"}
@@ -20,7 +28,7 @@ function VCA({ setModules, index, module }) {
         max={1}
         defaultValue={module.p.v}
         onChange={(v) => {
-          props.nodes[0].set({ gain: v });
+          nodes[0].set({ gain: v });
         }}
         onChangeCommitted={(v) =>
           setModules((prev) => {
@@ -29,15 +37,15 @@ function VCA({ setModules, index, module }) {
             return newModules;
           })
         }
-        mousePosition={props.mousePosition}
+        mousePosition={mousePosition}
       />
       <Jack
         type="mod"
         label="mod"
         index={2}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
       <Knob
         label={"CV"}
@@ -47,7 +55,7 @@ function VCA({ setModules, index, module }) {
         max={1}
         defaultValue={module.p.md}
         onChange={(v) => {
-          props.nodes[1].set({ gain: v });
+          nodes[1].set({ gain: v });
         }}
         onChangeCommitted={(v) =>
           setModules((prev) => {
@@ -56,15 +64,15 @@ function VCA({ setModules, index, module }) {
             return newModules;
           })
         }
-        mousePosition={props.mousePosition}
+        mousePosition={mousePosition}
       />
       <Jack
         type="out"
         label="out"
         index={1}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        module={module}
+        setDrawingLine={setDrawingLine}
+        drawingLine={drawingLine}
       />
     </>
   );
