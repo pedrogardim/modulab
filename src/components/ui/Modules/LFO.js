@@ -10,7 +10,7 @@ import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
 import Draggable from "react-draggable";
 
 import Jack from "./Components/Jack";
-import Knob from "../input";
+import { Knob } from "../input";
 let lightIntensity = 0;
 
 function LFO(props) {
