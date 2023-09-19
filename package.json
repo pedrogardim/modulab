@@ -12,6 +12,7 @@
   "dependencies": {
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "@tonejs/midi": "^2.0.27",
     "audiobuffer-to-wav": "^1.0.0",
     "i18next": "^20.3.2",
@@ -26,6 +27,7 @@
     "react-file-drop": "^3.1.2",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.11.0",
+    "react-redux": "^8.1.2",
     "react-resizable": "^3.0.1",
     "react-rnd": "^10.2.4",
     "react-router-dom": "^5.2.0",
