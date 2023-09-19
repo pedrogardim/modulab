@@ -9,6 +9,7 @@ export {
   mdiSawtoothWave,
   mdiSquareWave,
   mdiVolumeHigh,
+  mdiNuke,
 } from "@mdi/js";
 
 export type IconName =
@@ -21,4 +22,5 @@ export type IconName =
   | "triangleWave"
   | "sawtoothWave"
   | "squareWave"
-  | "volumeHight";
+  | "volumeHigh"
+  | "nuke";

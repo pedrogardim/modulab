@@ -14,6 +14,7 @@ import { Module } from "./Module";
 import { Matrix } from "./Matrix";
 import { Connection } from "./Connection";
 import { HelperText } from "./HelperText";
+import { SideMenu } from "./SideMenu";
 
 import "./Workspace.css";
 
@@ -87,6 +88,7 @@ function Workspace(props) {
         </div>
       ) */}
       {modules.length === 0 && <HelperText />}
+      <SideMenu />
 
       <TransformWrapper
         limitToBounds={false}
@@ -198,7 +200,7 @@ function Workspace(props) {
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
-      <button
+      {/* <button
         style={{ position: "absolute", bottom: 16, right: 16 }}
         onClick={isRecording ? stopRecording : startRecording}
       >
@@ -226,7 +228,7 @@ function Workspace(props) {
         onClick={() => setMatrix(true)}
       >
         <Icon icon="account" title="User Profile" size={1} />
-      </button>
+      </button> */}
     </>
   );
 }
