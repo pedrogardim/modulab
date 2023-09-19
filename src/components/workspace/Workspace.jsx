@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 
-import { Icon } from "../ui/Icon";
-
 import { useTranslation } from "react-i18next";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -15,6 +13,7 @@ import { Matrix } from "./Matrix";
 import { Connection } from "./Connection";
 import { HelperText } from "./HelperText";
 import { SideMenu } from "./SideMenu";
+import { ModuleSelector } from "./ModuleSelector";
 
 import "./Workspace.css";
 
@@ -200,6 +199,7 @@ function Workspace(props) {
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
+      <ModuleSelector />
       {/* <button
         style={{ position: "absolute", bottom: 16, right: 16 }}
         onClick={isRecording ? stopRecording : startRecording}
