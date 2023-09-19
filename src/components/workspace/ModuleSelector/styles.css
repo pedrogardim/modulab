@@ -1,0 +1,3 @@
+.module-selector-option:hover > img {
+  @apply -translate-y-2;
+}
