@@ -1,17 +1,7 @@
-import React, { useState, useEffect, Fragment } from "react";
+import { useState } from "react";
 import * as Tone from "tone";
-import firebase from "firebase";
-import { useTranslation } from "react-i18next";
 
-import { useParams } from "react-router-dom";
-
-import { Card, Select, Button, Icon, IconButton } from "@material-ui/core";
-
-import Draggable from "react-draggable";
-
-import { AudioWorkletNode } from "standardized-audio-context";
-
-//import TriggerDetectorNode from "../../../../public/worklet/triggerDetector";
+import { Button } from "@material-ui/core";
 
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
