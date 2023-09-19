@@ -1,4 +1,4 @@
-const lamejs = require("lamejs");
+import lamejs from "lamejs";
 
 export const encodeAudioFile = (aBuffer, format) => {
   let numOfChan = aBuffer.numberOfChannels,
