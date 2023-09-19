@@ -67,14 +67,7 @@ function Oscillator(props) {
       </select>
       <div className="break" />
 
-      <Jack
-        label="CV"
-        type="mod"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack label="CV" type="mod" index={0} module={props.module} />
       {/* 
       <Knob
         hideValue
@@ -101,17 +94,11 @@ function Oscillator(props) {
         type="pitch"
         index={1}
         module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
+        
+        
       /> */}
 
-      <Jack
-        type="out"
-        index={2}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="out" index={2} module={props.module} />
     </>
   );
 }

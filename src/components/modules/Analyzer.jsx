@@ -79,13 +79,7 @@ function Analyzer(props) {
         style={{ imageRendering: "pixelated", pointerEvents: "none" }}
         onClick={() => setLogMode((prev) => !prev)}
       />
-      <Jack
-        type="in"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="in" index={0} module={props.module} />
     </>
   );
 }

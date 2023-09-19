@@ -18,14 +18,7 @@ function Meter(props) {
     <>
       <span style={{ fontSize: 40 }}>{value.toFixed(2)}</span>
       <div className="break" />
-      <Jack
-        type="in"
-        label="in"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="in" label="in" index={0} module={props.module} />
     </>
   );
 }

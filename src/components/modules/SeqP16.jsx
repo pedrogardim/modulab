@@ -154,22 +154,8 @@ function SeqP16(props) {
       </button>
       <button onClick={() => setPitchMode((prev) => !prev)}>music_note</button>
 
-      <Jack
-        type="out"
-        label="trigger"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
-      <Jack
-        type="out"
-        label="pitch"
-        index={1}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="out" label="trigger" index={0} module={props.module} />
+      <Jack type="out" label="pitch" index={1} module={props.module} />
     </>
   );
 }

@@ -57,13 +57,7 @@ function Oscilloscope(props) {
         style={{ pointerEvents: "none", imageRendering: "pixelated" }}
         id={`oscilloscope-${props.module.id}`}
       />
-      <Jack
-        type="in"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="in" index={0} module={props.module} />
     </>
   );
 }
