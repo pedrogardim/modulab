@@ -3,8 +3,9 @@ import MDIIcon from "@mdi/react";
 import { IconProps as MDIIconProps } from "@mdi/react/dist/IconProps";
 import { IconName } from "./icons";
 
-interface IconProps extends MDIIconProps {
+interface IconProps extends Omit<MDIIconProps, "path"> {
   icon: IconName;
+  path?: string;
 }
 
 const Icon: React.FC<IconProps> = (props) => {
