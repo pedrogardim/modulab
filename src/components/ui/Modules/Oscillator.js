@@ -1,5 +1,3 @@
-import { Select } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 function Oscillator(props) {
@@ -48,8 +46,7 @@ function Oscillator(props) {
         mousePosition={props.mousePosition}
       />
       <div className="break" />
-      <Select
-        native
+      <select
         onChange={(e) => {
           props.nodes[0].set({
             type: ["sine", "square", "sawtooth", "triangle"][
@@ -67,7 +64,7 @@ function Oscillator(props) {
         {["sine", "square", "sawtooth", "triangle"].map((e, i) => (
           <option value={i}>{e}</option>
         ))}
-      </Select>
+      </select>
       <div className="break" />
 
       <Jack

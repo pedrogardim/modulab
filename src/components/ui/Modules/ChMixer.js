@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { Slider, Button } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 
@@ -18,7 +16,8 @@ function ChMixer(props) {
   return (
     <>
       {mixerParams.map((e, i) => (
-        <Slider
+        <input
+          type="range"
           style={{
             height: 150,
             filter: e.muted && "saturate(0)",
@@ -26,7 +25,8 @@ function ChMixer(props) {
           }}
           orientation="vertical"
           value={parseInt(e.volume)}
-          onChange={(_, v) => {
+          onInput={(_, v) => {
+            //TODO fix event
             setMixerParams((prev) => {
               let par = [...prev];
               par[i].volume = v;
@@ -34,7 +34,8 @@ function ChMixer(props) {
             });
             nodes[e.id].volume.value = v;
           }}
-          onChangeCommitted={(_, v) => {
+          onChange={(_, v) => {
+            //TODO fix event
             setModules((prev) => {
               let newModules = [...prev];
               newModules[index].p[e.id].v = v;
@@ -79,7 +80,7 @@ function ChMixer(props) {
       <div className="break" style={{ height: 0 }} />
 
       {mixerParams.map((e, i) => (
-        <Button
+        <button
           onClick={() => {
             setMixerParams((prev) => {
               let par = [...prev];
@@ -96,7 +97,7 @@ function ChMixer(props) {
           color={mixerParams[i].muted ? "secondary" : "primary"}
         >
           M
-        </Button>
+        </button>
       ))}
 
       <div className="break" style={{ height: 0 }} />

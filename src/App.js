@@ -4,17 +4,9 @@ import { useState, useEffect } from "react";
 
 import { Switch, Route, withRouter } from "react-router-dom";
 
-import { ThemeProvider, createTheme } from "@material-ui/core";
-
 import * as Tone from "tone";
 
 import Workspace from "./components/ui/Workspace";
-
-const theme = createTheme({
-  palette: {
-    mode: "light",
-  },
-});
 
 function App() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -29,15 +21,13 @@ function App() {
   }, [unsavedChanges]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="app-wrapper" onMouseDown={() => Tone.start()}>
-        <Switch>
-          <Route exact path="/">
-            <Workspace />
-          </Route>
-        </Switch>
-      </div>
-    </ThemeProvider>
+    <div className="app-wrapper" onMouseDown={() => Tone.start()}>
+      <Switch>
+        <Route exact path="/">
+          <Workspace />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 

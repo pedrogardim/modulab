@@ -2,8 +2,6 @@ import React, { useState, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { Fab, Icon, Typography, Menu, MenuItem } from "@material-ui/core";
-
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import { modulesInfo } from "../../utils/modulesInfo";
@@ -82,7 +80,7 @@ function Workspace(props) {
             Tone.start();
           }}
         >
-          <Icon>play_arrow</Icon>
+          play_arrow
         </div>
       ) */}
 
@@ -127,52 +125,42 @@ function Workspace(props) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
           >
-            {modules !== null ? (
-              modules.map((module, moduleIndex) => (
-                <Module
-                  key={module.id}
-                  module={module}
-                  mousePosition={mousePosition}
-                  setDrawingLine={setDrawingLine}
-                  index={moduleIndex}
-                  setModules={setModules}
-                  drawingLine={drawingLine}
-                  removeModule={() => removeModule(module.id)}
-                  nodes={nodes[module.id]}
-                  cursorPixelRef={cursorPixelRef}
-                  connections={connections}
-                  setNodes={setNodes}
-                />
-              ))
-            ) : !modules.length ? (
-              <>
-                <Typography variant="h1">:v</Typography>
-                <div className="break" />
-                <p>{t("workspace.empty")}</p>
-              </>
-            ) : (
-              ""
-            )}
+            {modules !== null
+              ? modules.map((module, moduleIndex) => (
+                  <Module
+                    key={module.id}
+                    module={module}
+                    mousePosition={mousePosition}
+                    setDrawingLine={setDrawingLine}
+                    index={moduleIndex}
+                    setModules={setModules}
+                    drawingLine={drawingLine}
+                    removeModule={() => removeModule(module.id)}
+                    nodes={nodes[module.id]}
+                    cursorPixelRef={cursorPixelRef}
+                    connections={connections}
+                    setNodes={setNodes}
+                  />
+                ))
+              : ""}
 
-            {modulePicker && (
-              <Menu
-                onClose={() => setModulePicker(null)}
-                open={Boolean(modulePicker)}
-                anchorEl={modulePicker}
-              >
-                {Object.keys(modulesInfo).map((e, i) => (
-                  <MenuItem
-                    onClick={() => {
-                      addModule(e);
-                      //setModulePicker(null);
-                    }}
-                    key={i}
-                  >
-                    {e}
-                  </MenuItem>
-                ))}
-              </Menu>
-            )}
+            {/* TODO: Not showing */}
+            <select
+              style={{ width: 100, height: 50 }}
+              // onChange={}
+            >
+              {Object.keys(modulesInfo).map((e, i) => (
+                <option
+                  onClick={() => {
+                    addModule(e);
+                    //setModulePicker(null);
+                  }}
+                  key={i}
+                >
+                  {e}
+                </option>
+              ))}
+            </select>
 
             {matrix && (
               <Matrix
@@ -206,36 +194,35 @@ function Workspace(props) {
       ))}
 
       {drawingLine && <Connection drawing connection={drawingLine} />}
-      <Fab
+      <button
         style={{ position: "absolute", bottom: 16, right: 16 }}
         onClick={isRecording ? stopRecording : startRecording}
-        color={isRecording ? "secondary" : "primary"}
       >
-        <Icon>{isRecording ? "stop" : "voicemail"}</Icon>
-      </Fab>
+        {isRecording ? "stop" : "voicemail"}
+      </button>
 
-      <Fab
+      <button
         color="primary"
         style={{ position: "absolute", bottom: 16, right: 80 }}
         onClick={(e) => setModulePicker(e.target)}
       >
-        <Icon>add</Icon>
-      </Fab>
+        add
+      </button>
 
-      <Fab
+      <button
         color="primary"
         style={{ position: "absolute", bottom: 16, right: 144 }}
         onClick={() => clearWorkspace()}
       >
-        <Icon>delete</Icon>
-      </Fab>
-      <Fab
+        delete
+      </button>
+      <button
         color="primary"
         style={{ position: "absolute", bottom: 16, right: 208 }}
         onClick={() => setMatrix(true)}
       >
-        <Icon>grid_on</Icon>
-      </Fab>
+        grid_on
+      </button>
     </>
   );
 }

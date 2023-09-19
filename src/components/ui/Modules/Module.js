@@ -1,14 +1,4 @@
 import { useState } from "react";
-
-import {
-  Icon,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-} from "@material-ui/core";
-
 import { SliderPicker } from "react-color";
 
 import Draggable from "react-draggable";
@@ -100,7 +90,8 @@ function Module(props) {
           <Component {...props} />
         </div>
       </Draggable>
-      <Menu
+      {/* TODO: refactor */}
+      {/* <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
@@ -125,8 +116,8 @@ function Module(props) {
             <ListItemText>Delete</ListItemText>
           </MenuItem>
         )}
-      </Menu>
-      <Dialog
+      </Menu> */}
+      {/* <Dialog
         open={Boolean(colorPicker)}
         onClose={() => setColorPicker(false)}
         maxWidth="xs"
@@ -146,7 +137,7 @@ function Module(props) {
             }}
           />
         </div>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 }

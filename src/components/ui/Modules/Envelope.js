@@ -1,8 +1,6 @@
 import { useState } from "react";
 import * as Tone from "tone";
 
-import { Button } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 let triggered = false;
@@ -179,14 +177,12 @@ function Envelope(props) {
 
       <div className="break" />
 
-      <Button
+      <button
         onMouseDown={() => nodes[0].triggerAttack()}
         onMouseUp={() => nodes[0].triggerRelease()}
-        variant="outlined"
-        color="primary"
       >
         Trigger
-      </Button>
+      </button>
       <div className="break" />
 
       {/* <Jack

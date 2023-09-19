@@ -5,7 +5,6 @@ import "./translations/i18n";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { Dialog, DialogTitle } from "@material-ui/core";
 import { HashRouter } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -31,11 +30,11 @@ reportWebVitals();
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
-    <Dialog open={true}>
-      <DialogTitle>Ooops.. Something went wrong</DialogTitle>
+    <div>
+      <h1>Ooops.. Something went wrong</h1>
       <pre>{error.message}</pre>
       {/* <button onClick={resetErrorBoundary}>Try again</button> */}
       <p>Please, refresh the page</p>
-    </Dialog>
+    </div>
   );
 }
