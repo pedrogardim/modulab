@@ -11,6 +11,7 @@ import useSession from "../../hooks/useSession";
 import { Module } from "./Module";
 import { Matrix } from "./Matrix";
 import { Connection } from "./Connection";
+import { HelperText } from "./HelperText";
 
 import "./Workspace.css";
 
@@ -83,6 +84,7 @@ function Workspace(props) {
           play_arrow
         </div>
       ) */}
+      {modules.length === 0 && <HelperText />}
 
       <TransformWrapper
         limitToBounds={false}

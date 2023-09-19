@@ -2,7 +2,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: ['"Major Mono Display"', "sans-serif"],
+        body: ['"IBM Plex Mono"', "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
