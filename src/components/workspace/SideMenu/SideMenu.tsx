@@ -1,3 +1,10 @@
+import { useDispatch, useSelector } from "@/store/hooks";
+import {
+  toggleConnectionMatrix,
+  toggleModuleSelector,
+  toggleIsRecording,
+} from "@/store/uiSlice";
+
 import { Icon } from "../../ui/Icon";
 import { IconName } from "../../ui/Icon/icons";
 
@@ -8,19 +15,26 @@ type SideMenuAction = {
 };
 
 const SideMenu: React.FC = () => {
+  const dispatch = useDispatch();
+  const { isRecording } = useSelector((state) => state.ui);
+
   const sideMenuActions: SideMenuAction[] = [
     {
       icon: "plus",
+      action: () => dispatch(toggleModuleSelector()),
     },
     {
       icon: "viewGridCompact",
+      action: () => dispatch(toggleConnectionMatrix()),
     },
     {
       icon: "record",
-      color: "red",
+      color: isRecording ? "red" : "black",
+      action: () => dispatch(toggleIsRecording()),
     },
     {
       icon: "nuke",
+      action: () => console.log("TODO: remove all"),
     },
   ];
 

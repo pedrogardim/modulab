@@ -100,14 +100,7 @@ function Trigger(props) {
         }}
       />
 
-      <Jack
-        type="triggerout"
-        label="Tr"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="triggerout" label="Tr" index={0} module={props.module} />
 
       <div width="30px" />
 

@@ -68,20 +68,8 @@ function Filter(props) {
       </select>
       <div className="break" />
 
-      <Jack
-        type="in"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
-      <Jack
-        type="out"
-        index={1}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="in" index={0} module={props.module} />
+      <Jack type="out" index={1} module={props.module} />
     </>
   );
 }

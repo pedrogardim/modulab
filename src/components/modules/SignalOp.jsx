@@ -21,14 +21,7 @@ function Meter(props) {
 
   return (
     <>
-      <Jack
-        type="in"
-        label="in"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="in" label="in" index={0} module={props.module} />
 
       <select
         style={{ width: 50 }}
@@ -62,14 +55,7 @@ function Meter(props) {
         }}
       />
 
-      <Jack
-        type="out"
-        label="out"
-        index={1}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="out" label="out" index={1} module={props.module} />
     </>
   );
 }

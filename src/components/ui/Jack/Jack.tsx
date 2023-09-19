@@ -2,7 +2,10 @@ import { useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { getRandomColor } from "../../../utils/colorUtils";
+import { getRandomColor } from "@/utils/colorUtils";
+
+import { useDispatch, useSelector } from "@/store/hooks";
+import { setDrawingLine } from "@/store/uiSlice";
 
 import "./Jack.css";
 
@@ -10,36 +13,40 @@ function Jack(props) {
   const { t } = useTranslation();
   const jackRef = useRef(null);
 
+  const dispatch = useDispatch();
+  const { drawingLine } = useSelector((state) => state.ui);
+
   const handleMouseDown = () => {
-    props.setDrawingLine({
-      module: props.module.id,
-      index: props.index,
-      color: getRandomColor(),
-    });
+    dispatch(
+      setDrawingLine({
+        module: props.module.id,
+        index: props.index,
+        color: getRandomColor(),
+      })
+    );
   };
 
   const handleMouseEnter = () => {
     if (
-      props.drawingLine &&
-      (props.drawingLine.module !== props.module.id ||
-        props.drawingLine.index !== props.index)
+      drawingLine &&
+      (drawingLine.module !== module.id || drawingLine.index !== index)
     ) {
-      props.setDrawingLine((prev) => ({
-        ...prev,
-        target: {
-          module: props.module.id,
-          index: props.index,
-        },
-      }));
+      dispatch(
+        setDrawingLine({
+          ...drawingLine,
+          target: {
+            module: props.module.id,
+            index: props.index,
+          },
+        })
+      );
     }
   };
 
   const handleMouseLeave = (e) => {
-    props.setDrawingLine((prev) => {
-      let newDL = { ...prev };
-      delete newDL.target;
-      return newDL;
-    });
+    let newDL = { ...drawingLine };
+    delete newDL.target;
+    dispatch(setDrawingLine(newDL));
   };
 
   return (

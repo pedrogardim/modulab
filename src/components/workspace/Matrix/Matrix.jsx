@@ -1,5 +1,8 @@
 import { useRef } from "react";
 
+import { useDispatch } from "@/store/hooks";
+import { toggleConnectionMatrix } from "@/store/uiSlice";
+
 import "./Matrix.css";
 
 import { getRandomColor } from "../../../utils/colorUtils";
@@ -10,6 +13,10 @@ import { useTranslation } from "react-i18next";
 function Matrix(props) {
   const inputRef = useRef(null);
   const { t } = useTranslation();
+
+  const dispatch = useDispatch();
+
+  const close = () => dispatch(toggleConnectionMatrix());
 
   const { modules, connections, handleConnect, removeConnection } = props;
 
@@ -83,110 +90,117 @@ function Matrix(props) {
   };
 
   return (
-    /* TODO: make it a centered element */
-    <div onClose={props.onClose}>
-      <h2>{t("dialogs.insertName")}</h2>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <div className="matrix-header-column">
-          <div className="matrix-header-column-header" />
-          {modules.map((e, i) =>
-            !inputs[i].length ? null : (
-              <div
-                className="matrix-header-column-module"
-                style={{
-                  height: inputs[i].length * 64,
-                  background: e.c,
-                }}
-              >
-                {e.type}
-                <div
-                  className="matrix-header-column-module-inputs-cont"
-                  style={{
-                    height: inputs[i].length * 64,
-                  }}
-                >
-                  {inputs[i].map((e, i) => (
-                    <div className="matrix-header-column-module-input">
-                      {e[0]}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          )}
-        </div>
-        {modules
-          //.filter((e) => modulesConnections[e.type].hasOwnProperty("out"))
-          .map((e, i) =>
-            !outputs[i].length ? null : (
-              <div
-                className="matrix-module-column"
-                style={{
-                  width: outputs[i].length * 64,
-                  background: e.c,
-                }}
-              >
-                <div
-                  className="matrix-module-column-header"
-                  style={{
-                    width: outputs[i].length * 64,
-                  }}
-                >
-                  {e.type}
-                </div>
-                {outputs[i].map((output, outIndex) => (
-                  <div className="matrix-module-connection-column">
+    <div className="fixed left-0 top-0 h-screen w-screen flex justify-center items-center">
+      <div
+        className="fixed h-full w-full bg-opacity-10 bg-black"
+        onClick={close}
+      ></div>
+      <div className="w-full max-w-6xl mx-2 overflow-y-scroll shadow bg-white grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 max-h-1/2 z-20">
+        <div onClose={props.onClose}>
+          <h2>{t("dialogs.insertName")}</h2>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div className="matrix-header-column">
+              <div className="matrix-header-column-header" />
+              {modules.map((e, i) =>
+                !inputs[i].length ? null : (
+                  <div
+                    className="matrix-header-column-module"
+                    style={{
+                      height: inputs[i].length * 64,
+                      background: e.c,
+                    }}
+                  >
+                    {e.type}
                     <div
-                      className="matrix-module-connection-column-header"
+                      className="matrix-header-column-module-inputs-cont"
                       style={{
-                        width: output[1].length * 64,
+                        height: inputs[i].length * 64,
                       }}
                     >
-                      {output[0]}
-                    </div>
-                    {inputs.map((module, modIndex) =>
-                      module.map((input, inputIndex) => (
-                        <div
-                          className="matrix-module-connection-tile"
-                          onClick={() =>
-                            onTileClick(
-                              e.id,
-                              output[1],
-                              modules[modIndex].id,
-                              input[1]
-                            )
-                          }
-                        >
-                          {checkConnection(
-                            modules[modIndex].id,
-                            input[1],
-                            e.id,
-                            output[1]
-                          ) && (
-                            <div
-                              style={{
-                                backgroundColor: checkConnection(
-                                  modules[modIndex].id,
-                                  input[1],
-                                  e.id,
-                                  output[1]
-                                ),
-                              }}
-                            />
-                          )}
+                      {inputs[i].map((e, i) => (
+                        <div className="matrix-header-column-module-input">
+                          {e[0]}
                         </div>
-                      ))
-                    )}
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
-            )
-          )}
-      </div>
+                )
+              )}
+            </div>
+            {modules
+              //.filter((e) => modulesConnections[e.type].hasOwnProperty("out"))
+              .map((e, i) =>
+                !outputs[i].length ? null : (
+                  <div
+                    className="matrix-module-column"
+                    style={{
+                      width: outputs[i].length * 64,
+                      background: e.c,
+                    }}
+                  >
+                    <div
+                      className="matrix-module-column-header"
+                      style={{
+                        width: outputs[i].length * 64,
+                      }}
+                    >
+                      {e.type}
+                    </div>
+                    {outputs[i].map((output, outIndex) => (
+                      <div className="matrix-module-connection-column">
+                        <div
+                          className="matrix-module-connection-column-header"
+                          style={{
+                            width: output[1].length * 64,
+                          }}
+                        >
+                          {output[0]}
+                        </div>
+                        {inputs.map((module, modIndex) =>
+                          module.map((input, inputIndex) => (
+                            <div
+                              className="matrix-module-connection-tile"
+                              onClick={() =>
+                                onTileClick(
+                                  e.id,
+                                  output[1],
+                                  modules[modIndex].id,
+                                  input[1]
+                                )
+                              }
+                            >
+                              {checkConnection(
+                                modules[modIndex].id,
+                                input[1],
+                                e.id,
+                                output[1]
+                              ) && (
+                                <div
+                                  style={{
+                                    backgroundColor: checkConnection(
+                                      modules[modIndex].id,
+                                      input[1],
+                                      e.id,
+                                      output[1]
+                                    ),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
+          </div>
 
-      <button className="close-btn" onClick={props.onClose}>
-        x
-      </button>
+          <button className="close-btn" onClick={props.onClose}>
+            x
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

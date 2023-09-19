@@ -37,19 +37,13 @@ function NoiseGenerator(props) {
       </select>
       <div className="break" />
 
-      <Jack
-        type="out"
-        index={0}
-        module={props.module}
-        setDrawingLine={props.setDrawingLine}
-        drawingLine={props.drawingLine}
-      />
+      <Jack type="out" index={0} module={props.module} />
       {/* <Jack
           type="mod"
           index={1}
           module={props.module}
-          setDrawingLine={props.setDrawingLine}
-          drawingLine={props.drawingLine}
+          
+          
         /> */}
     </>
   );

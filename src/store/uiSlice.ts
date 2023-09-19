@@ -2,29 +2,56 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface UiState {
-  value: number;
+  mousePosition: [number, number];
+  soundStarted: boolean;
+  moduleSelectorOpen: boolean;
+  connectionMatrixOpen: boolean;
+  deleteMode: boolean;
+  rerenderToggle: boolean;
+  isRecording: boolean;
+  drawingLine: null | any;
 }
 
 const initialState: UiState = {
-  value: 0,
+  mousePosition: [0, 0],
+  soundStarted: false,
+  moduleSelectorOpen: false,
+  connectionMatrixOpen: false,
+  deleteMode: false,
+  rerenderToggle: false,
+  isRecording: false,
+  drawingLine: null,
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    updateMousePosition: (state, action) => {
+      state.mousePosition = action.payload;
     },
-    decrement: (state) => {
-      state.value -= 1;
+    toggleConnectionMatrix: (state) => {
+      state.connectionMatrixOpen = !state.connectionMatrixOpen;
+      console.log(state.connectionMatrixOpen);
     },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
+    toggleModuleSelector: (state) => {
+      state.moduleSelectorOpen = !state.moduleSelectorOpen;
+    },
+    toggleIsRecording: (state) => {
+      state.isRecording = !state.isRecording;
+    },
+    setDrawingLine: (state, action) => {
+      state.drawingLine = action.payload;
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = uiSlice.actions;
+export const {
+  updateMousePosition,
+  toggleConnectionMatrix,
+  toggleModuleSelector,
+  toggleIsRecording,
+  setDrawingLine,
+} = uiSlice.actions;
 
 export default uiSlice.reducer;

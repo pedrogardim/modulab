@@ -4,9 +4,12 @@ import { useTranslation } from "react-i18next";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import { modulesInfo } from "../../utils/modulesInfo";
+import { modulesInfo } from "@/utils/modulesInfo";
 
-import useSession from "../../hooks/useSession";
+import useSession from "@/hooks/useSession";
+import useWorkspaceEvents from "@/hooks/useWorkspaceEvents";
+
+import { useSelector } from "@/store/hooks";
 
 import { Module } from "./Module";
 import { Matrix } from "./Matrix";
@@ -26,9 +29,6 @@ function Workspace(props) {
     setNodes,
     connections,
     // setConnections,
-    isRecording,
-    startRecording,
-    stopRecording,
     handleConnect,
     removeConnection,
     addModule,
@@ -38,57 +38,23 @@ function Workspace(props) {
 
   const cursorPixelRef = useRef(null);
 
-  const [mousePosition, setMousePosition] = useState([]);
-  const [soundStarted, setSoundStarted] = useState(false);
-  const [modulePicker, setModulePicker] = useState(false);
-  const [drawingLine, setDrawingLine] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [matrix, setMatrix] = useState(false);
+  const {
+    mousePosition,
+    moduleSelectorOpen,
+    connectionMatrixOpen,
+    deleteMode,
+    drawingLine,
+  } = useSelector((state) => state.ui);
+
+  const workspaceEvents = useWorkspaceEvents();
+
   const [moveState, setMoveState] = useState(false);
-
-  const handleKeyDown = (e) => {
-    //Tone.start();
-    if (e.key === "Alt") setIsDeleting(true);
-  };
-
-  const handleKeyUp = (e) => {
-    //Tone.start();
-    if (e.key === "Alt") setIsDeleting(false);
-  };
-
-  const handleMouseDown = (e) => {
-    setMousePosition([e.pageX, e.pageY]);
-  };
-
-  const handleMouseMove = (e) => {
-    mousePosition && setMousePosition([e.pageX, e.pageY]);
-  };
-
-  const handleMouseUp = () => {
-    if (drawingLine && drawingLine.target) {
-      handleConnect(drawingLine);
-    }
-    setDrawingLine(null);
-    setMousePosition(null);
-  };
 
   return (
     <>
       <div className="ws-background" />
-      {/* !soundStarted && (
-        <div
-          className="sound-start-layer"
-          onClick={() => {
-            setSoundStarted(true);
-            Tone.start();
-          }}
-        >
-          play_arrow
-        </div>
-      ) */}
       {modules.length === 0 && <HelperText />}
       <SideMenu />
-
       <TransformWrapper
         limitToBounds={false}
         doubleClick={{ disabled: true }}
@@ -122,13 +88,9 @@ function Workspace(props) {
             tabIndex={0}
             style={{
               display: props.hidden ? "none" : "flex",
-              cursor: isDeleting && "not-allowed",
+              cursor: deleteMode && "not-allowed",
             }}
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
+            {...workspaceEvents}
           >
             {modules !== null
               ? modules.map((module, moduleIndex) => (
@@ -136,10 +98,8 @@ function Workspace(props) {
                     key={module.id}
                     module={module}
                     mousePosition={mousePosition}
-                    setDrawingLine={setDrawingLine}
                     index={moduleIndex}
                     setModules={setModules}
-                    drawingLine={drawingLine}
                     removeModule={() => removeModule(module.id)}
                     nodes={nodes[module.id]}
                     cursorPixelRef={cursorPixelRef}
@@ -148,35 +108,6 @@ function Workspace(props) {
                   />
                 ))
               : ""}
-
-            {/* TODO: Not showing */}
-            <select
-              style={{ width: 100, height: 50 }}
-              // onChange={}
-            >
-              {Object.keys(modulesInfo).map((e, i) => (
-                <option
-                  onClick={() => {
-                    addModule(e);
-                    //setModulePicker(null);
-                  }}
-                  key={i}
-                >
-                  {e}
-                </option>
-              ))}
-            </select>
-
-            {matrix && (
-              <Matrix
-                onClose={() => setMatrix(false)}
-                modules={modules}
-                nodes={nodes}
-                connections={connections}
-                handleConnect={handleConnect}
-                removeConnection={removeConnection}
-              />
-            )}
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -191,44 +122,25 @@ function Workspace(props) {
       />
       {connections.map((e, i) => (
         <Connection
-          isDeleting={isDeleting}
+          deleteMode={deleteMode}
           connection={e}
-          key={i + moveState * 1}
+          key={i + moveState}
           remove={() => removeConnection(i)}
         />
       ))}
 
+      {connectionMatrixOpen && (
+        <Matrix
+          // onClose={() => setMatrix(false)}
+          modules={modules}
+          nodes={nodes}
+          connections={connections}
+          handleConnect={handleConnect}
+          removeConnection={removeConnection}
+        />
+      )}
       {drawingLine && <Connection drawing connection={drawingLine} />}
-      <ModuleSelector />
-      {/* <button
-        style={{ position: "absolute", bottom: 16, right: 16 }}
-        onClick={isRecording ? stopRecording : startRecording}
-      >
-        <Icon icon="abTesting" title="User Profile" size={1} />
-      </button>
-
-      <button
-        color="primary"
-        style={{ position: "absolute", bottom: 16, right: 80 }}
-        onClick={(e) => setModulePicker(e.target)}
-      >
-        <Icon icon="abTesting" title="User Profile" size={1} />
-      </button>
-
-      <button
-        color="primary"
-        style={{ position: "absolute", bottom: 16, right: 144 }}
-        onClick={() => clearWorkspace()}
-      >
-        <Icon icon="abTesting" title="User Profile" size={1} />
-      </button>
-      <button
-        color="primary"
-        style={{ position: "absolute", bottom: 16, right: 208 }}
-        onClick={() => setMatrix(true)}
-      >
-        <Icon icon="account" title="User Profile" size={1} />
-      </button> */}
+      {moduleSelectorOpen && <ModuleSelector />}
     </>
   );
 }

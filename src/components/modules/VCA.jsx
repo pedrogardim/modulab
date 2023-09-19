@@ -12,14 +12,7 @@ function VCA({
 }) {
   return (
     <>
-      <Jack
-        type="in"
-        label="In"
-        index={0}
-        module={module}
-        setDrawingLine={setDrawingLine}
-        drawingLine={drawingLine}
-      />
+      <Jack type="in" label="In" index={0} module={module} />
       <Knob
         label={"Gain"}
         size={36}
@@ -39,14 +32,7 @@ function VCA({
         }
         mousePosition={mousePosition}
       />
-      <Jack
-        type="mod"
-        label="mod"
-        index={2}
-        module={module}
-        setDrawingLine={setDrawingLine}
-        drawingLine={drawingLine}
-      />
+      <Jack type="mod" label="mod" index={2} module={module} />
       <Knob
         label={"CV"}
         size={36}
@@ -66,14 +52,7 @@ function VCA({
         }
         mousePosition={mousePosition}
       />
-      <Jack
-        type="out"
-        label="out"
-        index={1}
-        module={module}
-        setDrawingLine={setDrawingLine}
-        drawingLine={drawingLine}
-      />
+      <Jack type="out" label="out" index={1} module={module} />
     </>
   );
 }
