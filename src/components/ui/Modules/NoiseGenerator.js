@@ -1,5 +1,3 @@
-import { Select, MenuItem } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 function NoiseGenerator(props) {
@@ -20,7 +18,7 @@ function NoiseGenerator(props) {
         mousePosition={props.mousePosition}
       />
       <div className="break" /> */}
-      <Select
+      <select
         onChange={(e) => {
           props.nodes[0].set({
             type: ["white", "brown", "pink"][parseInt(e.target.value)],
@@ -34,9 +32,9 @@ function NoiseGenerator(props) {
         defaultValue={module.p.t}
       >
         {["white", "brown", "pink"].map((e, i) => (
-          <MenuItem value={i}>{e}</MenuItem>
+          <option value={i}>{e}</option>
         ))}
-      </Select>
+      </select>
       <div className="break" />
 
       <Jack

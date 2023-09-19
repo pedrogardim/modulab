@@ -4,8 +4,6 @@ import * as Tone from "tone";
 
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 function Trigger(props) {
@@ -115,24 +113,20 @@ function Trigger(props) {
 
       <div className="break" />
 
-      <Button
+      <button
         onMouseDown={() => triggerOn(Tone.now())}
         onMouseUp={() => triggerOff()}
-        variant="outlined"
-        color="primary"
       >
         Trigger
-      </Button>
-      <Button
+      </button>
+      <button
         onClick={() => {
           Tone.Transport.toggle();
           setState((prev) => !prev);
         }}
-        variant={state ? "contained" : "outlined"}
-        color="primary"
       >
         {state ? "Stop" : "Start"}
-      </Button>
+      </button>
     </>
   );
 }

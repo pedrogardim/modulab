@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-import { Select } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 let lightIntensity = 0;
@@ -51,7 +49,7 @@ function LFO(props) {
         mousePosition={props.mousePosition}
       />
       <div className="break" />
-      <Select
+      <select
         native
         onChange={(e) => {
           props.nodes[0].set({
@@ -70,7 +68,7 @@ function LFO(props) {
         {["sine", "square", "sawtooth", "triangle"].map((e, i) => (
           <option value={i}>{e}</option>
         ))}
-      </Select>
+      </select>
       <div className="break" />
 
       <Jack

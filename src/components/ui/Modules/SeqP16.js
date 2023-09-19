@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import * as Tone from "tone";
 
-import { Icon, IconButton } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 
 function SeqP16(props) {
@@ -105,7 +103,7 @@ function SeqP16(props) {
             >
               {pitchMode && steps[i] && (
                 <>
-                  <Icon
+                  <button
                     style={{ position: "absolute", top: -20, color: "#5A5A5A" }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -117,8 +115,8 @@ function SeqP16(props) {
                     }}
                   >
                     expand_less
-                  </Icon>
-                  <Icon
+                  </button>
+                  <button
                     style={{
                       position: "absolute",
                       bottom: -20,
@@ -134,7 +132,7 @@ function SeqP16(props) {
                     }}
                   >
                     expand_more
-                  </Icon>
+                  </button>
 
                   <span>{Tone.Frequency(pitches[i], "midi").toNote()}</span>
                 </>
@@ -145,20 +143,16 @@ function SeqP16(props) {
 
       <div className="break" />
 
-      <IconButton
+      <button
         onClick={() =>
           Tone.Transport.state === "started"
             ? Tone.Transport.stop()
             : Tone.Transport.start()
         }
       >
-        <Icon>
-          {Tone.Transport.state === "started" ? "stop" : "play_arrow"}
-        </Icon>
-      </IconButton>
-      <IconButton onClick={() => setPitchMode((prev) => !prev)}>
-        <Icon>music_note</Icon>
-      </IconButton>
+        {Tone.Transport.state === "started" ? "stop" : "play_arrow"}
+      </button>
+      <button onClick={() => setPitchMode((prev) => !prev)}>music_note</button>
 
       <Jack
         type="out"

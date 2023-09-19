@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import Jack from "./Components/Jack";
 import * as Tone from "tone";
 
-import { Select, TextField } from "@material-ui/core";
-
 function Meter(props) {
   const { module, index, setModules, nodes } = props;
   const [operation, setOperation] = useState(module.p.op);
@@ -32,8 +30,7 @@ function Meter(props) {
         drawingLine={props.drawingLine}
       />
 
-      <Select
-        native
+      <select
         style={{ width: 50 }}
         onChange={(e) => {
           setOperation(parseInt(e.target.value));
@@ -48,9 +45,10 @@ function Meter(props) {
         {["+", "-", "x", "÷"].map((e, i) => (
           <option value={i}>{e}</option>
         ))}
-      </Select>
+      </select>
 
-      <TextField
+      <input
+        type="text"
         style={{ width: 70 }}
         className="text-input"
         value={value}

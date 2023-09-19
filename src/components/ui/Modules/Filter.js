@@ -1,5 +1,3 @@
-import { Select } from "@material-ui/core";
-
 import Jack from "./Components/Jack";
 import { Knob } from "../input";
 
@@ -50,7 +48,7 @@ function Filter(props) {
       />
 
       <div className="break" />
-      <Select
+      <select
         native
         onChange={(e) => {
           setModules((prev) => {
@@ -67,7 +65,7 @@ function Filter(props) {
         {["lowpass", "highpass", "bandpass"].map((e, i) => (
           <option value={i}>{e}</option>
         ))}
-      </Select>
+      </select>
       <div className="break" />
 
       <Jack

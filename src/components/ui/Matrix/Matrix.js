@@ -1,13 +1,5 @@
 import { useRef } from "react";
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Icon,
-} from "@material-ui/core";
-
 import "./Matrix.css";
 
 import { getRandomColor } from "../../../utils/colorUtils";
@@ -91,15 +83,10 @@ function Matrix(props) {
   };
 
   return (
-    <Dialog
-      open
-      fullWidth
-      onClose={props.onClose}
-      maxWidth={"lg"}
-      scroll={"paper"}
-    >
-      <DialogTitle>{t("dialogs.insertName")}</DialogTitle>
-      <DialogContent style={{ display: "flex", flexDirection: "row" }}>
+    /* TODO: make it a centered element */
+    <div onClose={props.onClose}>
+      <h2>{t("dialogs.insertName")}</h2>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         <div className="matrix-header-column">
           <div className="matrix-header-column-header" />
           {modules.map((e, i) =>
@@ -128,7 +115,6 @@ function Matrix(props) {
             )
           )}
         </div>
-        {/* <></> */}
         {modules
           //.filter((e) => modulesConnections[e.type].hasOwnProperty("out"))
           .map((e, i) =>
@@ -196,12 +182,12 @@ function Matrix(props) {
               </div>
             )
           )}
-      </DialogContent>
+      </div>
 
-      <IconButton className="close-btn" onClick={props.onClose}>
-        <Icon>close</Icon>
-      </IconButton>
-    </Dialog>
+      <button className="close-btn" onClick={props.onClose}>
+        x
+      </button>
+    </div>
   );
 }
 
