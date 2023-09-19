@@ -2,8 +2,6 @@ import "./App.css";
 
 import { useState, useEffect } from "react";
 
-import { Switch, Route, withRouter } from "react-router-dom";
-
 import * as Tone from "tone";
 
 import Workspace from "./components/ui/Workspace";
@@ -22,13 +20,9 @@ function App() {
 
   return (
     <div className="app-wrapper" onMouseDown={() => Tone.start()}>
-      <Switch>
-        <Route exact path="/">
-          <Workspace />
-        </Route>
-      </Switch>
+      <Workspace />
     </div>
   );
 }
 
-export default withRouter(App);
+export default App;
