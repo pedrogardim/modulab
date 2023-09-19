@@ -1,4 +1,4 @@
-import Jack from "./Components/Jack";
+import { Jack } from "../ui/Jack";
 
 function MasterOut(props) {
   return (

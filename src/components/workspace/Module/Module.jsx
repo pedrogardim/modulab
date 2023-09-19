@@ -2,20 +2,20 @@ import { useState } from "react";
 import { SliderPicker } from "react-color";
 
 import Draggable from "react-draggable";
-import Oscillator from "./Oscillator";
-import NoiseGenerator from "./NoiseGenerator";
-import MasterOut from "./MasterOut";
-import LFO from "./LFO";
-import Filter from "./Filter";
-import Envelope from "./Envelope";
-import ChMixer from "./ChMixer";
-import Oscilloscope from "./Oscilloscope";
-import Analyzer from "./Analyzer";
-import Trigger from "./Trigger";
-import SeqP16 from "./SeqP16";
-import VCA from "./VCA";
-import Meter from "./Meter";
-import SignalOp from "./SignalOp";
+import Oscillator from "../../modules/Oscillator";
+import NoiseGenerator from "../../modules/NoiseGenerator";
+import MasterOut from "../../modules/MasterOut";
+import LFO from "../../modules/LFO";
+import Filter from "../../modules/Filter";
+import Envelope from "../../modules/Envelope";
+import ChMixer from "../../modules/ChMixer";
+import Oscilloscope from "../../modules/Oscilloscope";
+import Analyzer from "../../modules/Analyzer";
+import Trigger from "../../modules/Trigger";
+import SeqP16 from "../../modules/SeqP16";
+import VCA from "../../modules/VCA";
+import Meter from "../../modules/Meter";
+import SignalOp from "../../modules/SignalOp";
 
 import { modulesInfo } from "../../../utils/modulesInfo";
 

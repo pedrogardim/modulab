@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import * as Tone from "tone";
 
-import Jack from "./Components/Jack";
+import { Jack } from "../ui/Jack";
 
 function SeqP16(props) {
   const { module, nodes, setModules, index } = props;

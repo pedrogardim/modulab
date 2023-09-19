@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { getRandomColor } from "../../../../utils/colorUtils";
+import { getRandomColor } from "../../../utils/colorUtils";
 
 import "./Jack.css";
 
