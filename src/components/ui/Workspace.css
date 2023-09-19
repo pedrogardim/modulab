@@ -8,12 +8,12 @@
   outline: none;
   min-width: 9999px;
   min-height: 9999px;
-  color:white !important;
+  color: white !important;
 }
 
-.ws-background{
-  position:fixed;
-  background: #121212;
+.ws-background {
+  position: fixed;
+  background: radial-gradient(#ffffff, #c1c1c1);
   width: 100vw;
   height: 100vh;
   z-index: -10;
@@ -22,7 +22,6 @@
 
 .workspace-module-cont {
   position: relative;
-  /* background: radial-gradient(#ffffff, #fafaed); */
   background: white;
   display: flex;
   flex-direction: row;
@@ -82,7 +81,7 @@
   justify-content: space-around;
   align-content: space-evenly;
   justify-items: center;
-  background-color:#323232 !important;
+  background-color: #b2b2b2 !important;
   outline: solid 1px #4d4d4d;
 }
 
@@ -103,15 +102,14 @@
   stroke: red !important;
 } */
 
-.sound-start-layer{
+.sound-start-layer {
   z-index: 9999;
-  background-color:rgba(0, 0, 0, 0.68);
-  font-size:90px !important;
-  width:100vw;
-  height:100vh;
+  background-color: rgba(0, 0, 0, 0.68);
+  font-size: 90px !important;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  color:white;
-
+  color: white;
 }

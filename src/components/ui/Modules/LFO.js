@@ -1,16 +1,9 @@
-import React, { useState, useEffect, Fragment } from "react";
-import * as Tone from "tone";
-import firebase from "firebase";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
 
-import { useParams } from "react-router-dom";
-
-import { Card, Select, Slider, Icon, IconButton } from "@material-ui/core";
-
-import Draggable from "react-draggable";
+import { Select } from "@material-ui/core";
 
 import Jack from "./Components/Jack";
-import Knob from "../input";
+import { Knob } from "../input";
 let lightIntensity = 0;
 
 function LFO(props) {
