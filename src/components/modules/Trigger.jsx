@@ -4,8 +4,8 @@ import * as Tone from "tone";
 
 import { useTranslation } from "react-i18next";
 
-import Jack from "./Components/Jack";
-import { Knob } from "../input";
+import { Jack } from "../ui/Jack";
+import { Knob } from "../ui/Knob";
 function Trigger(props) {
   const { t } = useTranslation();
 

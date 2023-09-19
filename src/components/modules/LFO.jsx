@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import Jack from "./Components/Jack";
-import { Knob } from "../input";
+import { Jack } from "../ui/Jack";
+import { Knob } from "../ui/Knob";
 let lightIntensity = 0;
 
 function LFO(props) {

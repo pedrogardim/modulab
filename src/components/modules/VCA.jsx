@@ -1,5 +1,5 @@
-import Jack from "./Components/Jack";
-import { Knob } from "../input";
+import { Jack } from "../ui/Jack";
+import { Knob } from "../ui/Knob";
 
 function VCA({
   setModules,

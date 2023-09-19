@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import * as Tone from "tone";
 
-import Workspace from "./components/ui/Workspace";
+import Workspace from "./components/workspace/Workspace";
 
 function App() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);

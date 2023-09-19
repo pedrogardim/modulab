@@ -8,9 +8,9 @@ import { modulesInfo } from "../../utils/modulesInfo";
 
 import useSession from "../../hooks/useSession";
 
-import Module from "./Modules/Module";
-import Matrix from "./Matrix/Matrix";
-import Connection from "./Connection";
+import { Module } from "./Module";
+import { Matrix } from "./Matrix";
+import { Connection } from "./Connection";
 
 import "./Workspace.css";
 

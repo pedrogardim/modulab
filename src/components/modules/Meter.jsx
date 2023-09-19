@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Jack from "./Components/Jack";
+import { Jack } from "../ui/Jack";
 
 function Meter(props) {
   const [animator, setAnimator] = useState(null);
