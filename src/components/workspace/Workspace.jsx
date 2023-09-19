@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
 
+import { Icon } from "../ui/Icon";
+
 import { useTranslation } from "react-i18next";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -200,7 +202,7 @@ function Workspace(props) {
         style={{ position: "absolute", bottom: 16, right: 16 }}
         onClick={isRecording ? stopRecording : startRecording}
       >
-        {isRecording ? "stop" : "voicemail"}
+        <Icon icon="abTesting" title="User Profile" size={1} />
       </button>
 
       <button
@@ -208,7 +210,7 @@ function Workspace(props) {
         style={{ position: "absolute", bottom: 16, right: 80 }}
         onClick={(e) => setModulePicker(e.target)}
       >
-        add
+        <Icon icon="abTesting" title="User Profile" size={1} />
       </button>
 
       <button
@@ -216,14 +218,14 @@ function Workspace(props) {
         style={{ position: "absolute", bottom: 16, right: 144 }}
         onClick={() => clearWorkspace()}
       >
-        delete
+        <Icon icon="abTesting" title="User Profile" size={1} />
       </button>
       <button
         color="primary"
         style={{ position: "absolute", bottom: 16, right: 208 }}
         onClick={() => setMatrix(true)}
       >
-        grid_on
+        <Icon icon="account" title="User Profile" size={1} />
       </button>
     </>
   );

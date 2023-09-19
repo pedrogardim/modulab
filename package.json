@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/js": "^7.2.96",
+    "@mdi/react": "^1.6.1",
     "@tonejs/midi": "^2.0.27",
     "audiobuffer-to-wav": "^1.0.0",
     "i18next": "^20.3.2",
