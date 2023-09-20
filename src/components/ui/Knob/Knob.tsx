@@ -119,7 +119,7 @@ const Knob: FC<KnobProps> = ({
   return (
     <>
       <div
-        className="track-knob"
+        className="knob track-knob"
         style={{
           height: size,
           width: size,
