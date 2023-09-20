@@ -41,7 +41,7 @@ const SideMenu: React.FC = () => {
   return (
     <div className="fixed left-0 top-0 flex flex-col gap-y-4 h-screen p-4 justify-center user-select-none z-10 bg-transparent">
       {sideMenuActions.map((option) => (
-        <div onClick={option.action}>
+        <div onClick={option.action} key={option.icon}>
           <Icon
             className="hover:brightness-200 active:brightness-75 cursor-pointer"
             icon={option.icon}
