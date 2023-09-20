@@ -1,10 +1,6 @@
 import React, { useState, useRef } from "react";
 
-import { useTranslation } from "react-i18next";
-
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
-import { modulesInfo } from "@/utils/modulesInfo";
 
 import { useSession } from "@/context/SessionContext";
 import useWorkspaceEvents from "@/hooks/useWorkspaceEvents";
@@ -21,20 +17,10 @@ import { ModuleSelector } from "./ModuleSelector";
 import "./Workspace.css";
 
 function Workspace(props) {
-  const { t } = useTranslation();
-  const {
-    modules,
-    setModules,
-    nodes,
-    setNodes,
-    connections,
-    setConnections,
-    handleConnect,
-    removeConnection,
-    addModule,
-    removeModule,
-    clearWorkspace,
-  } = useSession();
+  const { setModules, nodes, setNodes, removeConnection, removeModule } =
+    useSession();
+
+  const { modules, connections } = useSelector((state) => state.session);
 
   const cursorPixelRef = useRef(null);
 
@@ -129,16 +115,7 @@ function Workspace(props) {
         />
       ))}
 
-      {connectionMatrixOpen && (
-        <Matrix
-          // onClose={() => setMatrix(false)}
-          modules={modules}
-          nodes={nodes}
-          connections={connections}
-          handleConnect={handleConnect}
-          removeConnection={removeConnection}
-        />
-      )}
+      {connectionMatrixOpen && <Matrix />}
       {drawingLine && <Connection drawing connection={drawingLine} />}
       {moduleSelectorOpen && <ModuleSelector />}
     </>
