@@ -1,4 +1,5 @@
 import lamejs from "lamejs";
+import * as Tone from "tone";
 
 export const encodeAudioFile = (aBuffer, format) => {
   let numOfChan = aBuffer.numberOfChannels,
@@ -105,4 +106,21 @@ export const wavToMp3 = (channels, sampleRate, left, right = null) => {
   var mp3Blob = new Blob(buffer, { type: "audio/mp3" });
 
   return mp3Blob;
+};
+
+export const saveRecording = async (recorder: Tone.Recorder) => {
+  const blob = await recorder.stop();
+  const arrayBuffer = await blob.arrayBuffer();
+  Tone.getContext().rawContext.decodeAudioData(arrayBuffer, (audiobuffer) => {
+    const url = URL.createObjectURL(encodeAudioFile(audiobuffer, "wav"));
+    const anchor = document.createElement("a");
+    anchor.download =
+      new Date()
+        .toLocaleString()
+        .replaceAll("/", "-")
+        .replaceAll(" ", "_")
+        .replaceAll(":", "-") + ".wav";
+    anchor.href = url;
+    anchor.click();
+  });
 };
