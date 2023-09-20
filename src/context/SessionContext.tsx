@@ -9,9 +9,17 @@ import React, {
 import * as Tone from "tone";
 
 import { EnvelopeNode } from "@/customNodes/EnvelopeNode";
-import { encodeAudioFile } from "@/utils/audioutils";
-import { modulesInfo } from "@/utils/modulesInfo";
+import { saveRecording } from "@/utils/audioUtils";
 import { createModule } from "@/utils/modulesUtils";
+import { connect, getModulesfromConnection } from "@/utils/connectionsUtils";
+import { useDispatch, useSelector } from "@/store/hooks";
+import {
+  addConnectionToStore,
+  addModuleToStore,
+  removeConnectionFromStore,
+  removeModuleFromStore,
+  saveSession,
+} from "@/store/sessionSlice";
 
 type SessionType = {
   nodes: object;
@@ -28,10 +36,10 @@ type SessionProviderProps = {
 export const SessionProvider: React.FC<SessionProviderProps> = ({
   children,
 }) => {
-  const [modules, setModules] = useState([]);
+  const dispatch = useDispatch();
   const [nodes, setNodes] = useState({});
 
-  const [connections, setConnections] = useState([]);
+  const { modules, connections } = useSelector((state) => state.session);
 
   const [recorder] = useState(new Tone.Recorder());
   const [isRecording, setIsRecording] = useState(false);
@@ -43,7 +51,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       conn.forEach((e) => handleConnect(e));
   };
 
-  const loadSession = (json) => {
+  const loadSession = (json?: object) => {
     localStorage.setItem("musalabsSession", "");
     clearWorkspace(true);
 
@@ -54,24 +62,23 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
 
     if (!session) return;
 
-    session.modules.forEach((e) =>
+    session.modules.forEach((module) =>
       addModule(
-        e.type,
-        e,
-        session.connections.filter((e) => e.module === e.id),
-        recorder
+        module.type,
+        module,
+        session.connections.filter((e) => module.module === e.id)
       )
     );
 
     Tone.Transport.start();
   };
 
+  //TODO: load connections
   const addModule = (type, module) => {
-    let moduleId = !modules.length
-      ? 0
-      : Math.max(...modules.map((e) => e.id)) + 1;
+    let moduleId =
+      modules.length === 0 ? 0 : Math.max(...modules.map((e) => e.id)) + 1;
 
-    const { nodes, moduleInfo: newModule } = createModule(
+    const { nodes: moduleNodes, moduleInfo: newModule } = createModule(
       type,
       module,
       moduleId,
@@ -80,119 +87,37 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
 
     setNodes((prev) => ({
       ...prev,
-      [newModule.id]: nodes,
+      [newModule.id]: moduleNodes,
     }));
 
-    setModules((prev) => [...prev, newModule]);
+    dispatch(addModuleToStore({ module: newModule }));
   };
 
   const removeModule = (id) => {
-    setConnections((prev) =>
-      prev.filter((e) => e.module !== id && e.target.module !== id)
-    );
     nodes[id].forEach((e) => e && e.dispose && e.dispose());
-    setModules((prev) => prev.filter((e) => e.id !== id));
+    dispatch(removeModuleFromStore(id));
   };
 
   const handleConnect = (connection) => {
-    if (!nodes[connection.module] && !nodes[connection.target.module]) {
-      console.log(
-        "failed",
-        nodes[connection.module],
-        nodes[connection.target.module]
-      );
-      //handleConnect(connection);
-      return;
-    }
+    console.log(connection);
 
-    const modulesTypes = [
-      [modules.find((e) => e.id === connection.module).type, connection.index],
-      [
-        modules.find((e) => e.id === connection.target.module).type,
-        connection.target.index,
-      ],
-    ];
-
-    const connectionTypes = modulesTypes.map(
-      (t) => modulesInfo[t[0]].con[t[1]][0]
+    const successfullyConnected = connect(
+      connection,
+      connections,
+      nodes,
+      modules
     );
 
-    const connectionNode = modulesTypes.map(
-      (t) => modulesInfo[t[0]].con[t[1]][1]
-    );
+    if (!successfullyConnected) return;
 
-    let originNode = nodes[connection.module][connectionNode[0]];
-    let targetNode = nodes[connection.target.module][connectionNode[1]];
-
-    console.log(originNode, targetNode);
-
-    //check if is existing
-
-    if (
-      connections.find(
-        (e, i) =>
-          (e.module === connection.module &&
-            e.index === connection.index &&
-            e.target.module === connection.target.module &&
-            e.target.index === connection.target.index) ||
-          (e.module === connection.target.module &&
-            e.index === connection.target.index &&
-            e.target.module === connection.module &&
-            e.target.index === connection.index)
-      )
-    )
-      return;
-
-    if (
-      connectionTypes[0] === "out" &&
-      (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
-    ) {
-      //originNode.connect(targetNode);
-      try {
-        Tone.connect(originNode, targetNode, [0], [0]);
-        //originNode.connect(targetNode);
-      } catch (e) {
-        console.log(e);
-      }
-    } else if (
-      (connectionTypes[0] === "in" || connectionTypes[0] === "mod") &&
-      connectionTypes[1] === "out"
-    ) {
-      //console.log("case2");
-      //targetNode.connect(originNode);
-      try {
-        Tone.connect(targetNode, originNode, [0], [0]);
-        //targetNode.connect(originNode);
-      } catch (e) {
-        console.log(e);
-      }
-    } else return true;
-    setConnections((prev) => [...prev, connection]);
+    dispatch(addConnectionToStore(connection));
   };
 
-  const removeConnection = (connIndex) => {
-    let connection = connections[connIndex];
+  const removeConnection = (connectionIndex: number) => {
+    let connection = connections[connectionIndex];
 
-    const modulesTypes = [
-      [modules.find((e) => e.id === connection.module).type, connection.index],
-      [
-        modules.find((e) => e.id === connection.target.module).type,
-        connection.target.index,
-      ],
-    ];
-
-    console.log(modulesTypes);
-
-    const connectionTypes = modulesTypes.map(
-      (t) => modulesInfo[t[0]].con[t[1]][0]
-    );
-
-    const connectionNode = modulesTypes.map(
-      (t) => modulesInfo[t[0]].con[t[1]][1]
-    );
-
-    let originNode = nodes[connection.module][connectionNode[0]];
-    let targetNode = nodes[connection.target.module][connectionNode[1]];
+    const { originNode, targetNode, connectionTypes } =
+      getModulesfromConnection(connection, modules, nodes);
 
     if (connectionTypes[0] === "out") {
       originNode.disconnect(targetNode);
@@ -201,7 +126,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       targetNode.disconnect(originNode);
     }
 
-    setConnections((prev) => prev.filter((e, i) => i !== connIndex));
+    dispatch(removeConnectionFromStore(connectionIndex));
   };
 
   const clearWorkspace = (total) => {
@@ -220,63 +145,12 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
 
   const stopRecording = () => {
     setIsRecording(false);
-    recorder.stop().then((blob) => {
-      //console.log(blob);
-      blob.arrayBuffer().then((arrayBuffer) => {
-        //console.log(arrayBuffer);
-        Tone.getContext().rawContext.decodeAudioData(
-          arrayBuffer,
-          (audiobuffer) => {
-            //console.log(audiobuffer);
-            const url = URL.createObjectURL(
-              encodeAudioFile(audiobuffer, "wav")
-            );
-            const anchor = document.createElement("a");
-            anchor.download =
-              new Date()
-                .toLocaleString()
-                .replaceAll("/", "-")
-                .replaceAll(" ", "_")
-                .replaceAll(":", "-") + ".wav";
-            anchor.href = url;
-            anchor.click();
-          }
-        );
-      });
-    });
-    // download the recording by creating an anchor element and blob url
+    saveRecording(recorder);
   };
-  /* 
-  useEffect(() => {
-    //resetWorkspace();
-
-    let session = {
-      description: "No description",
-      tags: ["musa"],
-      modules: modules,
-    };
-
-    if (props.user && props.user.uid !== firebase.auth().currentUser.uid) {
-      props.createNewSession(session);
-      return;
-    }
-
-    //loadSession();
-    //!props.session.length && Tone.Transport.start()
-  }, [props.user, props.session, sessionKey]); 
-
-  */
 
   useEffect(() => {
-    //localStorage.setItem("musalabsSession", "");
-    console.log("USEEFFECT TRIGGERED");
-
     loadSession();
-    EnvelopeNode.Initialize(Tone.getContext().rawContext)
-      .then((e) => console.log("EnvelopeNode.Initialize"))
-      .catch((e) => console.log(e));
-    // addModule("Envelope");
-    // addModule("Trigger");
+    EnvelopeNode.Initialize(Tone.getContext().rawContext);
 
     return () => {
       //console.log("transport cleared");
@@ -284,46 +158,20 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    //console.log(connections);
-    connections &&
-      connections.length > 0 &&
-      localStorage.setItem(
-        "musalabsSession",
-        JSON.stringify({
-          modules: [...modules],
-          connections: [...connections],
-        })
-      );
-  }, [connections]);
+    dispatch(saveSession());
+    console.log(modules);
+  }, [connections, modules]);
 
   useEffect(() => {
     loadConnections();
     console.log("nodes", nodes);
   }, [nodes]);
 
-  useEffect(() => {
-    console.log(modules);
-    if (modules && modules.length > 0) {
-      localStorage.setItem(
-        "musalabsSession",
-        JSON.stringify({
-          modules: [...modules],
-          connections: [...connections],
-        })
-      );
-      //console.log("stored");
-    }
-  }, [modules]);
-
   return (
     <SessionContext.Provider
       value={{
-        modules,
-        setModules,
         nodes,
-        setNodes,
         connections,
-        setConnections,
         isRecording,
         startRecording,
         stopRecording,
