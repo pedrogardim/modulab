@@ -1,12 +1,8 @@
 import React, { useState, useRef } from "react";
 
-import { useTranslation } from "react-i18next";
-
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import { modulesInfo } from "@/utils/modulesInfo";
-
-import useSession from "@/hooks/useSession";
+import { useSession } from "@/context/SessionContext";
 import useWorkspaceEvents from "@/hooks/useWorkspaceEvents";
 
 import { useSelector } from "@/store/hooks";
@@ -21,20 +17,10 @@ import { ModuleSelector } from "./ModuleSelector";
 import "./Workspace.css";
 
 function Workspace(props) {
-  const { t } = useTranslation();
-  const {
-    modules,
-    setModules,
-    nodes,
-    setNodes,
-    connections,
-    // setConnections,
-    handleConnect,
-    removeConnection,
-    addModule,
-    removeModule,
-    clearWorkspace,
-  } = useSession();
+  const { setModules, nodes, setNodes, removeConnection, removeModule } =
+    useSession();
+
+  const { modules, connections } = useSelector((state) => state.session);
 
   const cursorPixelRef = useRef(null);
 
@@ -56,7 +42,7 @@ function Workspace(props) {
       {modules.length === 0 && <HelperText />}
       <SideMenu />
       <TransformWrapper
-        limitToBounds={false}
+        limitToBounds={true}
         doubleClick={{ disabled: true }}
         minScale={0.1}
         maxScale={2}
@@ -129,16 +115,7 @@ function Workspace(props) {
         />
       ))}
 
-      {connectionMatrixOpen && (
-        <Matrix
-          // onClose={() => setMatrix(false)}
-          modules={modules}
-          nodes={nodes}
-          connections={connections}
-          handleConnect={handleConnect}
-          removeConnection={removeConnection}
-        />
-      )}
+      {connectionMatrixOpen && <Matrix />}
       {drawingLine && <Connection drawing connection={drawingLine} />}
       {moduleSelectorOpen && <ModuleSelector />}
     </>
@@ -146,5 +123,3 @@ function Workspace(props) {
 }
 
 export default Workspace;
-
-const deepCopy = (a) => JSON.parse(JSON.stringify(a));
