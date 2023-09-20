@@ -1,16 +1,16 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useDispatch } from "@/store/hooks";
+import { useDispatch, useSelector } from "@/store/hooks";
 import { toggleConnectionMatrix } from "@/store/uiSlice";
+
+import { useSession } from "@/context/SessionContext";
+import { getRandomColor } from "@/utils/colorUtils";
+import { modulesInfo } from "@/utils/modulesInfo";
 
 import "./Matrix.css";
 
-import { getRandomColor } from "../../../utils/colorUtils";
-import { modulesInfo } from "../../../utils/modulesInfo";
-
-import { useTranslation } from "react-i18next";
-
-function Matrix(props) {
+function Matrix() {
   const inputRef = useRef(null);
   const { t } = useTranslation();
 
@@ -18,7 +18,9 @@ function Matrix(props) {
 
   const close = () => dispatch(toggleConnectionMatrix());
 
-  const { modules, connections, handleConnect, removeConnection } = props;
+  const { handleConnect, removeConnection } = useSession();
+
+  const { modules, connections } = useSelector((state) => state.session);
 
   const outputs = modules.map((e) =>
     modulesInfo[e.type].con
@@ -90,13 +92,13 @@ function Matrix(props) {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-screen flex justify-center items-center">
+    <div className="fixed left-0 top-0 h-screen w-screen flex justify-center items-center z-20">
       <div
-        className="fixed h-full w-full bg-opacity-10 bg-black"
+        className="fixed h-full w-full bg-opacity-10 bg-black z-0"
         onClick={close}
       ></div>
-      <div className="w-full max-w-6xl mx-2 overflow-y-scroll shadow bg-white grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 max-h-1/2 z-20">
-        <div onClose={props.onClose}>
+      <div className="w-full max-w-6xl mx-2 overflow-y-scroll shadow bg-white grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 max-h-1/2 z-10">
+        <div>
           <h2>{t("dialogs.insertName")}</h2>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div className="matrix-header-column">
@@ -196,9 +198,7 @@ function Matrix(props) {
               )}
           </div>
 
-          <button className="close-btn" onClick={props.onClose}>
-            x
-          </button>
+          <button className="close-btn">x</button>
         </div>
       </div>
     </div>
