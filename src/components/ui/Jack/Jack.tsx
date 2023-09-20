@@ -1,6 +1,4 @@
-import { useRef } from "react";
-
-import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
 
 import { getRandomColor } from "@/utils/colorUtils";
 
@@ -9,8 +7,7 @@ import { setDrawingLine } from "@/store/uiSlice";
 
 import "./Jack.css";
 
-function Jack(props) {
-  const { t } = useTranslation();
+function Jack({ module, index, type, label }) {
   const jackRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -19,8 +16,8 @@ function Jack(props) {
   const handleMouseDown = () => {
     dispatch(
       setDrawingLine({
-        module: props.module.id,
-        index: props.index,
+        module: module.id,
+        index: index,
         color: getRandomColor(),
       })
     );
@@ -35,15 +32,15 @@ function Jack(props) {
         setDrawingLine({
           ...drawingLine,
           target: {
-            module: props.module.id,
-            index: props.index,
+            module: module.id,
+            index: index,
           },
         })
       );
     }
   };
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = () => {
     let newDL = { ...drawingLine };
     delete newDL.target;
     dispatch(setDrawingLine(newDL));
@@ -52,28 +49,26 @@ function Jack(props) {
   return (
     <div
       className="module-jack"
-      id={`jack-${props.module.id}-${props.index}`}
+      id={`jack-${module.id}-${index}`}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{
         borderColor:
-          props.type === "in"
+          type === "in"
             ? "rgb(179, 120, 31)"
-            : props.type.includes("mod")
+            : type.includes("mod")
             ? "grey"
-            : props.type.includes("trigger")
+            : type.includes("trigger")
             ? "#941EC0"
-            : props.type.includes("pitch")
+            : type.includes("pitch")
             ? "#1EC02A"
             : "rgb(32, 115, 192)",
       }}
       ref={jackRef}
     >
       <div></div>
-      <span className="module-jack-lbl">
-        {props.label ? props.label : props.type}
-      </span>
+      <span className="module-jack-lbl">{label ? label : type}</span>
     </div>
   );
 }

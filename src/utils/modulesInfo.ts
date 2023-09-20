@@ -154,6 +154,7 @@ export const modulesInfo = {
     x: 128,
     y: 128,
     con: [["in", 0]],
+    defaultParam: {},
     name: "Meter",
     description: "Outputs the amplitude of the signal",
   },

@@ -4,14 +4,19 @@ import { Icon } from "../../ui/Icon";
 interface ModuleSelectorOptionProps {
   module: (typeof modulesInfo)[keyof typeof modulesInfo];
   index: number;
+  onClick: () => void;
 }
 
 const ModuleSelectorOption: React.FC<ModuleSelectorOptionProps> = ({
   module,
   index,
+  onClick,
 }) => {
   return (
-    <div className="relative module-selector-option aspect-[2/1] py-2 px-4 flex flex-col items-center justify-evenly hover:shadow-lg transition  cursor-pointer">
+    <div
+      className="relative module-selector-option aspect-[2/1] py-2 px-4 flex flex-col items-center justify-evenly hover:shadow-lg transition  cursor-pointer"
+      onClick={onClick}
+    >
       <img
         className="h-12 opacity-50 transition"
         src={`../../../../assets/images/modules/${Object.keys(modulesInfo)[
