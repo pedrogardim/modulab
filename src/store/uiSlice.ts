@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface UiState {
   mousePosition: [number, number];
@@ -43,6 +42,9 @@ export const uiSlice = createSlice({
     setDrawingLine: (state, action) => {
       state.drawingLine = action.payload;
     },
+    toggleRerender: (state) => {
+      state.rerenderToggle = !state.rerenderToggle;
+    },
   },
 });
 
@@ -52,6 +54,7 @@ export const {
   toggleModuleSelector,
   toggleIsRecording,
   setDrawingLine,
+  toggleRerender,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
