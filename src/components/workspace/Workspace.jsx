@@ -6,7 +6,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import { modulesInfo } from "@/utils/modulesInfo";
 
-import useSession from "@/hooks/useSession";
+import { useSession } from "@/context/SessionContext";
 import useWorkspaceEvents from "@/hooks/useWorkspaceEvents";
 
 import { useSelector } from "@/store/hooks";
@@ -28,7 +28,7 @@ function Workspace(props) {
     nodes,
     setNodes,
     connections,
-    // setConnections,
+    setConnections,
     handleConnect,
     removeConnection,
     addModule,
@@ -56,7 +56,7 @@ function Workspace(props) {
       {modules.length === 0 && <HelperText />}
       <SideMenu />
       <TransformWrapper
-        limitToBounds={false}
+        limitToBounds={true}
         doubleClick={{ disabled: true }}
         minScale={0.1}
         maxScale={2}
@@ -146,5 +146,3 @@ function Workspace(props) {
 }
 
 export default Workspace;
-
-const deepCopy = (a) => JSON.parse(JSON.stringify(a));

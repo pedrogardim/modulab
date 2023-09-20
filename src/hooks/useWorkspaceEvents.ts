@@ -1,10 +1,14 @@
+import { useSession } from "@/context/SessionContext";
 import { useSelector, useDispatch } from "@/store/hooks";
-import { updateMousePosition } from "@/store/uiSlice";
+import { updateMousePosition, setDrawingLine } from "@/store/uiSlice";
 
 import * as Tone from "tone";
 
 const useWorkspaceEvents = () => {
   const dispatch = useDispatch();
+  const { drawingLine } = useSelector((state) => state.ui);
+  const { handleConnect } = useSession();
+
   const handleKeyDown = (e) => {
     Tone.start();
     // if (e.key === "Alt") setIsDeleting(true);
@@ -24,10 +28,10 @@ const useWorkspaceEvents = () => {
   };
 
   const handleMouseUp = () => {
-    // if (drawingLine && drawingLine.target) {
-    //   handleConnect(drawingLine);
-    // }
-    // setDrawingLine(null);
+    if (drawingLine && drawingLine.target) {
+      handleConnect(drawingLine);
+    }
+    dispatch(setDrawingLine(null));
     dispatch(updateMousePosition(null));
   };
 
