@@ -1,8 +1,13 @@
-function HelperText() {
+import { useSelector } from "@/store/hooks";
+
+const HelperText: React.FC = () => {
+  const { modules } = useSelector((state) => state.session);
   return (
-    <div className="h-full p-4">
-      <h1 className="font-display text-6xl">ModulAb</h1>
-      <p className="font-body text-md mt-4">
+    <div
+      className={"fixed h-full p-16 " + (modules.length > 0 && "opacity-50")}
+    >
+      <h1 className="font-display text-6xl text-indigo-600">ModulAb</h1>
+      <p className="font-body text-md mt-4 text-gray-600">
         Welcome to Modulab, a playground where you can play with sounds and
         signals.
         <br />
@@ -19,6 +24,6 @@ function HelperText() {
       </p>
     </div>
   );
-}
+};
 
 export default HelperText;
