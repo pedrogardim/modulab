@@ -35,11 +35,10 @@ const Knob: FC<KnobProps> = ({
   );
 
   const handleKnobMove = (cursorX: number, cursorY: number) => {
-    const { getBoundingClientRect } = knobRef.current as any;
-    let centerPosition = [
-      getBoundingClientRect().left + getBoundingClientRect().width / 2,
-      getBoundingClientRect().top + getBoundingClientRect().height / 2,
-    ];
+    const { left, top, width, height } = (
+      knobRef.current as any
+    ).getBoundingClientRect();
+    let centerPosition = [left + width / 2, top + height / 2];
     let deltaXY: number[] = [
       cursorX - centerPosition[0],
       centerPosition[1] - cursorY,
