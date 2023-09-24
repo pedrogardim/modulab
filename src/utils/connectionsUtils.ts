@@ -35,13 +35,13 @@ export const connect = (
     connectionTypes[0] === "out" &&
     (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
   ) {
-    Tone.connect(originNode, targetNode, [0], [0]);
+    Tone.connect(originNode, targetNode, 0, 0);
     return true;
   } else if (
     (connectionTypes[0] === "in" || connectionTypes[0] === "mod") &&
     connectionTypes[1] === "out"
   ) {
-    Tone.connect(targetNode, originNode, [0], [0]);
+    Tone.connect(targetNode, originNode, 0, 0);
     return true;
   } else return;
 };
