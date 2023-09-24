@@ -6,7 +6,7 @@ function Oscillator(props) {
     <>
       <Knob
         exp
-        logScale
+        // logScale
         size={64}
         min={0}
         step={1}
@@ -27,7 +27,7 @@ function Oscillator(props) {
       <div className="break" />
       <Knob
         exp
-        logScale
+        // logScale
         size={32}
         min={-2400}
         step={1}
@@ -68,7 +68,7 @@ function Oscillator(props) {
       <div className="break" />
 
       <Jack label="CV" type="mod" index={0} module={props.module} />
-      {/* 
+
       <Knob
         hideValue
         label={"Mod Depth"}
@@ -90,13 +90,7 @@ function Oscillator(props) {
         mousePosition={props.mousePosition}
       />
 
-      <Jack
-        type="pitch"
-        index={1}
-        module={props.module}
-        
-        
-      /> */}
+      <Jack type="pitch" index={1} module={props.module} />
 
       <Jack type="out" index={2} module={props.module} />
     </>
