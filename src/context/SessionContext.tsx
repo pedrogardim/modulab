@@ -53,7 +53,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
 
   const loadSession = (json?: object) => {
     localStorage.setItem("musalabsSession", "");
-    clearWorkspace(true);
+    clearWorkspace();
 
     let session = json
       ? json
@@ -159,12 +159,12 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
 
   useEffect(() => {
     dispatch(saveSession());
-    console.log(modules);
+    // console.log(modules);
   }, [connections, modules]);
 
   useEffect(() => {
     loadConnections();
-    console.log("nodes", nodes);
+    // console.log("nodes", nodes);
   }, [nodes]);
 
   return (
