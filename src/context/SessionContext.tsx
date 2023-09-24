@@ -120,10 +120,10 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
       getModulesfromConnection(connection, modules, nodes);
 
     if (connectionTypes[0] === "out") {
-      originNode.disconnect(targetNode);
+      originNode.disconnect(targetNode, 0, 0);
     }
     if (connectionTypes[0] === "in") {
-      targetNode.disconnect(originNode);
+      targetNode.disconnect(originNode, 0, 0);
     }
 
     dispatch(removeConnectionFromStore(connectionIndex));

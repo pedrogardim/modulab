@@ -42,8 +42,6 @@ function Matrix() {
       )
   );
 
-  console.log(outputs, inputs);
-
   const checkConnection = (id1, con1, id2, con2) => {
     //console.log(id1, con1, id2, con2);
     let result = connections.find(
