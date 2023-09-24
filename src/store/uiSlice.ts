@@ -31,7 +31,6 @@ export const uiSlice = createSlice({
     },
     toggleConnectionMatrix: (state) => {
       state.connectionMatrixOpen = !state.connectionMatrixOpen;
-      console.log(state.connectionMatrixOpen);
     },
     toggleModuleSelector: (state) => {
       state.moduleSelectorOpen = !state.moduleSelectorOpen;
