@@ -29,19 +29,31 @@ export const connect = (
 
   const exists = checkIfConnectionExists(connection, connections);
 
+  console.log(connectionTypes[0], connectionTypes[1]);
+
   if (exists) return;
 
   if (
-    connectionTypes[0] === "out" &&
+    (connectionTypes[0] === "out" || connectionTypes[0] === "pitchout") &&
     (connectionTypes[1] === "in" || connectionTypes[1] === "mod")
   ) {
     Tone.connect(originNode, targetNode, 0, 0);
     return true;
   } else if (
     (connectionTypes[0] === "in" || connectionTypes[0] === "mod") &&
-    connectionTypes[1] === "out"
+    (connectionTypes[1] === "out" || connectionTypes[1] === "pitchout")
   ) {
     Tone.connect(targetNode, originNode, 0, 0);
+    return true;
+  }
+  if (connectionTypes[0] === "pitchout" && connectionTypes[1] === "pitch") {
+    originNode.connect(targetNode.frequency);
+    return true;
+  } else if (
+    connectionTypes[0] === "pitch" &&
+    connectionTypes[1] === "pitchout"
+  ) {
+    targetNode.connect(originNode.frequency);
     return true;
   } else return;
 };

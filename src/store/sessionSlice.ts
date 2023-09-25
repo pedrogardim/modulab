@@ -49,6 +49,13 @@ export const sessionSlice = createSlice({
         y: 32 * Math.round(y / 32),
       };
     },
+    updateModuleParams: (state, action) => {
+      const { moduleIndex, newModuleParams } = action.payload;
+      state.modules[moduleIndex].p = {
+        ...state.modules[moduleIndex].p,
+        ...newModuleParams,
+      };
+    },
     addConnectionToStore: (state, action) => {
       const connection = action.payload;
       state.connections.push(connection);
@@ -66,6 +73,7 @@ export const {
   addModuleToStore,
   removeModuleFromStore,
   updateModulePosition,
+  updateModuleParams,
   addConnectionToStore,
   removeConnectionFromStore,
 } = sessionSlice.actions;

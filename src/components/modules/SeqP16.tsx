@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import * as Tone from "tone";
 
 import { Jack } from "../ui/Jack";
+import { useDispatch } from "@/store/hooks";
+import { updateModuleParams } from "@/store/sessionSlice";
 
-function SeqP16(props) {
-  const { module, nodes, setModules, index } = props;
-
+function SeqP16({ module, nodes, index }) {
+  const dispatch = useDispatch();
   const [steps, setSteps] = useState(module.p.steps);
   const [pitches, setPitches] = useState(module.p.p);
   const [eventId, setEventId] = useState(null);
@@ -53,20 +54,21 @@ function SeqP16(props) {
 
     setEventId(id);
 
-    setModules((prev) => {
-      let newModules = [...prev];
-      newModules[index].p.steps = [...steps];
-      newModules[index].p.p = [...pitches];
-      return newModules;
-    });
+    dispatch(
+      updateModuleParams({
+        moduleIndex: index,
+        newModuleParams: { steps: [...steps], p: [...pitches] },
+      })
+    );
   }, [steps, pitches]);
 
   useEffect(() => {
-    setModules((prev) => {
-      let newModules = [...prev];
-      newModules[index].p.m = pitchMode;
-      return newModules;
-    });
+    dispatch(
+      updateModuleParams({
+        moduleIndex: index,
+        newModuleParams: { m: pitchMode },
+      })
+    );
   }, [pitchMode]);
 
   return (
@@ -154,8 +156,8 @@ function SeqP16(props) {
       </button>
       <button onClick={() => setPitchMode((prev) => !prev)}>music_note</button>
 
-      <Jack type="out" label="trigger" index={0} module={props.module} />
-      <Jack type="out" label="pitch" index={1} module={props.module} />
+      <Jack type="out" label="trigger" index={0} module={module} />
+      <Jack type="pitchout" label="pitch" index={1} module={module} />
     </>
   );
 }
