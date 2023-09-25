@@ -4,6 +4,8 @@ import { getRandomColor } from "@/utils/colorUtils";
 
 import { modulesInfo } from "./modulesInfo";
 
+import { EnvelopeNode } from "@/customNodes/EnvelopeNode";
+
 type ModuleType = keyof typeof modulesInfo;
 type Module = (typeof modulesInfo)[keyof typeof modulesInfo];
 
@@ -81,14 +83,14 @@ export const createModule = (
       nodes = [filter, gain];
       break;
     case "Envelope":
-      /* let envelope = new EnvelopeNode({
+      const context = Tone.getContext().rawContext;
+      let envelope = new EnvelopeNode(context, {
         attack: newModule.p.a,
         decay: newModule.p.d,
         sustain: newModule.p.s,
         release: newModule.p.r,
       });
-      nodes = [envelope]; */
-      nodes = [];
+      nodes = [envelope];
       break;
 
     case "ChMixer":
