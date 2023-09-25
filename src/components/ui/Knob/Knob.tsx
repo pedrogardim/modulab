@@ -7,7 +7,7 @@ import "./Knob.css";
 
 const Knob: FC<KnobProps> = ({
   defaultValue = 0.5,
-  polar = false,
+  polar = true,
   size = 32,
   min = 0,
   max = 1,
@@ -52,7 +52,7 @@ const Knob: FC<KnobProps> = ({
       return;
 
     if (polar) {
-      let angle = (Math.atan2(deltaXY[1], deltaXY[0]) * 180) / Math.PI;
+      let angle = (Math.atan2(deltaXY[0], deltaXY[1]) * 180) / Math.PI;
 
       angle = angle >= 135 ? 135 : angle < -135 ? -135 : angle;
 
