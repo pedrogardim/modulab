@@ -126,7 +126,7 @@ export const modulesInfo = {
     y: 96,
     con: [
       ["out", 0],
-      ["out", 1],
+      ["pitchout", 1],
     ],
     defaultParam: {
       steps: new Array(16).fill(false),
