@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import classNames from "classnames";
 
 import { getRandomColor } from "@/utils/colorUtils";
 
@@ -48,23 +49,22 @@ function Jack({ module, index, type, label }) {
 
   return (
     <div
-      className="module-jack"
+      className={classNames(
+        "module-jack",
+        type === "in"
+          ? "bg-slate-800"
+          : type.includes("mod")
+          ? "bg-slate-800"
+          : type.includes("trigger")
+          ? "bg-orange-600"
+          : type.includes("pitch")
+          ? "bg-green-600"
+          : "bg-indigo-600"
+      )}
       id={`jack-${module.id}-${index}`}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{
-        borderColor:
-          type === "in"
-            ? "rgb(179, 120, 31)"
-            : type.includes("mod")
-            ? "grey"
-            : type.includes("trigger")
-            ? "#941EC0"
-            : type.includes("pitch")
-            ? "#1EC02A"
-            : "rgb(32, 115, 192)",
-      }}
       ref={jackRef}
     >
       <div></div>
